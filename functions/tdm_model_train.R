@@ -25,7 +25,6 @@
 #----------------------------------------------------------------------
 model.train <- function(dat.subset, v, n.beta, resids = resids, threshold = NULL, ...) {
   dat.subset$year <- as.ordered(dat.subset$year) 
-  
   if (v == "air_temperature") {
     
     mod.doy <- lm(air_temperature ~ as.ordered(hour) * air_temperature_max.day * 

@@ -40,6 +40,7 @@ aggregate.met <- function(path.in, years.agg=NULL, save.day=T, save.month=T,
   # Get a list of all the files available to do the aggregation for
   files.agg <- dir(path.in)
   yrs.files <- strsplit(files.agg, "[.]")
+  print(yrs.files)
   yrs.files <- matrix(unlist(yrs.files), ncol=length(yrs.files[[1]]), byrow=T)
   yrs.files <- as.numeric(yrs.files[,ncol(yrs.files)-1])
   

@@ -16,10 +16,7 @@
 ####################
 
 # Load site and directory details
-wd.base = '~/met'
 site = "HARVARD" # should be identical to paleon site name 
-site.lat  = 42.53
-site.lon  = -72.18
 vers=".v1"
 
 # input years the met ensembles were generated for (long or short run?)
@@ -29,6 +26,11 @@ ens.yr2 = 2015
 ####################
 # Step 1: Compress folder
 ####################
+
+if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+require(here,lib='~/Rlibs')
+
+wd.base = here::here()
 
 # set up important file paths
 in.base = file.path(wd.base, "ensembles", paste0(site, vers), "linkages")

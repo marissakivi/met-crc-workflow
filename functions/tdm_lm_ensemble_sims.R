@@ -56,24 +56,18 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
   # Declare the variables of interest that will be called in the
   # overarching loop
   vars.list <- c("surface_downwelling_shortwave_flux_in_air", "air_temperature", 
-                 "precipitation_flux"
-                 #, "surface_downwelling_longwave_flux_in_air", 
-                 #"air_pressure", "specific_humidity", "wind_speed"
-                 )
-  # adjusted for linkages (MK)
+                 "precipitation_flux", "surface_downwelling_longwave_flux_in_air", 
+                 "air_pressure", "specific_humidity", "wind_speed")
   
   # Data info that will be used to help organize dataframe for
   # downscaling
   dat.info <- c("sim.day", "year", "doy", "hour", "air_temperature_max.day", 
                 "air_temperature_min.day", "precipitation_flux.day", "surface_downwelling_shortwave_flux_in_air.day", 
-                #"surface_downwelling_longwave_flux_in_air.day", "air_pressure.day", 
-                #"specific_humidity.day", "wind_speed.day", 
-                "next.air_temperature_max", 
-                "next.air_temperature_min", "next.precipitation_flux", "next.surface_downwelling_shortwave_flux_in_air"#, 
-                #"next.surface_downwelling_longwave_flux_in_air", "next.air_pressure", 
-                #"next.specific_humidity", "next.wind_speed"
-                )
-  # adjusted for linkages (MK)
+                "surface_downwelling_longwave_flux_in_air.day", "air_pressure.day", 
+                "specific_humidity.day", "wind_speed.day", "next.air_temperature_max", 
+                "next.air_temperature_min", "next.precipitation_flux", "next.surface_downwelling_shortwave_flux_in_air", 
+                "next.surface_downwelling_longwave_flux_in_air", "next.air_pressure", 
+                "next.specific_humidity", "next.wind_speed")
   
   # # Set progress bar
   if(print.progress==TRUE){
@@ -90,6 +84,7 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
     lags.init <- lags.list[[unique(dat.mod$ens.day)]]
   }
   
+  
   # Set up the ensemble members in a list so the uncertainty can be
   # propogated
   dat.sim <- list()
@@ -97,7 +92,7 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
  # ------ Beginning of Downscaling For Loop
   
   for (v in vars.list) {
-    # Initalize our our output
+    # Initalize our ouroutput
     dat.sim[[v]] <- array(dim=c(nrow(dat.mod), n.ens))
     
     # create column propagation list and betas progagation list

@@ -11,10 +11,11 @@
 ####################
 
 # Load site and directory details
-site.name = "HARVARD"
-site.lat  = 42.53
-site.lon  = -72.18
-vers=".v5"
+wd.base = '~/met'
+site.name = "NRP"
+site.lat  = 42.84514
+site.lon  = -72.4473
+vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
 first.year=850
@@ -23,21 +24,20 @@ last.year=2015
 ####################
 # Step 1: Set up working directory
 ####################
-library(here)
 
 # set up important paths
-path.out = here::here('ensembles',paste0(site.name,vers),'linkages')
+path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'linkages')
 if (!dir.exists(path.out)) dir.create(path.out)
-path.in = here::here('ensembles',paste0(site.name,vers),'aggregated/month')
+path.in = file.path(wd.base,'ensembles',paste0(site.name,vers),'aggregated/month')
 
 ####################
 # Step 2: Load monthly data 
 ####################
 
 # load ensemble temperature data (in degrees Fahrenheit)
-tair <- read.csv(here::here("ensembles",paste0(site.name,vers),'aggregated/month',"Temperature_AllMembers.csv"), 
+tair <- read.csv(file.path(wd.base,"ensembles",paste0(site.name,vers),'aggregated/month',"Temperature_AllMembers.csv"), 
                  stringsAsFactors=FALSE, header=TRUE)
-precip <- read.csv(here::here("ensembles",paste0(site.name,vers),'aggregated/month',"Precipitation_AllMembers.csv"), 
+precip <- read.csv(file.path(wd.base,"ensembles",paste0(site.name,vers),'aggregated/month',"Precipitation_AllMembers.csv"), 
                  stringsAsFactors=FALSE, header=TRUE)
 
 # find the number of ensembles and remove the dates 
@@ -68,7 +68,7 @@ for (i in 1:n_models){
     yr = yr.id[k]
     # convert from F to C
     temp.mat[k,] = (df$temp[df$year==yr]-32) * (5/9)
-    # convert from inches to cm
+    # convert from inchest to cm
     precip.mat[k,] = (df$precip[df$year==yr]) * 2.54 #cm/in
   }
   
@@ -79,38 +79,8 @@ for (i in 1:n_models){
   save(precip.mat=precip.mat, temp.mat=temp.mat, file = file.path(folder,'climate.Rdata'))
 }
 
-# check output for three years to make sure conversion was OK
-years = c(first.year,1850,1900,last.year)
-ids = years - first.year + 1
-ens = list.dirs(path.out, full.names = FALSE)[-1]
 
-# first temperature
-jpeg(file.path(path.out,'linkages-temp-check.jpg'))
-par(mfrow=c(2,2))
-for (i in years){
-  plot(NULL, xlim=c(0,13), ylim = c(-20,60), 
-       xlab = 'Months', ylab = 'Temperature (Celcius)', main = paste('Temperature in',i))
-  id = i - first.year + 1
-  for (e in ens){
-    load(paste0(path.out,'/',e,'/climate.Rdata'))
-    points(c(1:12),temp.mat[id,])
-  }
-}
-dev.off()
 
-# next precipitation
-jpeg(file.path(path.out,'linkages-precip-check.jpg'))
-par(mfrow=c(2,2))
-for (i in years){
-  plot(NULL, xlim=c(0,13), ylim = c(0,20), 
-       xlab = 'Months', ylab = 'Precipitation (cm)', main = paste('Precipitation in',i))
-  id = i - first.year + 1
-  for (e in ens){
-    load(paste0(path.out,'/',e,'/climate.Rdata'))
-    points(c(1:12),precip.mat[id,])
-  }
-}
-dev.off()
 
 
 

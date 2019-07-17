@@ -20,14 +20,20 @@
 # Required functions: 
 #
 # Required libraries:
-#
+# - here
+# - plyr
+# - raster
+# - data.table
+# - rgdal
+# - reshape2
+# - ncdf4
+
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
 # Load site and directory details
-wd.base = '~/met'
 site = "HARVARD" # should be identical to paleon site name 
 vers=".v1"
 
@@ -44,12 +50,12 @@ CRC = TRUE
 # Step 1: Set up working directory
 ####################
 
-library(plyr)
-library(raster)
-library(data.table)
-library(rgdal)
-library(reshape2)
-library(ncdf4)
+#library(plyr)
+#library(raster)
+#library(data.table)
+#library(rgdal)
+#library(reshape2)
+#library(ncdf4)
 
 if (!require('plyr')) install.packages('plyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('raster')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
@@ -64,6 +70,8 @@ require(data.table,lib='~/Rlibs')
 require(rgdal,lib='~/Rlibs')
 require(reshape2, lib='~/Rlibs')
 require(ncdf4,lib='~/Rlibs')
+
+wd.base = here::here()
 
 path.in = file.path(wd.base,'data/weight/PRISM/raw')
 path.out = file.path(wd.base,'data/weight/PRISM/paleon_sites')

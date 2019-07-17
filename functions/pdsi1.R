@@ -145,7 +145,7 @@ pdsi1 <- function(datmet, datother, metric=F, method.PE="Thornthwaite", snow=NUL
   # Extract some constants from datother
   Temp <- as.matrix(datmet$Temp)
   Precip <- as.matrix(datmet$Precip)
-  
+
   yrs <- as.numeric(row.names(Temp))
   nyrs <- length(yrs)
   yrs.calib <- datother$yrs.calib
@@ -159,14 +159,14 @@ pdsi1 <- function(datmet, datother, metric=F, method.PE="Thornthwaite", snow=NUL
   # Convert Precip from mm to inches
   # Do unit conversions on moisture if necessary
   #  Assumes that if not in inches, it's in mm
-  if(metric==T){
-    Precip <- Precip/25.4
-    awcs   <- awcs/25.4
-    awcu   <- awcu/25.4
-    
-    C2F <- function(x){x*9/5 + 32}
-    Temp   <- C2F(Temp)
-  }
+  #if(metric==T){
+  #  Precip <- Precip/25.4
+  #  awcs   <- awcs/25.4
+  #  awcu   <- awcu/25.4
+  #  
+  #  C2F <- function(x){x*9/5 + 32}
+  #  Temp   <- C2F(Temp)
+  #}
 
   # # Daylength stuff
   # library(R.matlab)

@@ -68,11 +68,15 @@ calc.pdsi <- function(path.in, years.pdsi, years.calib, watcap){
   TEMP1   <- TEMP1[order(as.numeric(row.names(TEMP1))),]
   PRECIP1  <- PRECIP1[order(as.numeric(row.names(PRECIP1))),]
   dayfact <- dayfact[order(as.numeric(row.names(dayfact))),]
-  
+ 
+  #print(TEMP1[1,])	
+ 
   # Convert Temp: Kelvin to Fahrenheit 
   C2F <- function(x){x*9/5 + 32}
   TEMP1 <- C2F(TEMP1-273.15)
   
+  #print(TEMP1[1,])
+
   # Convert Precip: kg/m2/s = mm/mo 
   # Making a matrix to do the time conversion so we can factor in leap year
   sec2mo <- matrix(lubridate::days_in_month(1:12), nrow=nrow(PRECIP1), ncol=12, byrow=T)
@@ -103,6 +107,7 @@ calc.pdsi <- function(path.in, years.pdsi, years.calib, watcap){
   # Run the actual PDSI calculation
   pdsi.out <- pdsi1(datmet, datother, metric=F, method.PE="Thornthwaite", snow=NULL, snowopts=NULL, penopts=NULL, datpen=NULL)
   pdsi.out$D <- dayfact
-  
+ 	
+
   return(pdsi.out)
 }

@@ -23,16 +23,14 @@
 # - stringr
 # - tictoc
 # - parallel
+# - here
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-wd.base <- "~/met"
 site.name = "HARVARD"
 vers=".v1"
-site.lat  = 42.53
-site.lon  = -72.18
 
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
@@ -54,6 +52,7 @@ if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://
 if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('tictoc')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(ncdf4, lib='~/Rlibs')
 require(mgcv, lib='~/Rlibs')
@@ -63,6 +62,9 @@ require(ggplot2,lib='~/Rlibs')
 require(stringr,lib='~/Rlibs')
 require(tictoc,lib='~/Rlibs')
 require(parallel,lib='~/Rlibs')
+require(here,lib='/Rlibs')
+
+wd.base = here::here()
 
 path.train <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS")
 path.lm <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/mods.tdm")

@@ -30,9 +30,9 @@
 
 # Load site and directory details
 wd.base = '~/met'
-site.name = "GLSP"
-site.lat  = 45.54127
-site.lon  = -95.5313
+site.name = "GILL"
+site.lat  = 44.123424
+site.lon  = -73.803628
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 

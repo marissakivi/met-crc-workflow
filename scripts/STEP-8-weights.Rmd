@@ -42,14 +42,15 @@ Required libraries:
 
 ```{R, echo=TRUE}
 # Load site details
-site = "HARVARD" # should be identical to paleon site name 
-site.name = 'Harvard Forest' # for graph titling purposes
-site.lat  = 42.53
-site.lon  = -72.18
+site = "NRP" # should be identical to paleon site name 
+site.name = 'North Round Pond' # for graph titling purposes
+site.lat  = 42.84514
+site.lon  = -72.4473
 vers=".v1"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
 CRC = FALSE
+PLOT = TRUE
 ```
 
 # Step 1: Set up working directory
@@ -71,31 +72,31 @@ tt = 1750
 K = 100 
 ```
 
-# Load required libraries
 
-```{R, echo=FALSE}
+```{R, echo=FALSE, message=FALSE}
 # load required libraries 
-if (!require('sp',lib='~/Rlibs')) install.packages('sp',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('raster',lib='~/Rlibs')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ncdf4',lib='~/Rlibs')) install.packages('RNetCDF',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('maps',lib='~/Rlibs')) install.packages('maps',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr',lib='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate',lib='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('latex2exp',lib='~/Rlibs')) install.packages('latex2exp',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('limSolve',lib='~/Rlibs')) install.packages('limSolve',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ggplot2',lib='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('colorspace',lib='~/Rlibs')) install.packages('colorspace',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('sp',lib='~/Rlibs')) install.packages('sp',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('raster',lib='~/Rlibs')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('ncdf4',lib='~/Rlibs')) install.packages('RNetCDF',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('maps',lib='~/Rlibs')) install.packages('maps',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('stringr',lib='~/Rlibs')) #install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('lubridate',lib='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('latex2exp',lib='~/Rlibs')) install.packages('latex2exp',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('limSolve',lib='~/Rlibs')) install.packages('limSolve',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('ggplot2',lib='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+#if (!require('colorspace',lib='~/Rlibs')) install.packages('colorspace',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
-require(sp,lib='~/Rlibs')
-require(raster,lib='~/Rlibs')
-require(ncdf4,lib='~/Rlibs')
-require(maps,lib='~/Rlibs')
-require(stringr, lib='~/Rlibs')
-require(lubridate,lib='~/Rlibs')
-require(latex2exp,lib='~/Rlibs')
-require(limSolve,lib='~/Rlibs')
-require(ggplot2,lib='~/Rlibs')
-require(colorspace,lib='~/Rlibs')
+require(sp)#,lib='~/Rlibs')
+require(raster)#,lib='~/Rlibs')
+require(ncdf4)#,lib='~/Rlibs')
+require(maps)#,lib='~/Rlibs')
+require(stringr)#, lib='~/Rlibs')
+require(lubridate)#,lib='~/Rlibs')
+require(latex2exp)#,lib='~/Rlibs')
+require(limSolve)#,lib='~/Rlibs')
+require(ggplot2)#,lib='~/Rlibs')
+require(colorspace)#,lib='~/Rlibs')
+require(here)
 
 # set important paths
 path.func = here::here('functions')
@@ -143,7 +144,7 @@ colnames(temp.ens) <- models
 
 ```
 
-## Load PDSI ensemble data 
+## Ensemble data
 
 ```{R, echo=FALSE}
 ## final is in pdsi.ens matrix with rows as years and columns as ensemble members
@@ -170,7 +171,7 @@ if (!CRC){
 }
 ```
 
-## Prepare MANN data 
+## MANN data 
 
 ```{R, echo=FALSE}
 ## Final is stored in temp.rec data frame with year, anomaly, and adjusted values 
@@ -193,7 +194,6 @@ temp.rec = data.frame(
 
 # plot site location on map
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
   {image(m.lon, m.lat, m.tmp[, , 1300], 
          main=paste("spatial reconstruction -", site.name, "given as the green dot"))
     map(add=TRUE)
@@ -209,7 +209,7 @@ if (!CRC){
 
 ```
 
-## Prepare LBDA data
+## LBDA data
 
 ```{R, echo = FALSE}
 ## Final is stored in pdsi.rec data frame with year and value
@@ -225,7 +225,6 @@ lat_lbda <- which((l.lat - site.lat)^2 == min((l.lat - site.lat)^2))
 
 # plot location on map
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
   {image(l.lon, l.lat, t(l.pdsi[900, , ]), main=paste("PDSI data -",site.name,'given as green dot'),xlab='longitude',ylab='latitude')
     map(add=TRUE)
     points(l.lon[lon_lbda], l.lat[lat_lbda], pch=16, col="green")
@@ -247,7 +246,7 @@ pdsi.rec = data.frame(
 )
 ```
 
-## Load and prepare PRISM data 
+## PRISM data 
 
 ```{R, echo=FALSE}
 ## Final is stored in temp.cal data frame with year and value 
@@ -270,7 +269,6 @@ temp.rec$adj = temp.rec$temp*sd.prism + mean.prism
 
 # plot calibration temperature dataset 
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
   {plot(temp.cal$year, temp.cal$temp, type='l', ylab="temp", xlab="year", 
         main="calibration temperature dataset")
     lines(temp.rec$year, temp.rec$adj, col='red',type='l')
@@ -300,7 +298,7 @@ if (!CRC){
 }
 ```
 
-## Load and prepare ESRL data
+## ESRL data
 
 ```{R, echo=FALSE}
 ## Final is stored in pdsi.cal data frame with year and value 
@@ -325,7 +323,6 @@ pdsi.cal <- data.frame(
 
 # plot empirical PDSI values over time
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
   {plot(pdsi.cal$year, pdsi.cal$pdsi, type='l', 
         main="empirical value in black, reconstruction in red", 
         ylab="PDSI", xlab="year")
@@ -358,9 +355,8 @@ if (!CRC){
 }
 ```
 
-## Set up two data frames with empirical values (df.cal) and ensemble data (df.ens) for both temperature and PDSI 
-
 ```{R, echo=FALSE}
+## Set up two data frames with empirical values (df.cal) and ensemble data (df.ens) for both temperature and PDSI 
 # adjust reconstruction data to only include adjusted values 
 temp.rec = data.frame(
   year = temp.rec$year,
@@ -378,7 +374,7 @@ df.ens <- data.frame(
 
 # Step 3: Filtering using T and PDSI 
 
-```{R, echo=FALSE}
+```{R, include=TRUE, echo=FALSE}
 # Use least squares with constraints inverse problem to determine ensemble 
 
 # save squared error values from prediction found earlier 
@@ -407,8 +403,9 @@ F <- 1
 G <- diag(1, n_models)
 H <- rep(0, n_models)
 
-if (file.exists(here::here("data/weight/PRISM",paste0("filtering-pdsi-",site,"-prism.RData")))) {
-  load(here::here("date/weight/PRISM",paste0("filtering-pdsi-",site,"-prism.RData")))
+if (file.exists(here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))) {
+  print('File already found!')
+  load(here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
 } else {
   for (k in 1:K) {
     
@@ -479,6 +476,8 @@ if (file.exists(here::here("data/weight/PRISM",paste0("filtering-pdsi-",site,"-p
   
   # save Rdata file of all weights for full distribution
   save(w, file=here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+  
+  
 }
 ```
 
@@ -486,7 +485,7 @@ if (file.exists(here::here("data/weight/PRISM",paste0("filtering-pdsi-",site,"-p
 
 # Graph 1: Ensembles vs. Empirical Values over time 
 
-```{R, echo = FALSE }
+```{R, include=TRUE,echo = FALSE,message=FALSE}
 # Weights and weighted ensemble data 
 
 # df_weights contains all weights for all k iterations for all ensembles for designated year (tt)
@@ -523,7 +522,7 @@ if (PLOT){
     ggtitle("Filtered pdsi 50% CI (dark) and 95%CI (light), empirical pdsi in blue") +
     xlab("time") + ylab("pdsi") + 
     theme(plot.title = element_text(size = 6, face = "bold"))
-  g3
+  
   
   # temp_filtered contains the weighted average temp across ensembles for each filter for each year 
   temp_filtered <- matrix(0, K, length(weight.yr1:weight.yr2))
@@ -556,18 +555,19 @@ if (PLOT){
     theme(plot.title = element_text(size = 6, face = "bold"))
   # g6
   
+  multiplot(g3,g6,cols=2)
     # save all figures to file 
-  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
-                      paste0("filtering-plot1-",site,".png")),width=8, height=6, 
-       units="in", res=400)
-    multiplot(g3, g6, cols=2)
-    dev.off()}
+  #{png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+  #                    paste0("filtering-plot1-",site,".png")),width=8, height=6, 
+  #     units="in", res=400)
+  #  multiplot(g3, g6, cols=2)
+  #  dev.off()}
 }
 ```
 
 # Graph 2: Heat Map of Ensemble Weights over Time 
 
-```{R, echo = FALSE, message = FALSE}
+```{R, include=TRUE, echo = FALSE, message = FALSE}
 
 if (plot){
 
@@ -577,7 +577,7 @@ if (plot){
     years  = c(weight.yr1:weight.yr2),
     models = models)
   dat <- as.data.frame.table(w_mean, responseName = "weights")
-  dat$years <- as.numeric(as.character(df$years)) 
+  dat$years <- as.numeric(as.character(weight.yr1:weight.yr2)) 
   
   # plot weights of each ensemble model over time
   plot2 <-  ggplot(data = dat, aes(years, models, fill = weights)) +
@@ -587,17 +587,17 @@ if (plot){
     ggtitle("Ensemble Weight 'Heat' Map")+ 
     theme(axis.text.y = element_text(size = 4))
   
-  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
-                      paste0("filtering-plot2-",site,".png")),width=8, height=6, 
-       units="in", res=400)
-    multiplot(plot2,cols=1)
-    dev.off()}
+  #{png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+  #                    paste0("filtering-plot2-",site,".png")),width=8, height=6, 
+  #     units="in", res=400)
+  multiplot(plot2,cols=1)
+  #dev.off()}
 }
 ```
 
 # Graph 3: Histogram showing proportion of ensembles that are greater than empirical value over time
 
-```{R, echo=FALSE, message = FALSE}
+```{R, include=TRUE, echo=FALSE, message = FALSE}
 if (plot){
   
   # PDSI 
@@ -652,11 +652,11 @@ if (plot){
     stat_smooth()
     
   
-  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
-                      paste0("filtering-plot3-",site,".png")),width=8, height=6, 
-       units="in", res=400)
-    multiplot(g1, g2, cols=2)
-    dev.off()}
+  #{png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+  #                    paste0("filtering-plot3-",site,".png")),width=8, height=6, 
+  #     units="in", res=400)
+  multiplot(g1, g2, cols=2)
+  #dev.off()}
 }
 
 ```

@@ -19,13 +19,13 @@
 # - ggplot2
 # - stringr
 # - lubridate
-# - here
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
 # Load site and directory details
+wd.base = '~/met'
 site.name = "HARVARD"
 site.lat  = 42.53
 site.lon  = -72.18
@@ -45,19 +45,17 @@ if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://
 if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(ncdf4,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
 require(mgcv,lib='~/Rlibs')
 require(stringr,lib='~/Rlibs')
 require(lubridate,lib='~/Rlibs')
-require(here,lib='~/Rlibs')
 
 # Setting some important file paths
-path.func <- here::here('functions')
-path.in <- here::here('data/paleon_sites')
-path.out <- here::here('ensembles')
+path.func <- file.path(wd.base,'functions')
+path.in <- file.path(wd.base,'data/paleon_sites')
+path.out <- file.path(wd.base,'ensembles')
 
 # Set seed variable for repoducibility
 sd = 1159
@@ -88,7 +86,7 @@ seed <- seed.vec[min(ens)]
 # This makes sure that if we add ensemble members, it gets a new, but reproducible seed
 
 # Setting up file structure
-out.base <- here::here("ensembles", paste0(site.name, vers), "day")
+out.base <- file.path(wd.base, "ensembles", paste0(site.name, vers), "day")
 raw.base <- file.path(path.in,site.name)
 
 # -----------------------------------
@@ -214,8 +212,8 @@ for(GCM in GCM.list){
 ####################
 
 # set up path to good and bad ensembles
-path.dat <- here::here("ensembles", paste0(site.name, vers), "day/ensembles/")
-path.bad <- here::here("ensembles", paste0(site.name, vers), "day/rejected/")
+path.dat <- file.path(wd.base, "ensembles", paste0(site.name, vers), "day/ensembles/")
+path.bad <- file.path(wd.base, "ensembles", paste0(site.name, vers), "day/rejected/")
 if(!dir.exists(path.bad)) dir.create(path.bad, recursive = T)
 
 # -----------------------------------
@@ -325,8 +323,8 @@ GCM.list <- c("bcc-csm1-1", "CCSM4", "MIROC-ESM", "MPI-ESM-P")
 #GCM.list <- c("MIROC-ESM")
 
 # Setting up some file paths, etc
-path.raw.base <- here::here("data/paleon_sites", site.name)
-path.day.base <- here::here("ensembles", paste0(site.name, vers), "day")
+path.raw.base <- file.path(wd.base, "data/paleon_sites", site.name)
+path.day.base <- file.path(wd.base, "ensembles", paste0(site.name, vers), "day")
 
 # defining some variable names
 vars.CF <- c("air_temperature_minimum", "air_temperature_maximum", "precipitation_flux", 

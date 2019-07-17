@@ -29,16 +29,14 @@
 # - parallel
 # - utils
 # - stats
+# - here
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-wd.base <- "~/met"
 site.name = "HARVARD"
 vers=".v1"
-site.lat  = 42.53
-site.lon  = -72.18
 
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
@@ -53,11 +51,15 @@ if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran
 if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(ncdf4, lib='~/Rlibs')
 require(lubridate,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
 require(stringr,lib='~/Rlibs')
+require(here,lib='~/Rlibs')
+
+wd.base = here::here()
 
 GCM.list = c("CCSM4", "MIROC-ESM", "MPI-ESM-P", "bcc-csm1-1")
 ens.hr  <- 2 # Number of hourly ensemble members to create

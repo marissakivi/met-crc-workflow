@@ -62,17 +62,12 @@ predict_subdaily_met <- function(outfolder, in.path, in.prefix, path.train, dire
   
   if(!tolower(direction.filter) %in% c("backward", "forward", "backwards", "forwards")) PEcAn.logger::logger.severe("Invalid direction.filter")
   
-  vars.hour <- c("air_temperature", "precipitation_flux", "surface_downwelling_shortwave_flux_in_air"#, 
-                 #"surface_downwelling_longwave_flux_in_air", "air_pressure", "specific_humidity", 
-                 #"wind_speed"
-                 )
-  # adjusted for linkages (MK)
-  
-  vars.lag <- c("lag.air_temperature", "lag.precipitation_flux", "lag.surface_downwelling_shortwave_flux_in_air"#, 
-                #"lag.surface_downwelling_longwave_flux_in_air", "lag.air_pressure", 
-                #"lag.specific_humidity", "lag.wind_speed"
-                )
-  # adjusted for linkage (MK)
+  vars.hour <- c("air_temperature", "precipitation_flux", "surface_downwelling_shortwave_flux_in_air", 
+                 "surface_downwelling_longwave_flux_in_air", "air_pressure", "specific_humidity", 
+                 "wind_speed")
+  vars.lag <- c("lag.air_temperature", "lag.precipitation_flux", "lag.surface_downwelling_shortwave_flux_in_air", 
+                "lag.surface_downwelling_longwave_flux_in_air", "lag.air_pressure", 
+                "lag.specific_humidity", "lag.wind_speed")
   
   n.ens <- length(ens.labs)
   
@@ -114,17 +109,14 @@ predict_subdaily_met <- function(outfolder, in.path, in.prefix, path.train, dire
 
   # Defining variable names, longname & units
   nc.info <- data.frame(CF.name = c("air_temperature", "precipitation_flux",
-      "surface_downwelling_shortwave_flux_in_air"#, 
-      #"surface_downwelling_longwave_flux_in_air","air_pressure", "specific_humidity", "wind_speed"
-      ), longname = c("2 meter mean air temperature",
-      "cumulative precipitation (water equivalent)", "incident (downwelling) showtwave radiation"#,
-      #"incident (downwelling) longwave radiation", "air_pressure at the surface",
-      #"Specific humidity measured at the lowest level of the atmosphere",
-      #"Wind speed"
-      ), units = c("K", "kg m-2 s-1", "W m-2"#, "W m-2", "Pa",
-      #"kg kg-1", "m s-1"
-      ))
-  # adjusted for linkages (MK)
+      "surface_downwelling_shortwave_flux_in_air", "surface_downwelling_longwave_flux_in_air",
+      "air_pressure", "specific_humidity", "wind_speed"), longname = c("2 meter mean air temperature",
+      "cumulative precipitation (water equivalent)", "incident (downwelling) showtwave radiation",
+      "incident (downwelling) longwave radiation", "air_pressureure at the surface",
+      "Specific humidity measured at the lowest level of the atmosphere",
+      "Wind speed"), units = c("K", "kg m-2 s-1", "W m-2", "W m-2", "Pa",
+      "kg kg-1", "m s-1"))
+  
   
   # ----------------------------------
   # Prep some info on precipitation distribution
@@ -205,20 +197,18 @@ predict_subdaily_met <- function(outfolder, in.path, in.prefix, path.train, dire
                           air_temperature_max.day = met.out$dat.source$air_temperature_maximum, 
                           air_temperature_min.day = met.out$dat.source$air_temperature_minimum,
                           precipitation_flux.day = met.out$dat.source$precipitation_flux, 
-                          surface_downwelling_shortwave_flux_in_air.day = met.out$dat.source$surface_downwelling_shortwave_flux_in_air#,
-                          #surface_downwelling_longwave_flux_in_air.day = met.out$dat.source$surface_downwelling_longwave_flux_in_air,
-                          #air_pressure.day = met.out$dat.source$air_pressure, 
-                          #specific_humidity.day = met.out$dat.source$specific_humidity,
-                          #wind_speed.day = met.out$dat.source$wind_speed
-                          )
-    # adjusted for linkages (MK)
+                          surface_downwelling_shortwave_flux_in_air.day = met.out$dat.source$surface_downwelling_shortwave_flux_in_air,
+                          surface_downwelling_longwave_flux_in_air.day = met.out$dat.source$surface_downwelling_longwave_flux_in_air,
+                          air_pressure.day = met.out$dat.source$air_pressure, 
+                          specific_humidity.day = met.out$dat.source$specific_humidity,
+                          wind_speed.day = met.out$dat.source$wind_speed)
     
     # Create wind speed variable if it doesn't exist
-    #if(!"wind_speed" %in% names(met.out$dat.source)){
-    #  dat.ens$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
-    #} else {
-    #  dat.ens$wind_speed <- met.out$dat.source$wind_speed
-    #}
+    if(!"wind_speed" %in% names(met.out$dat.source)){
+      dat.ens$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
+    } else {
+      dat.ens$wind_speed <- met.out$dat.source$wind_speed
+    }
     
     # Set up our simulation time variables; it *should* be okay that this resets each year since it's really only doy that matters
     dat.ens$sim.hr  <- trunc(as.numeric(difftime(dat.ens$date, min(dat.ens$date), tz = "GMT", units = "hour")))+1
@@ -264,13 +254,11 @@ predict_subdaily_met <- function(outfolder, in.path, in.prefix, path.train, dire
                           next.air_temperature_max = met.nxt$dat.train$air_temperature_maximum, 
                           next.air_temperature_min = met.nxt$dat.train$air_temperature_minimum,
                           next.precipitation_flux = met.nxt$dat.train$precipitation_flux, 
-                          next.surface_downwelling_shortwave_flux_in_air = met.nxt$dat.train$surface_downwelling_shortwave_flux_in_air#,
-                          #next.surface_downwelling_longwave_flux_in_air = met.nxt$dat.train$surface_downwelling_longwave_flux_in_air,
-                          #next.air_pressure = met.nxt$dat.train$air_pressure, 
-                          #next.specific_humidity = met.nxt$dat.train$specific_humidity,
-                          #next.wind_speed = met.nxt$dat.train$wind_speed
-                          )
-    # adjusted for linkages (MK)
+                          next.surface_downwelling_shortwave_flux_in_air = met.nxt$dat.train$surface_downwelling_shortwave_flux_in_air,
+                          next.surface_downwelling_longwave_flux_in_air = met.nxt$dat.train$surface_downwelling_longwave_flux_in_air,
+                          next.air_pressure = met.nxt$dat.train$air_pressure, 
+                          next.specific_humidity = met.nxt$dat.train$specific_humidity,
+                          next.wind_speed = met.nxt$dat.train$wind_speed)
     
     if(direction.filter=="backward"){
       # If we're filtering backward, and starting with Dec. 31 of yrs.tdm[1] the first "next" is Dec. 30 (doy - 1) 
@@ -281,13 +269,11 @@ predict_subdaily_met <- function(outfolder, in.path, in.prefix, path.train, dire
                              next.air_temperature_max = met.nxt$dat.source$air_temperature_maximum[row.last], 
                              next.air_temperature_min = met.nxt$dat.source$air_temperature_minimum[row.last],
                              next.precipitation_flux = met.nxt$dat.source$precipitation_flux[row.last], 
-                             next.surface_downwelling_shortwave_flux_in_air = met.nxt$dat.source$surface_downwelling_shortwave_flux_in_air[row.last]#,
-                             #next.surface_downwelling_longwave_flux_in_air = met.nxt$dat.source$surface_downwelling_longwave_flux_in_air[row.last],
-                             #next.air_pressure = met.nxt$dat.source$air_pressure[row.last], 
-                             #next.specific_humidity = met.nxt$dat.source$specific_humidity[row.last],
-                             #next.wind_speed = met.nxt$dat.source$wind_speed[row.last]
-                             )
-      # adjusted for linkages (MK)
+                             next.surface_downwelling_shortwave_flux_in_air = met.nxt$dat.source$surface_downwelling_shortwave_flux_in_air[row.last],
+                             next.surface_downwelling_longwave_flux_in_air = met.nxt$dat.source$surface_downwelling_longwave_flux_in_air[row.last],
+                             next.air_pressure = met.nxt$dat.source$air_pressure[row.last], 
+                             next.specific_humidity = met.nxt$dat.source$specific_humidity[row.last],
+                             next.wind_speed = met.nxt$dat.source$wind_speed[row.last])
       dat.nxt <- rbind(dat.nxt2, dat.nxt[1:(nrow(dat.nxt)-1),])
     } else {
       # If we're filtering FORWRDS, and starting with Jan 1 of yrs.tdm[1] the first "next" is Jan 2 (doy + 1) 
@@ -298,13 +284,11 @@ predict_subdaily_met <- function(outfolder, in.path, in.prefix, path.train, dire
                              next.air_temperature_max = met.nxt$dat.source$air_temperature_maximum[1], 
                              next.air_temperature_min = met.nxt$dat.source$air_temperature_minimum[1],
                              next.precipitation_flux = met.nxt$dat.source$precipitation_flux[1], 
-                             next.surface_downwelling_shortwave_flux_in_air = met.nxt$dat.source$surface_downwelling_shortwave_flux_in_air[1]#,
-                             #next.surface_downwelling_longwave_flux_in_air = met.nxt$dat.source$surface_downwelling_longwave_flux_in_air[1],
-                             #next.air_pressure = met.nxt$dat.source$air_pressure[1], 
-                             #next.specific_humidity = met.nxt$dat.source$specific_humidity[1],
-                             #next.wind_speed = met.nxt$dat.source$wind_speed[1]
-                             )
-      # adjusted for linkages (MK)
+                             next.surface_downwelling_shortwave_flux_in_air = met.nxt$dat.source$surface_downwelling_shortwave_flux_in_air[1],
+                             next.surface_downwelling_longwave_flux_in_air = met.nxt$dat.source$surface_downwelling_longwave_flux_in_air[1],
+                             next.air_pressure = met.nxt$dat.source$air_pressure[1], 
+                             next.specific_humidity = met.nxt$dat.source$specific_humidity[1],
+                             next.wind_speed = met.nxt$dat.source$wind_speed[1])
       dat.nxt <- rbind(dat.nxt[2:nrow(dat.nxt),], dat.nxt2)
     }
     
@@ -376,11 +360,9 @@ predict_subdaily_met <- function(outfolder, in.path, in.prefix, path.train, dire
             df[,j] <- ens.sims[[j]][[e]]
         }
 
-        df <- df[, c("air_temperature", "precipitation_flux", "surface_downwelling_shortwave_flux_in_air"#,
-            #"surface_downwelling_longwave_flux_in_air", "air_pressure",
-            #"specific_humidity", "wind_speed"
-            )]
-        # adjusted for linkages (MK)
+        df <- df[, c("air_temperature", "precipitation_flux", "surface_downwelling_shortwave_flux_in_air",
+            "surface_downwelling_longwave_flux_in_air", "air_pressure",
+            "specific_humidity", "wind_speed")]
         colnames(df) <- nc.info$CF.name
 
         # Set up the home folder

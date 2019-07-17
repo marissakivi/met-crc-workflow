@@ -21,9 +21,9 @@
 
 # Load site and directory details
 wd.base = '~/met'
-site.name = "NRP"
-site.lat  = 42.84514
-site.lon  = -72.4473
+site.name = "GILL"
+site.lat  = 44.123424
+site.lon  = -73.803628
 vers=".v1"
 
 ####################

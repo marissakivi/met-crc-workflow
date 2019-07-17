@@ -30,17 +30,17 @@
 # - latex2exp
 # - limSolve
 # - ggplot2
-# - here
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-# Load site details
-site = "HARVARD" # should be identical to paleon site name 
-site.name = 'Harvard Forest' # for graph titling purposes
-site.lat  = 42.53
-site.lon  = -72.18
+# Load site and directory details
+wd.base = '~/met'
+site = "NRP" # should be identical to paleon site name 
+site.name = 'North Round Pond' # for graph titling purposes
+site.lat  = 42.84514
+site.lon  = -72.447
 vers=".v1"
 
 # input years the met ensembles were generated for (long or short run?)

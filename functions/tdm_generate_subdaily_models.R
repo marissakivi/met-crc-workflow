@@ -56,12 +56,12 @@ gen.subdaily.models <- function(outfolder, path.train, yrs.train, direction.filt
     # ----- 1.0 Read data & Make time stamps ---------- Load the data
     
     vars.info <- data.frame(CF.name = c("air_temperature", "precipitation_flux", "air_temperature_max", 
-                                        "air_temperature_min", "surface_downwelling_shortwave_flux_in_air"#, 
-                                        #"surface_downwelling_longwave_flux_in_air", "air_pressure", "specific_humidity", 
-                                        #"eastward_wind", "northward_wind", "wind_speed"
-                                        ))
-    # adjusted to only include necessary variables for linkages (MK)
-
+                                        "air_temperature_min", "surface_downwelling_shortwave_flux_in_air", 
+                                        "surface_downwelling_longwave_flux_in_air", "air_pressure", "specific_humidity", 
+                                        "eastward_wind", "northward_wind", "wind_speed"))
+    
+    
+    
     # Getting a list of all the available files and then subsetting to just the ones we 
     # actually want to use
     files.train <- dir(path.train, ".nc")
@@ -84,18 +84,17 @@ gen.subdaily.models <- function(outfolder, path.train, yrs.train, direction.filt
                             hour = met.out$dat.train$time$Hour,
                             air_temperature = met.out$dat.train$air_temperature, 
                             precipitation_flux = met.out$dat.train$precipitation_flux, 
-                            surface_downwelling_shortwave_flux_in_air = met.out$dat.train$surface_downwelling_shortwave_flux_in_air#,
-                            #surface_downwelling_longwave_flux_in_air = met.out$dat.train$surface_downwelling_longwave_flux_in_air,
-                            #air_pressure = met.out$dat.train$air_pressure, 
-                            #specific_humidity = met.out$dat.train$specific_humidity
+                            surface_downwelling_shortwave_flux_in_air = met.out$dat.train$surface_downwelling_shortwave_flux_in_air,
+                            surface_downwelling_longwave_flux_in_air = met.out$dat.train$surface_downwelling_longwave_flux_in_air,
+                            air_pressure = met.out$dat.train$air_pressure, 
+                            specific_humidity = met.out$dat.train$specific_humidity
                             )
-    # adjusted to only include required for linkages (MK)
     
-    #if(!"wind_speed" %in% names(met.out$dat.train)){
-    #  dat.train$wind_speed <- sqrt(met.out$dat.train$eastward_wind^2 + met.out$dat.train$northward_wind^2)
-    #} else {
-    #  dat.train$wind_speed <- met.out$dat.train$wind_speed
-    #}
+    if(!"wind_speed" %in% names(met.out$dat.train)){
+      dat.train$wind_speed <- sqrt(met.out$dat.train$eastward_wind^2 + met.out$dat.train$northward_wind^2)
+    } else {
+      dat.train$wind_speed <- met.out$dat.train$wind_speed
+    }
     
     # these non-standard variables help us organize our modeling approach
     # Reference everything off of the earliest date; avoiding 0s because that makes life difficult
@@ -108,18 +107,12 @@ gen.subdaily.models <- function(outfolder, path.train, yrs.train, direction.filt
     vars.use <- vars.info$CF.name[vars.info$CF.name %in% names(dat.train)]
     
     train.day <- stats::aggregate(dat.train[, c("air_temperature", "precipitation_flux", 
-        "surface_downwelling_shortwave_flux_in_air"#, 
-        #"surface_downwelling_longwave_flux_in_air", 
-        #"air_pressure", "specific_humidity", "wind_speed" 
-        )], by = dat.train[, 
+        "surface_downwelling_shortwave_flux_in_air", "surface_downwelling_longwave_flux_in_air", 
+        "air_pressure", "specific_humidity", "wind_speed")], by = dat.train[, 
         c("year", "doy")], FUN = mean)
-    # adjusted for linkages (MK)
-    names(train.day)[3:5] <- c("air_temperature_mean.day", "precipitation_flux.day", 
-        "surface_downwelling_shortwave_flux_in_air.day"
-        #, "surface_downwelling_longwave_flux_in_air.day", 
-        #"air_pressure.day", "specific_humidity.day", "wind_speed.day"
-        )
-    # adjusted for linkages (MK)
+    names(train.day)[3:9] <- c("air_temperature_mean.day", "precipitation_flux.day", 
+        "surface_downwelling_shortwave_flux_in_air.day", "surface_downwelling_longwave_flux_in_air.day", 
+        "air_pressure.day", "specific_humidity.day", "wind_speed.day")
     train.day$air_temperature_max.day <- stats::aggregate(dat.train[, c("air_temperature")], 
         by = dat.train[, c("year", "doy")], FUN = max)$x
     train.day$air_temperature_min.day <- stats::aggregate(dat.train[, c("air_temperature")], 
@@ -131,17 +124,12 @@ gen.subdaily.models <- function(outfolder, path.train, yrs.train, direction.filt
     # midnight NOTE: because we're filtering from the present back through
     # the past, -1 will associate the closest hour that we've already done
     # (midnight) with the day we're currently working on ----------
-    vars.hour <- c("air_temperature", "precipitation_flux", "surface_downwelling_shortwave_flux_in_air"#, 
-        #"surface_downwelling_longwave_flux_in_air", "air_pressure", "specific_humidity", 
-        #"wind_speed"
-        )
-    # adjusted for linkages (MK)
-    
-    vars.lag <- c("lag.air_temperature", "lag.precipitation_flux", "lag.surface_downwelling_shortwave_flux_in_air"#, 
-        #"lag.surface_downwelling_longwave_flux_in_air", "lag.air_pressure", 
-        #"lag.specific_humidity", "lag.wind_speed"
-        )
-    # adjusted for linkages (MK)
+    vars.hour <- c("air_temperature", "precipitation_flux", "surface_downwelling_shortwave_flux_in_air", 
+        "surface_downwelling_longwave_flux_in_air", "air_pressure", "specific_humidity", 
+        "wind_speed")
+    vars.lag <- c("lag.air_temperature", "lag.precipitation_flux", "lag.surface_downwelling_shortwave_flux_in_air", 
+        "lag.surface_downwelling_longwave_flux_in_air", "lag.air_pressure", 
+        "lag.specific_humidity", "lag.wind_speed")
     
     # Specifying what hour we want to lag
     # Note: For forward filtering, we want to associate today with tomorrow (+1 day) using the last observation of today
@@ -168,17 +156,14 @@ gen.subdaily.models <- function(outfolder, path.train, yrs.train, direction.filt
     #       for today
     # ----------
     vars.day <- c("air_temperature_mean.day", "air_temperature_max.day", 
-        "air_temperature_mean.day", "precipitation_flux.day", "surface_downwelling_shortwave_flux_in_air.day"#, 
-        #"surface_downwelling_longwave_flux_in_air.day", "air_pressure.day", 
-        #"specific_humidity.day", "wind_speed.day"
-        )
-    # adjusted for linkages (MK)
+        "air_temperature_mean.day", "precipitation_flux.day", "surface_downwelling_shortwave_flux_in_air.day", 
+        "surface_downwelling_longwave_flux_in_air.day", "air_pressure.day", 
+        "specific_humidity.day", "wind_speed.day")
     vars.next <- c("next.air_temperature_mean", "next.air_temperature_max", 
-        "next.air_temperature_min", "next.precipitation_flux", "next.surface_downwelling_shortwave_flux_in_air"#, 
-        #"next.surface_downwelling_longwave_flux_in_air", "next.air_pressure", 
-        #"next.specific_humidity", "next.wind_speed"
-        )
-    # adjusted for linkages (MK)
+        "next.air_temperature_min", "next.precipitation_flux", "next.surface_downwelling_shortwave_flux_in_air", 
+        "next.surface_downwelling_longwave_flux_in_air", "next.air_pressure", 
+        "next.specific_humidity", "next.wind_speed")
+    
     next.day <- dat.train[c("year", "doy", "sim.day", vars.day)]
     names(next.day)[4:ncol(next.day)] <- vars.next
     next.day <- stats::aggregate(next.day[, vars.next], by = next.day[, c("year", "doy", "sim.day")], FUN = mean)
