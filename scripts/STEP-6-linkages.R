@@ -11,24 +11,38 @@
 ####################
 
 # Load site and directory details
+<<<<<<< HEAD
+site.name = "GILL"
+=======
 wd.base = '~/met'
 site.name = "NRP"
 site.lat  = 42.84514
 site.lon  = -72.4473
+>>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
-first.year=850
+first.year=1800
 last.year=2015
 
 ####################
 # Step 1: Set up working directory
 ####################
+<<<<<<< HEAD
+if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+require(here,lib='~/Rlibs')
+
+# set up important paths
+path.out = here::here('ensembles',paste0(site.name,vers),'linkages')
+if (!dir.exists(path.out)) dir.create(path.out,recursive=T)
+path.in = here::here('ensembles',paste0(site.name,vers),'aggregated/month')
+=======
 
 # set up important paths
 path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'linkages')
 if (!dir.exists(path.out)) dir.create(path.out)
 path.in = file.path(wd.base,'ensembles',paste0(site.name,vers),'aggregated/month')
+>>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
 
 ####################
 # Step 2: Load monthly data 
@@ -81,6 +95,22 @@ for (i in 1:n_models){
 
 
 
+<<<<<<< HEAD
+# next precipitation
+jpeg(file.path(path.out,'linkages-precip-check.jpg'))
+par(mfrow=c(2,2))
+for (i in years){
+  plot(NULL, xlim=c(0,13), ylim = c(0,20), 
+       xlab = 'Months', ylab = 'Precipitation (cm)', main = paste('Precipitation in',i))
+  id = i - first.year + 1
+  for (e in ens){
+    load(paste0(path.out,'/',e,'/climate.Rdata'))
+    points(c(1:12),precip.mat[id,])
+  }
+}
+dev.off()
+=======
 
 
 
+>>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
