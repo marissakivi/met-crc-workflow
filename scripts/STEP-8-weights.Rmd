@@ -42,10 +42,10 @@ Required libraries:
 
 ```{R, echo=TRUE}
 # Load site details
-site = "NRP" # should be identical to paleon site name 
-site.name = 'North Round Pond' # for graph titling purposes
-site.lat  = 42.84514
-site.lon  = -72.4473
+site = "GILL" # should be identical to paleon site name 
+site.name = 'Gill Brook' # for graph titling purposes
+site.lat  = 44.123424
+site.lon  = -73.803628
 vers=".v1"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
@@ -97,6 +97,7 @@ require(limSolve)#,lib='~/Rlibs')
 require(ggplot2)#,lib='~/Rlibs')
 require(colorspace)#,lib='~/Rlibs')
 require(here)
+require(dplyr)
 
 # set important paths
 path.func = here::here('functions')
@@ -313,17 +314,19 @@ lat_esrl <- which((e.lat - site.lat)^2 == min((e.lat - site.lat)^2))
 
 # convert hours to seconds to put into date format
 e.date <- as.POSIXct('1800-01-01 00:00') + as.difftime(ncdf4::ncvar_get(pdsi.cal,'time'), units="hours")
-e.year <- year(e.date)
+e.year <- lubridate::year(e.date)
+
+e.pdsi = data.frame(pdsi =e.pdsi[lon_esrl,lat_esrl,])
+e.pdsi$year = e.year
 
 # calculate annual average temperature, ignoring missing values
 # annual averages calculated by averaging pdsi values for all months
 pdsi.cal <- data.frame(
-  pdsi = c(by(e.pdsi[lon_esrl, lat_esrl, ], e.year, mean, na.rm=TRUE)),
-  year = unique(e.year))
+  pdsi = e.pdsi %>% group_by(year) %>% summarize(annual_mean = mean(pdsi[6:8])))
 
 # plot empirical PDSI values over time
 if (!CRC){
-  {plot(pdsi.cal$year, pdsi.cal$pdsi, type='l', 
+  {plot(pdsi.cal$pdsi.year, pdsi.cal$pdsi.annual_mean, type='l', 
         main="empirical value in black, reconstruction in red", 
         ylab="PDSI", xlab="year")
     lines(pdsi.rec$year, pdsi.rec$pdsi, 
@@ -331,9 +334,9 @@ if (!CRC){
 }
 
 # calculate squared prediction error in predicting PDSI
-pdsi.yr1 = max(min(pdsi.cal$year),min(pdsi.rec$year))-1
-pdsi.yr2 = min(max(pdsi.cal$year),max(pdsi.rec$year))+1
-sq_errors_pdsi <- (subset(pdsi.cal$pdsi, pdsi.cal$year < pdsi.yr2 & pdsi.cal$year > pdsi.yr1) - 
+pdsi.yr1 = max(min(pdsi.cal$pdsi.year),min(pdsi.rec$year))-1
+pdsi.yr2 = min(max(pdsi.cal$pdsi.year),max(pdsi.rec$year))+1
+sq_errors_pdsi <- (subset(pdsi.cal$pdsi.annual_mean, pdsi.cal$pdsi.year < pdsi.yr2 & pdsi.cal$pdsi.year > pdsi.yr1) - 
                      subset(pdsi.rec$pdsi, pdsi.rec$year < pdsi.yr2 & pdsi.rec$year > pdsi.yr1))^2
 
 if (!CRC){
@@ -528,7 +531,7 @@ if (PLOT){
   temp_filtered <- matrix(0, K, length(weight.yr1:weight.yr2))
   for (t in weight.yr1:weight.yr2) {
     cal_data <- subset(df.ens, year == t)$temp
-    temp_filtered[, (t-weight.yr1+1)] <- w[, (tt-weight.yr1+1), ] %*% cal_data
+    temp_filtered[, (t-weight.yr1+1)] <- w[, (t-weight.yr1+1), ] %*% cal_data
   }
   
   # df_filtered contains quantile data on the distribution of the weighted average temperatures across filters

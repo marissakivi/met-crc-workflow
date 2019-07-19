@@ -280,31 +280,32 @@ if (!CRC){
     lines(temp.rec$year, temp.rec$adj + 2*sqrt(mean(sq_errors_temp)), col="red", lty=2)}
 }
 
-## Load and prepare ESRL data
+## ESRL data 
 ## Final is stored in pdsi.cal data frame with year and value 
-pdsi.cal <- ncdf4::nc_open(file.path(wd.base,"data/weight","ESRL.data.nc"))
+pdsi.cal <- ncdf4::nc_open(here::here("data/weight","ESRL.data.nc"))
 e.lon = ncdf4::ncvar_get(pdsi.cal, 'lon')
 e.lat = ncdf4::ncvar_get(pdsi.cal, 'lat')
 e.pdsi = ncdf4::ncvar_get(pdsi.cal,'pdsi')
 
 # find closest ESRL grid cell to site coordinates
-lon_esrl <- which((e.lon - long_site)^2 == min((e.lon - long_site)^2))
-lat_esrl <- which((e.lat - lat_site)^2 == min((e.lat - lat_site)^2))
+lon_esrl <- which((e.lon - site.lon)^2 == min((e.lon - site.lon)^2))
+lat_esrl <- which((e.lat - site.lat)^2 == min((e.lat - site.lat)^2))
 
 # convert hours to seconds to put into date format
 e.date <- as.POSIXct('1800-01-01 00:00') + as.difftime(ncdf4::ncvar_get(pdsi.cal,'time'), units="hours")
-e.year <- year(e.date)
+e.year <- lubridate::year(e.date)
+
+e.pdsi = data.frame(pdsi =e.pdsi[lon_esrl,lat_esrl,])
+e.pdsi$year = e.year
 
 # calculate annual average temperature, ignoring missing values
 # annual averages calculated by averaging pdsi values for all months
 pdsi.cal <- data.frame(
-  pdsi = c(by(e.pdsi[lon_esrl, lat_esrl, ], e.year, mean, na.rm=TRUE)),
-  year = unique(e.year))
+  pdsi = e.pdsi %>% group_by(year) %>% summarize(annual_mean = mean(pdsi[6:8])))
 
 # plot empirical PDSI values over time
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
-  {plot(pdsi.cal$year, pdsi.cal$pdsi, type='l', 
+  {plot(pdsi.cal$pdsi.year, pdsi.cal$pdsi.annual_mean, type='l', 
         main="empirical value in black, reconstruction in red", 
         ylab="PDSI", xlab="year")
     lines(pdsi.rec$year, pdsi.rec$pdsi, 
@@ -312,9 +313,9 @@ if (!CRC){
 }
 
 # calculate squared prediction error in predicting PDSI
-pdsi.yr1 = max(min(pdsi.cal$year),min(pdsi.rec$year))-1
-pdsi.yr2 = min(max(pdsi.cal$year),max(pdsi.rec$year))+1
-sq_errors_pdsi <- (subset(pdsi.cal$pdsi, pdsi.cal$year < pdsi.yr2 & pdsi.cal$year > pdsi.yr1) - 
+pdsi.yr1 = max(min(pdsi.cal$pdsi.year),min(pdsi.rec$year))-1
+pdsi.yr2 = min(max(pdsi.cal$pdsi.year),max(pdsi.rec$year))+1
+sq_errors_pdsi <- (subset(pdsi.cal$pdsi.annual_mean, pdsi.cal$pdsi.year < pdsi.yr2 & pdsi.cal$pdsi.year > pdsi.yr1) - 
                      subset(pdsi.rec$pdsi, pdsi.rec$year < pdsi.yr2 & pdsi.rec$year > pdsi.yr1))^2
 
 if (!CRC){
