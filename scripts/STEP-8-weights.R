@@ -36,7 +36,7 @@
 ####################
 
 # Load site and directory details
-wd.base = '~/met'
+wd.base = '~/met-crc-workflow'
 site = "NRP" # should be identical to paleon site name 
 site.name = 'North Round Pond' # for graph titling purposes
 site.lat  = 42.84514
@@ -46,6 +46,9 @@ vers=".v1"
 # input years the met ensembles were generated for (long or short run?)
 ens.yr1 = 850
 ens.yr2 = 2015
+
+# this should be true if you want to save the figures used for diagnosing the resulting weights for a site
+PLOT = TRUE
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
 CRC = TRUE
