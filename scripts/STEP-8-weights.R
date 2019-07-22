@@ -31,31 +31,28 @@
 # - limSolve
 # - ggplot2
 
-####################
-# ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
-####################
+# Questions on script: 
+#  1. If we are only using PDSI values for June, July, and August for the annual value for the ensemble data, should we also be using those values for the average temperature filtering? 
+#  2. Additionally, should we be averaging over only those three months when finding the mean of the calibration PDSI annual values?
 
-# Load site and directory details
-wd.base = '~/met-crc-workflow'
-site = "NRP" # should be identical to paleon site name 
-site.name = 'North Round Pond' # for graph titling purposes
-site.lat  = 42.84514
-site.lon  = -72.447
+###########################################################   
+# ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
+########################################################### 
+
+# Load site details
+site = "GILL" # should be identical to paleon site name 
+site.name = 'Gill Brook' # for graph titling purposes
+site.lat  = 44.123424
+site.lon  = -73.803628
 vers=".v1"
 
-# input years the met ensembles were generated for (long or short run?)
-ens.yr1 = 850
-ens.yr2 = 2015
-
-# this should be true if you want to save the figures used for diagnosing the resulting weights for a site
+# this should be true if submitting through the CRC so the program is not making unnecessary plots
+CRC = FALSE
 PLOT = TRUE
 
-# this should be true if submitting through the CRC so the program is not making unnecessary plots
-CRC = TRUE
-
-####################
+########################################################### 
 # Step 1: Set up working directory
-####################
+########################################################### 
 
 # PRISM dates for anomaly adjustment (based on Mann paper?)
 prism.yr1 = 1960
@@ -77,11 +74,14 @@ if (!require('sp',lib='~/Rlibs')) install.packages('sp',lib='~/Rlibs',repos='htt
 if (!require('raster',lib='~/Rlibs')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('ncdf4',lib='~/Rlibs')) install.packages('RNetCDF',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('maps',lib='~/Rlibs')) install.packages('maps',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr',lib='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate',lib='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('stringr',lib='~/Rlibs')) #install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+  if (!require('lubridate',lib='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('latex2exp',lib='~/Rlibs')) install.packages('latex2exp',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('limSolve',lib='~/Rlibs')) install.packages('limSolve',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('ggplot2',lib='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('colorspace',lib='~/Rlibs')) install.packages('colorspace',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('here',lib='~/Rlibs')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('dplyr',lib='~/Rlibs')) install.packages('dplyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(sp,lib='~/Rlibs')
 require(raster,lib='~/Rlibs')
@@ -92,36 +92,39 @@ require(lubridate,lib='~/Rlibs')
 require(latex2exp,lib='~/Rlibs')
 require(limSolve,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
+require(colorspace,lib='~/Rlibs')
+require(here, lib='~/Rlibs')
+require(dplyr, lib='~/Rlibs')
 
-sites <- c('HARVARD', 'TENSIONZONE', 'HEMLOCK', 'BIGWOODS', 'SYLVANIA', 
-           'HURON', 'MORGAN', 'GOOSE', 'ROOSTER', 'GLSP', 'GILL', 'PALMGHATT',
-           'CORAL', 'BONANZA', 'GLACIAL', 'PVC', 'NRP')
-latlon  <- readLines(file.path(wd.base,"data/weight/PRISM","PRISM_ppt_temp_README.txt"))[50:66]
-latlon = latlon[which(latlon == grep(site,latlon,value=TRUE))]
-pl = str_locate(latlon[1],pattern=fixed("("))[1,1][[1]] + 1
-long_site <- as.numeric(substr(latlon, pl, (pl+11)))
-lat_site <- as.numeric(substr(latlon, (pl+13), (pl+24)))
+# set important paths
+path.func = here::here('functions')
 
-path.func = file.path(wd.base,'functions')
 # source required functions
 source(file.path(path.func,"multiplot.R"))
 
 # create save directory 
-if (!dir.exists(file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights"))) {
-  dir.create(file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights"),recursive=T)
+if (!dir.exists(here::here("ensembles",paste0(site,vers),"linkages","weights"))) {
+  dir.create(here::here("ensembles",paste0(site,vers),"linkages","weights"),recursive=T)
 }
 
-####################
+########################################################### 
 # Step 2: Load and prepare data for filtering
-####################
+########################################################### 
 
 ## Load air temperature ensemble data
 ## final is temp.ens matrix with rows as years and columns as ensemble members
-tair <- read.csv(file.path(wd.base,"ensembles",paste0(site,vers),'aggregated/month',"Temperature_AllMembers.csv"), 
+tair <- read.csv(here::here("ensembles",paste0(site,vers),'aggregated/month',"Temperature_AllMembers.csv"), 
                  stringsAsFactors=FALSE, header=TRUE)
 
 # find the number of ensembles and remove the dates 
+years = rep(0,length(tair$X))
+for (i in 1:length(tair$X)){
+  years[i] = as.integer(strsplit(tair$X[i],'-')[[1]][1])
+}
+
 n_models <- ncol(tair) - 1
+ens.yr1 = min(years)
+ens.yr2 = max(years)
 years <- ens.yr1:ens.yr2
 models <- colnames(tair)[-1]
 
@@ -133,17 +136,16 @@ for (i in 1:n_models) {
 
 # name columns and rows with ensemble name and year 
 rownames(temp.ens) <- years
-colnames(temp.ens) <- colnames(tair)[-1]
+colnames(temp.ens) <- models
 
-## Load PDSI ensemble data 
+## Ensemble data
 ## final is in pdsi.ens matrix with rows as years and columns as ensemble members
-pdsi <- read.csv(file.path(wd.base,"ensembles",paste0(site,vers),'aggregated/month',"PDSI_AllMembers.csv"), 
+pdsi <- read.csv(here::here("ensembles",paste0(site,vers),'aggregated/month',"PDSI_AllMembers.csv"), 
                  stringsAsFactors=FALSE, header=TRUE)
 
 # convert from monthly means to annual means
 pdsi.ens <- matrix(0, length(years), n_models)
 for (i in 1:n_models) {
-  
   # use June, July, and August pdsi for annual summary
   pdsi.ens[, i] <- colMeans(matrix(pdsi[, i+1], nrow=12)[6:8, ])
   # pdsi.ens[, i] <- colMeans(matrix(pdsi[, i+1], nrow=12))
@@ -160,25 +162,28 @@ if (!CRC){
   matplot(years,pdsi.ens, type='l', col=adjustcolor(1:n_models, alpha.f=0.5),xlab='year',ylab='pdsi')
 }
 
-## Prepare MANN data 
+## MANN data 
+
 ## Final is stored in temp.rec data frame with year, anomaly, and adjusted values 
-mann.dat <- ncdf4::nc_open(file.path(wd.base,"data/weight","MANN.data.nc"))
+mann.dat <- ncdf4::nc_open(here::here("data/weight","MANN.data.nc"))
 m.lon = ncdf4::ncvar_get(mann.dat,'lon')
 m.lat = ncdf4::ncvar_get(mann.dat,'lat')
 m.tmpanm = ncdf4::ncvar_get(mann.dat,'tmp_anm')
 m.tmp = ncdf4::ncvar_get(mann.dat,'tmp')
 m.time = ncdf4::ncvar_get(mann.dat,'time')
 
-# try
-#mann.dat <- read.nc(mann)
-
 # find closest point in MANN data to site coordinates
-lon_mann <- which((m.lon - long_site)^2 == min((m.lon - long_site)^2))
-lat_mann <- which((m.lat - lat_site)^2 == min((m.lat - lat_site)^2))
+lon_mann <- which((m.lon - site.lon)^2 == min((m.lon - site.lon)^2))
+lat_mann <- which((m.lat - site.lat)^2 == min((m.lat - site.lat)^2))
+
+# save site temperature values
+temp.rec = data.frame(
+  temp = m.tmp[lon_mann, lat_mann, ],
+  year = m.time+1901
+)
 
 # plot site location on map
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
   {image(m.lon, m.lat, m.tmp[, , 1300], 
          main=paste("spatial reconstruction -", site.name, "given as the green dot"))
     map(add=TRUE)
@@ -192,27 +197,21 @@ if (!CRC){
           type='l')}
 }
 
-# save site temperature values
-temp.rec = data.frame(
-  temp = m.tmp[lon_mann, lat_mann, ],
-  year = m.time+1901
-)
+## LBDA data
 
-## Prepare LBDA data
 ## Final is stored in pdsi.rec data frame with year and value
-lbda.dat <- ncdf4::nc_open(file.path(wd.base,"data/weight","LBDA.data.nc")) ## try
+lbda.dat <- ncdf4::nc_open(here::here("data/weight","LBDA.data.nc")) ## try
 l.lon = ncdf4::ncvar_get(lbda.dat,'lon')
 l.lat = ncdf4::ncvar_get(lbda.dat,'lat')
 l.time = ncdf4::ncvar_get(lbda.dat,'time')
 l.pdsi = ncdf4::ncvar_get(lbda.dat,'pdsi')
 
 # find LBDA data closest to site coordinates
-lon_lbda <- which((l.lon - long_site)^2 == min((l.lon - long_site)^2))
-lat_lbda <- which((l.lat - lat_site)^2 == min((l.lat - lat_site)^2))
+lon_lbda <- which((l.lon - site.lon)^2 == min((l.lon - site.lon)^2))
+lat_lbda <- which((l.lat - site.lat)^2 == min((l.lat - site.lat)^2))
 
 # plot location on map
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
   {image(l.lon, l.lat, t(l.pdsi[900, , ]), main=paste("PDSI data -",site.name,'given as green dot'),xlab='longitude',ylab='latitude')
     map(add=TRUE)
     points(l.lon[lon_lbda], l.lat[lat_lbda], pch=16, col="green")
@@ -233,9 +232,10 @@ pdsi.rec = data.frame(
   year = l.time[pdsi.yrs]
 )
 
-## Load and prepare PRISM data 
+## PRISM data 
+
 ## Final is stored in temp.cal data frame with year and value 
-load(file.path(wd.base,'data/weight/PRISM/paleon_sites',paste0(site,'.meanTemp.Rdata')))
+load(here::here('data/weight/PRISM/paleon_sites',paste0(site,'.meanTemp.Rdata')))
 temp.cal = meanTemp
 year <- substr(rownames(temp.cal), 1, 4)
 
@@ -254,7 +254,6 @@ temp.rec$adj = temp.rec$temp*sd.prism + mean.prism
 
 # plot calibration temperature dataset 
 if (!CRC){
-  layout(matrix(1:2, 2, 1))
   {plot(temp.cal$year, temp.cal$temp, type='l', ylab="temp", xlab="year", 
         main="calibration temperature dataset")
     lines(temp.rec$year, temp.rec$adj, col='red',type='l')
@@ -283,7 +282,8 @@ if (!CRC){
     lines(temp.rec$year, temp.rec$adj + 2*sqrt(mean(sq_errors_temp)), col="red", lty=2)}
 }
 
-## ESRL data 
+## ESRL data
+
 ## Final is stored in pdsi.cal data frame with year and value 
 pdsi.cal <- ncdf4::nc_open(here::here("data/weight","ESRL.data.nc"))
 e.lon = ncdf4::ncvar_get(pdsi.cal, 'lon')
@@ -340,7 +340,6 @@ if (!CRC){
 }
 
 ## Set up two data frames with empirical values (df.cal) and ensemble data (df.ens) for both temperature and PDSI 
-
 # adjust reconstruction data to only include adjusted values 
 temp.rec = data.frame(
   year = temp.rec$year,
@@ -355,9 +354,9 @@ df.ens <- data.frame(
   model = rep(models, each=length(years))
 )
 
-####################
+########################################################### 
 # Step 3: Filtering using T and PDSI 
-####################
+########################################################### 
 
 # Use least squares with constraints inverse problem to determine ensemble 
 
@@ -387,8 +386,9 @@ F <- 1
 G <- diag(1, n_models)
 H <- rep(0, n_models)
 
-if (file.exists(file.path(wd.base,"data/weight/PRISM",paste0("filtering-pdsi-",site,"-prism.RData")))) {
-  load(file.path(wd.base,"date/weight/PRISM",paste0("filtering-pdsi-",site,"-prism.RData")))
+if (file.exists(here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))) {
+  print('File already found!')
+  load(here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
 } else {
   for (k in 1:K) {
     
@@ -458,37 +458,23 @@ if (file.exists(file.path(wd.base,"data/weight/PRISM",paste0("filtering-pdsi-",s
   }
   
   # save Rdata file of all weights for full distribution
-  save(w, file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+  save(w, file=here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+  
+  
 }
 
-####################
+########################################################### 
 # Step 4: Graphing
-####################
+########################################################### 
+
+### Graph 1: Ensembles vs. Empirical Values over time ###
 
 # Weights and weighted ensemble data 
 
 # df_weights contains all weights for all k iterations for all ensembles for designated year (tt)
 df_weights <- data.frame(w=c(w[, (tt-weight.yr1+1), ]), x=1:K, model=factor(rep(1:n_models, each=K)))
 
-
-if (plot){
-  # g1-g3 plots deal with PDSI values and g4-g6 deal with temperature values 
- 
-  # g1 shows distribution of ensemble pdsi values and the empirical value as a red line in designated year 
-  g1 <- ggplot(data=subset(df.ens, year == tt), aes(x=pdsi)) + 
-    geom_histogram(bins=100) + 
-    geom_vline(xintercept = subset(df.cal, year == tt)$pdsi, col="red") +
-    ggtitle(paste0("ensemble vs. empirical pdsi for year ", tt)) + xlab("pdsi") + 
-    theme(plot.title = element_text(size = 6, face = "bold"))
-  # g1
-  
-  # g2 demonstrates the variability in weight values for each ensemble 
-  # spikes in this figure indicate large variabiliy in an ensemble's weights
-  g2 <- ggplot(data=df_weights, aes(y=w, x=model)) +
-    geom_point(aes(color=model)) + theme(legend.position = "none") + 
-    ggtitle(paste0("Variability in model weights for year ", tt)) + 
-    theme(plot.title = element_text(size = 6, face = "bold"))
-  g2
+if (PLOT){
   
   # pdsi_filtered contains the weighted average pdsi across ensembles for each filter for each year 
   pdsi_filtered <- matrix(0, K, length(weight.yr1:weight.yr2))
@@ -507,9 +493,10 @@ if (plot){
     x          = weight.yr1:weight.yr2,
     truth      = subset(df.cal, year >= weight.yr1 & year <= weight.yr2)$pdsi
   )
-  
+
   # g3 plots time series of weighted average pdsi values with quantile information 
   g3 <- ggplot(data=df_filtered, aes(x=x, y=y)) +
+  #g3 <- ggplot(data=subset(df_filtered, (x >= 1250 & x <= 1350)), aes(x=x,y=y)) + 
     # geom_line(color="red") + 
     geom_line(aes(x=x, y=truth), color="blue") + 
     # geom_line(aes(x=x, y=lbda), color="orange") + 
@@ -518,28 +505,13 @@ if (plot){
     ggtitle("Filtered pdsi 50% CI (dark) and 95%CI (light), empirical pdsi in blue") +
     xlab("time") + ylab("pdsi") + 
     theme(plot.title = element_text(size = 6, face = "bold"))
-  g3
   
-  # g4 shows distribution of ensemble temperature values and the empirical value as a red line in designated year  
-  g4 <- ggplot(data=subset(df.ens, year == tt), aes(x=temp)) + 
-    geom_histogram(bins=100) + 
-    geom_vline(xintercept = subset(df.cal, year == tt)$temp, col="red") +
-    ggtitle(paste0("ensemble vs. empirical temp for year ", tt)) +
-    xlab("temp") + 
-    theme(plot.title = element_text(size = 6, face = "bold"))
-  # g4
-  
-  # g5 is the same as g2 
-  g5 <- ggplot(data=df_weights, aes(y=w, x=model)) +
-    geom_point(aes(color=model)) + theme(legend.position = "none") + 
-    ggtitle(paste0("Variability in model weights for year ", tt+100)) + 
-    theme(plot.title = element_text(size = 6, face = "bold"))
   
   # temp_filtered contains the weighted average temp across ensembles for each filter for each year 
   temp_filtered <- matrix(0, K, length(weight.yr1:weight.yr2))
   for (t in weight.yr1:weight.yr2) {
     cal_data <- subset(df.ens, year == t)$temp
-    temp_filtered[, (t-weight.yr1+1)] <- w[, (tt-weight.yr1+1), ] %*% cal_data
+    temp_filtered[, (t-weight.yr1+1)] <- w[, (t-weight.yr1+1), ] %*% cal_data
   }
   
   # df_filtered contains quantile data on the distribution of the weighted average temperatures across filters
@@ -555,6 +527,7 @@ if (plot){
   
   # g6 plots time series of weighted average temperature values with quantile information 
   g6 <- ggplot(data=df_filtered, aes(x=x, y=y)) +
+  #g6 <- ggplot(data=subset(df_filtered, (x >= 1250 & x <= 1350)), aes(x=x,y=y)) + 
     # geom_line(color="red") + 
     geom_line(aes(x=x, y=truth), color="blue") + 
     # geom_line(aes(x=x, y=lbda), color="orange") + 
@@ -566,65 +539,100 @@ if (plot){
   # g6
   
   # save all figures to file 
-  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",
-                      paste0("filtering-joint-",site,"-prism.png")),width=8, height=6, 
+  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+                      paste0("filtering-plot1-",site,".png")),width=8, height=6, 
        units="in", res=400)
-    multiplot(g3, g6, g1, g4, g2, g5, cols=2)
+    multiplot(g3, g6, cols=2)
     dev.off()}
 }
 
+### Graph 2: Heat Map of Ensemble Weights over Time ###
 
-# Visualize weights for 16 random sample years  
-# sample from weighting years 
 if (plot){
-  n = 16 
-  if (weight.yr2-weight.yr1+1 < 36 ) n = weight.yr1 - weight.yr2 + 1
-  idx <- sample(c(weight.yr1:weight.yr2), n, replace = FALSE)
+
+  # calculate mean weights 
+  w_mean <- apply(w, c(2, 3), mean)
+  dimnames(w_mean) <- list(
+    years  = c(weight.yr1:weight.yr2),
+    models = models)
+  dat <- as.data.frame.table(w_mean, responseName = "weights")
+  dat$years <- as.numeric(as.character(weight.yr1:weight.yr2)) 
   
-  # graph weights for each of the models for the randomly selected years 
-  for (i in 1:n) {
-    # find weights for each model 
-    df_weights <- data.frame(w=c(w[,(idx[i] - weight.yr1 + 1), ]),
-                             x=1:K, 
-                             model=factor(rep(1:n_models, each=K)))
-    
-    assign(paste0("g", i),  ggplot(data=df_weights, aes(y=w, x=model)) +
-             geom_point(aes(color=model)) + theme(legend.position = "none") + 
-             ggtitle(paste0("Weights for year ", idx[i] )) +
-             theme(plot.title = element_text(size = 6, face = "bold")))
+  # plot weights of each ensemble model over time
+  plot2 <-  ggplot(data = dat, aes(years, models, fill = weights)) +
+    geom_tile() +
+    theme_bw() +
+      scale_fill_continuous_sequential(palette = "Heat 2") + 
+    ggtitle("Ensemble Weight 'Heat' Map")+ 
+    theme(axis.text.y = element_text(size = 4))
+  
+  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+                      paste0("filtering-plot2-",site,".png")),width=8, height=6, 
+       units="in", res=400)
+  multiplot(plot2,cols=1)
+  dev.off()}
+}
+
+### Graph 3: Histogram showing proportion of ensembles that are greater than empirical value over time ###
+
+if (plot){
+  
+  # PDSI 
+  first.pdsi.yr = min(subset(df.cal, !is.na(pdsi))$year)
+  last.pdsi.yr = max(subset(df.cal, !is.na(pdsi))$year)
+  if (first.pdsi.yr > weight.yr1){first = first.pdsi.yr} else{first=weight.yr1}
+  if (last.pdsi.yr < weight.yr2){last = last.pdsi.yr} else{last=weight.yr2}
+  
+  prop = rep(0,length(first:last))
+  ind = 1
+  for (i in first:last){
+    emp = subset(df.cal, year == i)$pdsi
+    vals = df.ens$pdsi[df.ens$year==i]
+    prop[ind] = length(vals[vals >= emp]) / n_models
+    ind = ind + 1
+  }
+  df.plot = data.frame(year = c(first:last), prop = prop)
+  
+  g1 <- ggplot(data = df.plot, aes(x=year, y=prop))+
+    geom_point(aes(x=year, y=prop), color="black") + 
+    ggtitle(paste0("Proportion of over-predicting ensembles for PDSI over time"))+
+    ylim(-.2,1.2) + 
+    theme(plot.title = element_text(size = 10, face = "bold"))+ 
+    geom_hline(yintercept=0.1, col='red')+
+    geom_hline(yintercept=0.9, col='red')+ 
+    stat_smooth(formula=y~x,method='gam')
+  
+  # TEMP 
+  first.temp.yr = min(subset(df.cal, !is.na(temp))$year)
+  last.temp.yr = max(subset(df.cal, !is.na(temp))$year)
+  if (first.temp.yr > weight.yr1){first = first.temp.yr} else{first=weight.yr1}
+  if (last.temp.yr < weight.yr2){last = last.temp.yr} else{last=weight.yr2}
+  
+  prop = rep(0,length(first:last))
+  ind = 1
+  for (i in first:last){
+    emp = subset(df.cal, year == i)$temp
+    vals = df.ens$temp[df.ens$year==i]
+    prop[ind] = length(vals[vals >= emp]) / n_models
+    ind = ind + 1
   }
   
-  # would have to do redo if not 36 possible years to sample, but... 
-  # save plots 
-  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("model-weights-",site,"-prism.png")))
-    multiplot(g1, g2, g3, g4, g5, g6, 
-              g7, g8, g9, g10, g11, g12,
-              g13, g14, g15, g16, cols=4)
-    dev.off()}
+  df.plot = data.frame(year = c(first:last), prop = prop)
   
+  g2 <- ggplot(data = df.plot, aes(x=year, y=prop))+
+    geom_point(aes(x=year, y=prop),color='black') + 
+    ggtitle(paste0("Proportion of over-predicting ensembles for temperature over time"))+
+    ylim(-.2,1.2) +
+    theme(plot.title = element_text(size = 10, face = "bold"))+ 
+    geom_hline(yintercept=0.1, col='red')+
+    geom_hline(yintercept=0.9, col='red')+ 
+    stat_smooth()
+    
+  
+  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+                      paste0("filtering-plot3-",site,".png")),width=8, height=6, 
+       units="in", res=400)
+  multiplot(g1, g2, cols=2)
+  dev.off()}
 }
-# More figures with weights 
 
-if (!CRC){
-  layout(matrix(1:2, 2, 1))
-  
-  # weighted average pdsi across ensembles for each filter for each year (black)
-  # average weighted average pdsi for each year across filters and ensembles (red)
-  {{matplot(weight.yr1:weight.yr2, t(pdsi_filtered), type='l', 
-            col=adjustcolor("black", alpha.f=0.5), 
-            xlab='Year',ylab='PDSI', main='Weighted average PDSI values over time')
-    matplot(weight.yr1:weight.yr2,apply(pdsi_filtered, 2, mean), 
-            col="red", type='l', add=TRUE)}
-    
-    # weighted average temp across ensembles for each filter for each year (black)
-    # average weighted average temp for each year across filters and ensembles (red)
-    {matplot(weight.yr1:weight.yr2, t(temp_filtered), type='l', 
-             col=adjustcolor("black", alpha.f=0.5), 
-             xlab='Year',ylab='temp', main='Weighted average temp values over time')
-      matplot(weight.yr1:weight.yr2,apply(temp_filtered, 2, mean), 
-              col="red", type='l', add=TRUE)}
-    
-    # weights across all models for each filter for given year (tt) 
-    matplot(t(w[, (tt-weight.yr1+1), ]), type='l', main="Variability in the weights", 
-            xlab="Model ID",ylab='Weight')}
-}
