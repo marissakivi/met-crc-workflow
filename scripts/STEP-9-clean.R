@@ -23,14 +23,12 @@ vers=".v1"
 ens.yr1 = 850
 ens.yr2 = 2015
 
+# working directory
+wd.base = '~/met-crc-workflow'
+
 ####################
 # Step 1: Compress folder
 ####################
-
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-require(here,lib='~/Rlibs')
-
-wd.base = here::here()
 
 # set up important file paths
 in.base = file.path(wd.base, "ensembles", paste0(site, vers), "linkages")
@@ -40,5 +38,4 @@ if(!dir.exists(out.base)) dir.create(out.base,recursive=T)
 
 # compress met file and place in completed folder
 system(paste0("tar -jcvf ", file.path(out.base, paste0(site,vers,".tar.bz2 ")), in.base), show.output.on.console = F)
-
 

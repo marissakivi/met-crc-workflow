@@ -31,10 +31,6 @@
 # - limSolve
 # - ggplot2
 
-# Questions on script: 
-#  1. If we are only using PDSI values for June, July, and August for the annual value for the ensemble data, should we also be using those values for the average temperature filtering? 
-#  2. Additionally, should we be averaging over only those three months when finding the mean of the calibration PDSI annual values?
-
 ###########################################################   
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ########################################################### 
@@ -49,6 +45,9 @@ vers=".v1"
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
 CRC = FALSE
 PLOT = TRUE
+
+# working directory 
+wd.base = '~/met-crc-workflow'
 
 ########################################################### 
 # Step 1: Set up working directory
@@ -74,13 +73,12 @@ if (!require('sp',lib='~/Rlibs')) install.packages('sp',lib='~/Rlibs',repos='htt
 if (!require('raster',lib='~/Rlibs')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('ncdf4',lib='~/Rlibs')) install.packages('RNetCDF',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('maps',lib='~/Rlibs')) install.packages('maps',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr',lib='~/Rlibs')) #install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-  if (!require('lubridate',lib='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('stringr',lib='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('lubridate',lib='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('latex2exp',lib='~/Rlibs')) install.packages('latex2exp',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('limSolve',lib='~/Rlibs')) install.packages('limSolve',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('ggplot2',lib='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('colorspace',lib='~/Rlibs')) install.packages('colorspace',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('here',lib='~/Rlibs')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('dplyr',lib='~/Rlibs')) install.packages('dplyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(sp,lib='~/Rlibs')
@@ -93,18 +91,17 @@ require(latex2exp,lib='~/Rlibs')
 require(limSolve,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
 require(colorspace,lib='~/Rlibs')
-require(here, lib='~/Rlibs')
 require(dplyr, lib='~/Rlibs')
 
 # set important paths
-path.func = here::here('functions')
+path.func = file.path(wd.base,'functions')
 
 # source required functions
 source(file.path(path.func,"multiplot.R"))
 
 # create save directory 
-if (!dir.exists(here::here("ensembles",paste0(site,vers),"linkages","weights"))) {
-  dir.create(here::here("ensembles",paste0(site,vers),"linkages","weights"),recursive=T)
+if (!dir.exists(file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights"))) {
+  dir.create(file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights"),recursive=T)
 }
 
 ########################################################### 
@@ -113,7 +110,7 @@ if (!dir.exists(here::here("ensembles",paste0(site,vers),"linkages","weights")))
 
 ## Load air temperature ensemble data
 ## final is temp.ens matrix with rows as years and columns as ensemble members
-tair <- read.csv(here::here("ensembles",paste0(site,vers),'aggregated/month',"Temperature_AllMembers.csv"), 
+tair <- read.csv(file.path(wd.base,"ensembles",paste0(site,vers),'aggregated/month',"Temperature_AllMembers.csv"), 
                  stringsAsFactors=FALSE, header=TRUE)
 
 # find the number of ensembles and remove the dates 
@@ -140,7 +137,7 @@ colnames(temp.ens) <- models
 
 ## Ensemble data
 ## final is in pdsi.ens matrix with rows as years and columns as ensemble members
-pdsi <- read.csv(here::here("ensembles",paste0(site,vers),'aggregated/month',"PDSI_AllMembers.csv"), 
+pdsi <- read.csv(file.path(wd.base,"ensembles",paste0(site,vers),'aggregated/month',"PDSI_AllMembers.csv"), 
                  stringsAsFactors=FALSE, header=TRUE)
 
 # convert from monthly means to annual means
@@ -165,7 +162,7 @@ if (!CRC){
 ## MANN data 
 
 ## Final is stored in temp.rec data frame with year, anomaly, and adjusted values 
-mann.dat <- ncdf4::nc_open(here::here("data/weight","MANN.data.nc"))
+mann.dat <- ncdf4::nc_open(file.path(wd.base,"data/weight","MANN.data.nc"))
 m.lon = ncdf4::ncvar_get(mann.dat,'lon')
 m.lat = ncdf4::ncvar_get(mann.dat,'lat')
 m.tmpanm = ncdf4::ncvar_get(mann.dat,'tmp_anm')
@@ -200,7 +197,7 @@ if (!CRC){
 ## LBDA data
 
 ## Final is stored in pdsi.rec data frame with year and value
-lbda.dat <- ncdf4::nc_open(here::here("data/weight","LBDA.data.nc")) ## try
+lbda.dat <- ncdf4::nc_open(file.path(wd.base,"data/weight","LBDA.data.nc")) ## try
 l.lon = ncdf4::ncvar_get(lbda.dat,'lon')
 l.lat = ncdf4::ncvar_get(lbda.dat,'lat')
 l.time = ncdf4::ncvar_get(lbda.dat,'time')
@@ -235,7 +232,7 @@ pdsi.rec = data.frame(
 ## PRISM data 
 
 ## Final is stored in temp.cal data frame with year and value 
-load(here::here('data/weight/PRISM/paleon_sites',paste0(site,'.meanTemp.Rdata')))
+load(file.path(wd.base,'data/weight/PRISM/paleon_sites',paste0(site,'.meanTemp.Rdata')))
 temp.cal = meanTemp
 year <- substr(rownames(temp.cal), 1, 4)
 
@@ -285,7 +282,7 @@ if (!CRC){
 ## ESRL data
 
 ## Final is stored in pdsi.cal data frame with year and value 
-pdsi.cal <- ncdf4::nc_open(here::here("data/weight","ESRL.data.nc"))
+pdsi.cal <- ncdf4::nc_open(file.path(wd.base,"data/weight","ESRL.data.nc"))
 e.lon = ncdf4::ncvar_get(pdsi.cal, 'lon')
 e.lat = ncdf4::ncvar_get(pdsi.cal, 'lat')
 e.pdsi = ncdf4::ncvar_get(pdsi.cal,'pdsi')
@@ -386,9 +383,9 @@ F <- 1
 G <- diag(1, n_models)
 H <- rep(0, n_models)
 
-if (file.exists(here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))) {
+if (file.exists(file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))) {
   print('File already found!')
-  load(here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+  load(file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
 } else {
   for (k in 1:K) {
     
@@ -458,7 +455,7 @@ if (file.exists(here::here("ensembles",paste0(site,vers),"linkages/weights",past
   }
   
   # save Rdata file of all weights for full distribution
-  save(w, file=here::here("ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+  save(w, file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
   
   
 }
@@ -539,7 +536,7 @@ if (PLOT){
   # g6
   
   # save all figures to file 
-  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights",
                       paste0("filtering-plot1-",site,".png")),width=8, height=6, 
        units="in", res=400)
     multiplot(g3, g6, cols=2)
@@ -566,7 +563,7 @@ if (plot){
     ggtitle("Ensemble Weight 'Heat' Map")+ 
     theme(axis.text.y = element_text(size = 4))
   
-  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights",
                       paste0("filtering-plot2-",site,".png")),width=8, height=6, 
        units="in", res=400)
   multiplot(plot2,cols=1)
@@ -629,7 +626,7 @@ if (plot){
     stat_smooth()
     
   
-  {png(file=here::here("ensembles",paste0(site,vers),"linkages","weights",
+  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights",
                       paste0("filtering-plot3-",site,".png")),width=8, height=6, 
        units="in", res=400)
   multiplot(g1, g2, cols=2)

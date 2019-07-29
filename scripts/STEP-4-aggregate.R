@@ -11,24 +11,19 @@
 # Required functions: 
 # - aggregate_met.R
 # - aggregate_file.R
-#
+
 # Required libraries: 
 # - parallel
-# - here
+
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
 # Load site and directory details
-<<<<<<< HEAD
 site.name = "NRP"
-=======
-wd.base = '~/met'
+wd.base = '~/met-crc-workflow'
 site.name = "GILL"
-site.lat  = 44.123424
-site.lon  = -73.803628
->>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
 vers=".v1"
 
 ####################
@@ -38,14 +33,10 @@ vers=".v1"
 if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(parallel,lib='~/Rlibs')
 require(ncdf4,lib='~/Rlibs')
 require(lubridate,lib='~/Rlibs')
-require(here,lib='~/Rlibs')
-
-wd.base = here::here()
 
 path.func = file.path(wd.base,'functions')
 

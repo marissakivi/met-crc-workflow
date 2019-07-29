@@ -11,14 +11,11 @@
 ####################
 
 # Load site and directory details
-<<<<<<< HEAD
 site.name = "GILL"
-=======
-wd.base = '~/met'
+wd.base = '~/met-crc-workflow'
 site.name = "NRP"
 site.lat  = 42.84514
 site.lon  = -72.4473
->>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
@@ -28,21 +25,11 @@ last.year=2015
 ####################
 # Step 1: Set up working directory
 ####################
-<<<<<<< HEAD
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-require(here,lib='~/Rlibs')
-
-# set up important paths
-path.out = here::here('ensembles',paste0(site.name,vers),'linkages')
-if (!dir.exists(path.out)) dir.create(path.out,recursive=T)
-path.in = here::here('ensembles',paste0(site.name,vers),'aggregated/month')
-=======
 
 # set up important paths
 path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'linkages')
-if (!dir.exists(path.out)) dir.create(path.out)
+if (!dir.exists(path.out)) dir.create(path.out,recursive=T)
 path.in = file.path(wd.base,'ensembles',paste0(site.name,vers),'aggregated/month')
->>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
 
 ####################
 # Step 2: Load monthly data 

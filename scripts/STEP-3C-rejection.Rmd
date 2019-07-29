@@ -33,7 +33,6 @@ Required libraries:
  - parallel
  - utils
  - stats
- - here
 
 # Step 0: Set site details for step 
 
@@ -44,6 +43,8 @@ vers=".v1"
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
 first.year = 850
+
+wd.base = "~/met-crc-workflow"
 ```
 
 # Step 1: Set up working directory 
@@ -54,13 +55,11 @@ if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran
 if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(ncdf4, lib='~/Rlibs')
 require(lubridate,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
 require(stringr,lib='~/Rlibs')
-require(here,lib='~/Rlibs')
 ```
 
 ```{r,include=T}
@@ -70,7 +69,6 @@ ens.hr  <- 2 # Number of hourly ensemble members to create
 # Set up the appropriate seed
 set.seed(0017)
 
-wd.base = here::here()
 ```
 
 # Step 2: Remove bad ensemble members

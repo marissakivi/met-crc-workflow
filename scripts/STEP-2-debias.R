@@ -25,7 +25,7 @@
 ####################
 
 # Load site and directory details
-wd.base = '~/met'
+wd.base = '~/met-crc-workflow'
 site.name = "HARVARD"
 site.lat  = 42.53
 site.lon  = -72.18

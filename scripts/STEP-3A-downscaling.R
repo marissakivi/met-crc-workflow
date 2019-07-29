@@ -30,11 +30,11 @@
 # - parallel
 # - utils
 # - stats
-# - here
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
+wd.base <- "~/met-crc-workflow"
 
 site.name = "HARVARD"
 vers=".v1"
@@ -58,7 +58,6 @@ if (!require('tictoc')) install.packages('tictoc',lib='~/Rlibs',repos='http://cr
 if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('stats')) install.packages('stats',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('utils')) install.packages('utils',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(ncdf4, lib='~/Rlibs')
 require(mgcv, lib='~/Rlibs')
@@ -70,9 +69,6 @@ require(tictoc,lib='~/Rlibs')
 require(parallel,lib='~/Rlibs')
 require(stats,lib='~/Rlibs')
 require(utils,lib='~/Rlibs')
-require(here,lib='~/Rlibs')
-
-wd.base <- here::here()
 
 path.train <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS")
 yrs.train=NULL

@@ -20,7 +20,6 @@
 # Required functions: 
 #
 # Required libraries:
-# - here
 # - plyr
 # - raster
 # - data.table
@@ -46,6 +45,9 @@ site.lon  = -72.18
 
 CRC = TRUE
 
+# working directory 
+wd.base = '~/met-crc-workflow'
+
 ####################
 # Step 1: Set up working directory
 ####################
@@ -70,8 +72,6 @@ require(data.table,lib='~/Rlibs')
 require(rgdal,lib='~/Rlibs')
 require(reshape2, lib='~/Rlibs')
 require(ncdf4,lib='~/Rlibs')
-
-wd.base = here::here()
 
 path.in = file.path(wd.base,'data/weight/PRISM/raw')
 path.out = file.path(wd.base,'data/weight/PRISM/paleon_sites')

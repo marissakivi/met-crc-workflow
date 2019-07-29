@@ -1,7 +1,7 @@
 # set up important file paths
 site = 'GILL'
 vers = '.v1'
-wd.base = '~/met'
+wd.base = '~/met-crc-workflow'
 
 unzips = file.path(wd.base,'ensembles',paste0(site,vers),'1hr/ensembles')
 GCM.list = dir(unzips)

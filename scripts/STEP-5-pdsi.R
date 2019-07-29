@@ -23,27 +23,24 @@
 # - abind
 # - lubridate
 # - R.matlab
-# - here
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
 # Load site and directory details
-<<<<<<< HEAD
 site.name = "GLSP"
 site.lat  = 45.54127
 site.lon  = -95.5313
-=======
-wd.base = '~/met'
 site.name = "GILL"
-site.lat  = 44.123424
-site.lon  = -73.803628
->>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
+
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
 first.year=1800
+
+# working directory
+wd.base = "~/met-crc-workflow"
 
 ####################
 # Step 1: Set up working directory
@@ -56,7 +53,6 @@ if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://
 if (!require('abind')) install.packages('abind',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('R.matlab')) install.packages('R.matlab',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(ggplot2,lib='~/Rlibs')
 require(ncdf4,lib='~/Rlibs')
@@ -64,10 +60,8 @@ require(stringr,lib='~/Rlibs')
 require(abind,lib='~/Rlibs')
 require(lubridate,lib='~/Rlibs')
 require(R.matlab,lib='~/Rlibs')
-require(here, lib='~/Rlibs')
 
 # set up important file paths
-wd.base = here::here()
 in.base = file.path(wd.base, "ensembles", paste0(site.name, vers), "aggregated/month")
 path.func = file.path(wd.base,'functions')
 years.pdsi = NULL

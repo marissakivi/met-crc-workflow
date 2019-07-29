@@ -23,12 +23,12 @@
 # - stringr
 # - tictoc
 # - parallel
-# - here
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
+# site information
 site.name = "HARVARD"
 vers=".v1"
 
@@ -38,6 +38,8 @@ first.year = 850
 
 ens.hr  <- 2 # Number of hourly ensemble members to create
 n.day <- 10 # Number of daily ensemble members to process
+
+wd.base = "~/met-crc-workflow"
 
 ####################
 # Step 1: Set up working directory 
@@ -52,7 +54,6 @@ if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://
 if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('tictoc')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('here')) install.packages('here',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(ncdf4, lib='~/Rlibs')
 require(mgcv, lib='~/Rlibs')
@@ -62,9 +63,6 @@ require(ggplot2,lib='~/Rlibs')
 require(stringr,lib='~/Rlibs')
 require(tictoc,lib='~/Rlibs')
 require(parallel,lib='~/Rlibs')
-require(here,lib='/Rlibs')
-
-wd.base = here::here()
 
 path.train <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS")
 path.lm <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/mods.tdm")
