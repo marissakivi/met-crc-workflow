@@ -91,7 +91,6 @@ require(latex2exp,lib='~/Rlibs')
 require(limSolve,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
 require(colorspace,lib='~/Rlibs')
-require(dplyr, lib='~/Rlibs')
 
 # set important paths
 path.func = file.path(wd.base,'functions')
@@ -301,7 +300,9 @@ e.pdsi$year = e.year
 # calculate annual average temperature, ignoring missing values
 # annual averages calculated by averaging pdsi values for all months
 pdsi.cal <- data.frame(
-  pdsi = e.pdsi %>% group_by(year) %>% summarize(annual_mean = mean(pdsi[6:8])))
+  pdsi.annual_mean = sapply(unique(e.year), function(x){mean(e.pdsi$pdsi[which(e.year==x)][6:8])}), 
+  pdsi.year = unique(e.year)
+)
 
 # plot empirical PDSI values over time
 if (!CRC){
