@@ -48,16 +48,10 @@ CRC = TRUE
 # working directory 
 wd.base = '~/met-crc-workflow'
 
+
 ####################
 # Step 1: Set up working directory
 ####################
-
-#library(plyr)
-#library(raster)
-#library(data.table)
-#library(rgdal)
-#library(reshape2)
-#library(ncdf4)
 
 if (!require('plyr')) install.packages('plyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('raster')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
@@ -72,6 +66,13 @@ require(data.table,lib='~/Rlibs')
 require(rgdal,lib='~/Rlibs')
 require(reshape2, lib='~/Rlibs')
 require(ncdf4,lib='~/Rlibs')
+
+#require(plyr)
+#require(raster)
+#require(data.table)
+#require(rgdal)
+#require(reshape2)
+#require(ncdf4)
 
 path.in = file.path(wd.base,'data/weight/PRISM/raw')
 path.out = file.path(wd.base,'data/weight/PRISM/paleon_sites')
@@ -126,13 +127,13 @@ if (site.lat < ncin.lat[site.y]){
 filenames <- list.files(path=path.in,pattern=paste(".*_",".*\\.bil$", sep = ""))
 
 # use substring of date to later identify and organize data values for each site for the 4 variables needed 
-dat_names <- substring(filenames, first = 24, last = 29) # adjusted as we need all of the available years and months
+dat_names <- substring(filenames, first = 26, last = 31) # adjusted as we need all of the available years and months
 dat_names <- paste0(substring(dat_names,first=1,last=4),"_", substring(dat_names,first=5,last=6)) # cleaned up dates for easier reading 
 
 pts <- c()
 
 # use first date to find grid cell numbers to use (save as 'pts' variable)
-loc <- stack(filenames[1])
+loc <- stack(file.path(path.in,filenames[1]))
 
 # get spatial coordinates for PRISM cells
 loc.mat <- rasterToPoints(loc)
@@ -155,11 +156,9 @@ maxTemp <- matrix(0,ndate,9)
 
 # extract mean data value for each measurement time from all points within grid cell for each site
 for (i in 1:ndate){
-  single.stack <- stack(filenames[i])
+  single.stack <- stack(file.path(path.in,filenames[i]))
   single.data <- rasterToPoints(single.stack)
-  for (j in 1:nsites){
-    maxTemp[i,] <- single.data[pts[j,],3]
-  }
+  maxTemp[i,] <- single.data[pts,3]
 }
 
 # save to output directory 
