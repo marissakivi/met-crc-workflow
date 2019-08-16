@@ -99,8 +99,8 @@ path.func = file.path(wd.base,'functions')
 source(file.path(path.func,"multiplot.R"))
 
 # create save directory 
-if (!dir.exists(file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights"))) {
-  dir.create(file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights"),recursive=T)
+if (!dir.exists(file.path(wd.base,"ensembles",paste0(site,vers),"complete","weights"))) {
+  dir.create(file.path(wd.base,"ensembles",paste0(site,vers),"complete","weights"),recursive=T)
 }
 
 ########################################################### 
@@ -458,7 +458,6 @@ if (file.exists(file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weight
   # save Rdata file of all weights for full distribution
   save(w, file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
   
-  
 }
 
 ########################################################### 
@@ -633,4 +632,25 @@ if (plot){
   multiplot(g1, g2, cols=2)
   dev.off()}
 }
+
+########################################################### 
+# Step 5: Conversions to SDA-usable format (average)
+########################################################### 
+
+# calculate mean across iterations for each year of each model 
+ensemble_weights_mean <- data.frame (
+  weights               = c(apply(w, c(2, 3), mean)),
+  year                  = weight.yr1:weight.yr2,
+  climate_model         = rep(colnames(pdsi.ens), each=length(weight.yr1:weight.yr2)))
+
+clim_mods <- colnames(pdsi.ens)
+ens_wts <- numeric(length(clim_mods))
+
+# calculate mean weight for each model across years 
+for(i in 1:length(clim_mods)){
+  ensemble_weights_mean[i] <- mean(ensemble_weights_mean[ensemble_weights_mean$climate_model==clim_mods[i],'weights'])
+}
+
+write.csv(ensemble_weights_mean,
+          file=file.path(wd.base,"ensembles",paste0(site,vers),"complete","weights",paste0("ensemble-weights-mean-",site,"-prism.csv")))
 

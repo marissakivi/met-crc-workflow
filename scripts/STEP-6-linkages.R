@@ -27,9 +27,11 @@ last.year=2015
 ####################
 
 # set up important paths
-path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'linkages')
+path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'complete')
 if (!dir.exists(path.out)) dir.create(path.out,recursive=T)
 path.in = file.path(wd.base,'ensembles',paste0(site.name,vers),'aggregated/month')
+path.folder = file.path(path.out,'linkages')
+if (!dir.exists(path.folder)) dir.create(path.folder,recursive=T)
 
 ####################
 # Step 2: Load monthly data 
@@ -74,15 +76,27 @@ for (i in 1:n_models){
   }
   
   # save as climate.Rdata in a folder named after ensemble
-  folder = file.path(path.out,models[i])
+  folder = file.path(path.folder,models[i])
   if (!dir.exists(folder)) dir.create(folder, recursive=T)
   
   save(precip.mat=precip.mat, temp.mat=temp.mat, file = file.path(folder,'climate.Rdata'))
 }
 
+# check temperature
+jpeg(file.path(path.out,'linkages-temp-check.jpg'))
+par(mfrow=c(2,2))
+for (i in years){
+  plot(NULL, xlim=c(0,13), ylim = c(-20,60), 
+       xlab = 'Months', ylab = 'Temperature (C)', main = paste('Mean air temperature in',i))
+  id = i - first.year + 1
+  for (e in ens){
+    load(paste0(path.folder,'/',e,'/climate.Rdata'))
+    points(c(1:12),temp.mat[id,])
+  }
+}
+dev.off()
 
 
-<<<<<<< HEAD
 # next precipitation
 jpeg(file.path(path.out,'linkages-precip-check.jpg'))
 par(mfrow=c(2,2))
@@ -91,13 +105,9 @@ for (i in years){
        xlab = 'Months', ylab = 'Precipitation (cm)', main = paste('Precipitation in',i))
   id = i - first.year + 1
   for (e in ens){
-    load(paste0(path.out,'/',e,'/climate.Rdata'))
+    load(paste0(path.folder,'/',e,'/climate.Rdata'))
     points(c(1:12),precip.mat[id,])
   }
 }
 dev.off()
-=======
 
-
-
->>>>>>> d20f600a3bc85f6130b9a66bbda69b04062b8c3e
