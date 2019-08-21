@@ -10,3 +10,4 @@ ensembles/
 .Rhistory
 scripts/.Rdata
 scripts/.Rhistory
+.DS_Store

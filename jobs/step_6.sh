@@ -3,9 +3,9 @@
 #$ -m abe
 #$ -pe smp 1
 #$ -q long
-#$ -N test_6
+#$ -N step6
 
 module load R
 module load netcdf/4.7.0/intel/18.0
 
-R CMD BATCH ~/met/scripts/STEP-6-linkages.R  output_6.out
+R CMD BATCH ~/met-crc-workflow/scripts/STEP-6-linkages.R  output_6.out
