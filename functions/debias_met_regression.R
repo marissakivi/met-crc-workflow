@@ -70,7 +70,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
   
   set.seed(seed)
   
-  if(parallel==TRUE) warning("Warning! Parallel processing not reccomended because of memory constraints")
+  if(parallel) warning("Warning! Parallel processing not reccomended because of memory constraints")
   if(ncol(source.data[[2]])>1) warning("Feeding an ensemble of source data is currently experimental!  This could crash")
   if(!uncert.prop %in% c("mean", "random")) stop("unspecified uncertainty propogation method.  Must be 'random' or 'mean' ")
   
@@ -108,28 +108,28 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
   }
   
   # Setting up cases for dealing with an ensemble of source data to be biased
-  if(pair.ens==T & ncol(train.data[[2]]!=ncol(source.data[[2]]))){ 
+  if(pair.ens & ncol(train.data[[2]]!=ncol(source.data[[2]]))){ 
     stop("Cannot pair ensembles of different size")
-  } else if(pair.ens==T) {
+  } else if(pair.ens) {
     ens.src <- ens.train
   }
   
-  if(pair.ens==F & ncol(source.data[[2]])==1 ){
+  if(!pair.ens & ncol(source.data[[2]])==1 ){
     ens.src=1
-  } else if(pair.ens==F & ncol(source.data[[2]]) > n.ens) {
+  } else if(!pair.ens & ncol(source.data[[2]]) > n.ens) {
     ens.src <- sample(1:ncol(source.data[[2]]), ncol(source.data[[2]]),replace=T)
-  } else if(pair.ens==F & ncol(source.data[[2]]) < n.ens){
+  } else if(!pair.ens & ncol(source.data[[2]]) < n.ens){
     ens.src <- c(1:ncol(source.data[[2]]), sample(1:ncol(source.data[[2]]), n.ens-ncol(source.data[[2]]),replace=T))
   }
-  # ---------
-  
+  # ---------	
+ 	
   # Find the period of years to use to train the model
   # This formulation should take
   yrs.overlap <- unique(train.data$time$Year)[unique(train.data$time$Year) %in% unique(source.data$time$Year)]
   
   # If we don't have a year of overlap, take closest 20 years from each dataset
   if(length(yrs.overlap)<1){
-    if(pair.anoms==TRUE) warning("No overlap in years, so we cannot pair the anomalies")
+    if(pair.anoms) warning("No overlap in years, so we cannot pair the anomalies")
     yrs.overlap <- (max(min(train.data$time$Year), min(source.data$time$Year))-20):(min(max(train.data$time$Year), max(source.data$time$Year))+20)
     pair.anoms=FALSE # we can't pair the anomalies no matter what we tried to specify before
   }
@@ -289,7 +289,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
     dat.clim <- merge(dat.clim[,], clim.src, all=T)
     
     if(v=="precipitation_flux"){
-      if(pair.anoms==F){
+      if(!pair.anoms){
         dat.ann <- precip.ann
         dat.ann$X.tot <- src.ann[src.ann$year %in% yrs.overlap,"X.tot"]
       } else {
@@ -416,14 +416,14 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
       
       # CRUNCEP has a few variables that assume a constant pattern from 1901-1950; 
       # so we don't want to use their anomaly as a predictor otherwise we will perpetuate that less than ideal situation
-      if(CRUNCEP==T & v %in% c("surface_downwelling_longwave_flux_in_air", "air_pressure", "wind_speed")) met.src$anom.raw <- 0
+      if(CRUNCEP & v %in% c("surface_downwelling_longwave_flux_in_air", "air_pressure", "wind_speed")) met.src$anom.raw <- 0
       
       # Actually Modeling the anomalies
       #  -- If we have empirical data, we can pair the anomalies to find a way to bias-correct those
       #  -- If one of our datasets is a GCM, the patterns observed are just what underly the climate signal and no actual
       #     event is "real".  In this case we just want to leverage use the covariance our other met drivers to try and get
       #     the right distribution of anomalies
-      if(pair.anoms==TRUE){ 
+      if(pair.anoms){ 
         # if it's empirical we can, pair the anomalies for best estimation
         # Note: Pull the covariates from the training data to get any uncertainty &/or try to correct covariances
         #        -- this makes it mroe consistent with the GCM calculations
@@ -622,7 +622,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
         
         # If we're dealing with the temperatures where there's basically no anomaly, 
         # we'll get the uncertainty subtract the multi-decadal trend out of the anomalies; not a perfect solution, but it will increase the variability
-        if(pair.anoms==F & (v %in% c("air_temperature_maximum", "air_temperature_minimum"))){
+        if(!pair.anoms & (v %in% c("air_temperature_maximum", "air_temperature_minimum"))){
           # sim1b.norm <- apply(sim1b, 1, mean) 
           sim1b[,cols.redo] <- as.vector(met.src[met.src$ind==ind,"anom.raw"]) - sim1b[,cols.redo] # Get the range around that medium-frequency trend 
         }
@@ -894,7 +894,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
               # calculating the mean & sd for rainless days
               redistrib=T
               # wet.max <- round(rnorm(1, mean(cons.wet, na.rm=T), sd(cons.wet, na.rm=T)), 0) 
-              while(redistrib==T & length(dry1)>1){
+              while(redistrib & length(dry1)>1){
                 ens.wet <- vector()
                 wet.end <- vector()
                 tally = 0
@@ -986,7 +986,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
     # -------------
     # Save some diagnostic graphs if useful
     # -------------
-    if(save.diagnostics==TRUE){
+    if(save.diagnostics){
       dir.create(path.diagnostics, recursive=T, showWarnings=F)
       
       dat.pred <- source.data$time

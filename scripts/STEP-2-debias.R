@@ -26,9 +26,9 @@
 
 # Load site and directory details
 wd.base = '~/met-crc-workflow'
-site.name = "HARVARD"
-site.lat  = 42.53
-site.lon  = -72.18
+site.name = "HEMLOCK"
+site.lat  = 45.3333
+site.lon  = -90.08333
 vers=".v1"
 ens=1:10
 
@@ -131,6 +131,9 @@ for(GCM in GCM.list){
   # (even though all ensemble members will be identical here)
   met.out <- align.met(train.path, source.path, yrs.train=NULL, yrs.source=NULL, n.ens=n.ens, seed=201708, 
                      pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"))
+
+  print(dim(met.out$dat.train))
+  print(dim(met.out$dat.source))
 
   # Calculate wind speed if it's not already there
   if(!"wind_speed" %in% names(met.out$dat.source)){

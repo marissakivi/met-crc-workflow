@@ -36,11 +36,11 @@
 ########################################################### 
 
 # Load site details
-site = "GILL" # should be identical to paleon site name 
-site.name = 'Gill Brook' # for graph titling purposes
-site.lat  = 44.123424
-site.lon  = -73.803628
-vers=".v1"
+site = "HARVARD" # should be identical to paleon site name 
+site.name = 'Harvard Forest' # for graph titling purposes
+site.lat  = 42.53
+site.lon  = -72.18
+vers=".v5"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
 CRC = FALSE
@@ -99,8 +99,8 @@ path.func = file.path(wd.base,'functions')
 source(file.path(path.func,"multiplot.R"))
 
 # create save directory 
-if (!dir.exists(file.path(wd.base,"ensembles",paste0(site,vers),"complete","weights"))) {
-  dir.create(file.path(wd.base,"ensembles",paste0(site,vers),"complete","weights"),recursive=T)
+if (!dir.exists(file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights"))) {
+  dir.create(file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights"),recursive=T)
 }
 
 ########################################################### 
@@ -384,9 +384,9 @@ F <- 1
 G <- diag(1, n_models)
 H <- rep(0, n_models)
 
-if (file.exists(file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))) {
+if (file.exists(file.path(wd.base,"ensembles",paste0(site,vers),"completed/weights",paste0("filtering-pdsi-",site,"-prism.RData")))) {
   print('File already found!')
-  load(file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+  load(file.path(wd.base,"ensembles",paste0(site,vers),"completed/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
 } else {
   for (k in 1:K) {
     
@@ -456,7 +456,7 @@ if (file.exists(file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weight
   }
   
   # save Rdata file of all weights for full distribution
-  save(w, file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+  save(w, file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("filtering-pdsi-",site,"-prism.RData")))
   
 }
 
@@ -536,7 +536,7 @@ if (PLOT){
   # g6
   
   # save all figures to file 
-  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights",
+  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",
                       paste0("filtering-plot1-",site,".png")),width=8, height=6, 
        units="in", res=400)
     multiplot(g3, g6, cols=2)
@@ -563,7 +563,7 @@ if (plot){
     ggtitle("Ensemble Weight 'Heat' Map")+ 
     theme(axis.text.y = element_text(size = 4))
   
-  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights",
+  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",
                       paste0("filtering-plot2-",site,".png")),width=8, height=6, 
        units="in", res=400)
   multiplot(plot2,cols=1)
@@ -626,7 +626,7 @@ if (plot){
     stat_smooth()
     
   
-  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"linkages","weights",
+  {png(file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",
                       paste0("filtering-plot3-",site,".png")),width=8, height=6, 
        units="in", res=400)
   multiplot(g1, g2, cols=2)
@@ -652,5 +652,5 @@ for(i in 1:length(clim_mods)){
 }
 
 write.csv(ensemble_weights_mean,
-          file=file.path(wd.base,"ensembles",paste0(site,vers),"complete","weights",paste0("ensemble-weights-mean-",site,"-prism.csv")))
+          file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("ensemble-weights-mean-",site,"-prism.csv")))
 
