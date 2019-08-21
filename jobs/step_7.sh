@@ -3,7 +3,7 @@
 #$ -m abe
 #$ -pe smp 1
 #$ -q long
-#$ -N test
+#$ -N step7
 
 module load R
 module load netcdf/4.7.0/intel/18.0
