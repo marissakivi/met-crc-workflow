@@ -36,11 +36,11 @@
 ########################################################### 
 
 # Load site details
-site = "HARVARD" # should be identical to paleon site name 
-site.name = 'Harvard Forest' # for graph titling purposes
-site.lat  = 42.53
-site.lon  = -72.18
-vers=".v5"
+site = 'ROOSTER' # should be identical to paleon site name 
+site.name = 'Rooster Hill' # for graph titling purposes
+site.lat  = 43.2309 
+site.lon  = -74.5267
+vers=".v1"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
 CRC = FALSE
@@ -91,6 +91,17 @@ require(latex2exp,lib='~/Rlibs')
 require(limSolve,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
 require(colorspace,lib='~/Rlibs')
+
+#require(sp)
+#require(raster)
+#require(ncdf4)
+#require(maps)
+#require(stringr)
+#require(lubridate)
+#require(latex2exp)
+#require(limSolve)
+#require(ggplot2)
+#require(colorspace)
 
 # set important paths
 path.func = file.path(wd.base,'functions')
@@ -648,9 +659,14 @@ ens_wts <- numeric(length(clim_mods))
 
 # calculate mean weight for each model across years 
 for(i in 1:length(clim_mods)){
-  ensemble_weights_mean[i] <- mean(ensemble_weights_mean[ensemble_weights_mean$climate_model==clim_mods[i],'weights'])
+  ens_wts[i] <- mean(ensemble_weights_mean[ensemble_weights_mean$climate_model==clim_mods[i],'weights'])
 }
 
-write.csv(ensemble_weights_mean,
-          file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("ensemble-weights-mean-",site,"-prism.csv")))
+ensemble_weights = data.frame(
+  climate_model = clim_mods,
+  wts = ens_wts
+)
+
+write.csv(ensemble_weights,
+          file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("ensemble-weights-",site,"-prism.csv")))
 
