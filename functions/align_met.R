@@ -101,7 +101,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
     }
     
     # Loop through the .nc files putting everything into a list
-    if(print.progress==TRUE){
+    if(print.progress){
       print("Processing Training Data")
       pb <- utils::txtProgressBar(min=0, max=length(files.train), style=3)
     } 
@@ -132,7 +132,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
       
       ncdf4::nc_close(ncT)
 
-      if(print.progress==TRUE) utils::setTxtProgressBar(pb, i)
+      if(print.progress) utils::setTxtProgressBar(pb, i)
     } # End looping through training data files
   } else { # we have an ensemble we need to deal with
     # Figure out how many ensemble members we're working with
@@ -158,7 +158,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
       n.files <- length(dir(file.path(train.path, ens.train[1])))
     }
     
-    if(print.progress==TRUE){
+    if(print.progress){
       print("Processing Training Data")
       pb <- utils::txtProgressBar(min=0, max=length(ens.train)*n.files, style=3)
       pb.ind=1
@@ -206,7 +206,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
         }
         ncdf4::nc_close(ncT)
 
-        if(print.progress==TRUE){
+        if(print.progress){
           utils::setTxtProgressBar(pb, pb.ind)
           pb.ind <- pb.ind+1
         }
@@ -221,7 +221,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
       dimnames(met.out$dat.train[[v]])[[2]] <- ens.train
     }
   } # End loading & formatting training data
-  if(print.progress==TRUE) print(" ")
+  if(print.progress) print(" ")
   # ---------------
   
   # ---------------
@@ -253,7 +253,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
     # day.train <- 1/(nrow(met.out$dat.train$time)/yrs.train/365)
   
     # Loop through the .nc files putting everything into a list
-    if(print.progress==TRUE){
+    if(print.progress){
       print("Processing Source Data")
       pb <- utils::txtProgressBar(min=0, max=length(files.source), style=3)
     }
@@ -326,14 +326,14 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
         
       }
       ncdf4::nc_close(ncT)
-      if(print.progress==TRUE) utils::setTxtProgressBar(pb, i)
+      if(print.progress) utils::setTxtProgressBar(pb, i)
     } # End looping through source met files
-    if(print.progress==TRUE) print("")
+    if(print.progress) print("")
   } else { # we have an ensemble we need to deal with
     ens.source <- dir(source.path)
     
     # If we're matching ensemble members need to use the same ones as from the training data
-    if(pair.mems==TRUE){
+    if(pair.mems){
       if(length(ens.source) < ens.train) stop("Cannot pair ensemble members. Reset pair.mems to FALSE or check your file paths")
       
       ens.source <- ens.source[train.use]
@@ -352,7 +352,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
     # getting an estimate of how many files we need to process
     n.files <- length(dir(file.path(source.path, ens.source[1])))
     
-    if(print.progress==TRUE){
+    if(print.progress){
       print("Processing Source Data")
       pb <- utils::txtProgressBar(min=0, max=length(ens.source)*n.files, style=3)
       pb.ind=1
@@ -453,7 +453,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
           
         } #End variable loop
         ncdf4::nc_close(ncT)
-        if(print.progress==TRUE){
+        if(print.progress){
           utils::setTxtProgressBar(pb, pb.ind)
           pb.ind <- pb.ind+1
         }
@@ -471,7 +471,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
     }
     
   } # End loading & formatting source data
-  if(print.progress==TRUE) print("")
+  if(print.progress) print("")
   # ---------------
   
   
