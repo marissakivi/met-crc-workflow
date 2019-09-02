@@ -132,9 +132,6 @@ for(GCM in GCM.list){
   met.out <- align.met(train.path, source.path, yrs.train=NULL, yrs.source=NULL, n.ens=n.ens, seed=201708, 
                      pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"))
 
-  print(dim(met.out$dat.train))
-  print(dim(met.out$dat.source))
-
   # Calculate wind speed if it's not already there
   if(!"wind_speed" %in% names(met.out$dat.source)){
     met.out$dat.source$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
