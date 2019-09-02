@@ -99,12 +99,12 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
   if(ncol(train.data[[2]])==n.ens) ens.train <- 1:n.ens
   
   if(ncol(train.data[[2]]) < n.ens){
-    ens.train <- c(1:ncol(train.data[[2]]), sample(1:ncol(train.data[[2]]), n.ens-ncol(train.data[[2]]),replace=T))
+    ens.train <- c(1:ncol(train.data[[2]]), sample(1:ncol(train.data[[2]]), n.ens-ncol(train.data[[2]]),replace=TRUE))
   }
   
   # If we have more columns than we need, randomly subset
   if(ncol(train.data[[2]]) > n.ens) {
-    ens.train <- sample(1:ncol(train.data[[2]]), ncol(train.data[[2]]),replace=T)
+    ens.train <- sample(1:ncol(train.data[[2]]), ncol(train.data[[2]]),replace=TRUE)
   }
   
   # Setting up cases for dealing with an ensemble of source data to be biased
@@ -117,9 +117,9 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
   if(!pair.ens & ncol(source.data[[2]])==1 ){
     ens.src=1
   } else if(!pair.ens & ncol(source.data[[2]]) > n.ens) {
-    ens.src <- sample(1:ncol(source.data[[2]]), ncol(source.data[[2]]),replace=T)
+    ens.src <- sample(1:ncol(source.data[[2]]), ncol(source.data[[2]]),replace=TRUE)
   } else if(!pair.ens & ncol(source.data[[2]]) < n.ens){
-    ens.src <- c(1:ncol(source.data[[2]]), sample(1:ncol(source.data[[2]]), n.ens-ncol(source.data[[2]]),replace=T))
+    ens.src <- c(1:ncol(source.data[[2]]), sample(1:ncol(source.data[[2]]), n.ens-ncol(source.data[[2]]),replace=TRUE))
   }
   # ---------	
  	
@@ -238,7 +238,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
       src.ann <- aggregate(met.src$X, by=met.src[,c("year", "ind.src")], FUN=sum)
       names(src.ann)[3] <- "X.tot"
       
-      met.src <- merge(met.src, src.ann, all.x=T)
+      met.src <- merge(met.src, src.ann, all.x=TRUE)
 
       # Putting precip as fraction of the year again
       met.src$X <- met.src$X/met.src$X.tot 
@@ -249,7 +249,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
     # Lets deal with the source data first
     # - Adding in the ensembles to be predicted
     if(length(unique(met.src$ind.src))<n.ens){
-      met.src <- merge(met.src, data.frame(ind=paste0("X", 1:n.ens)), all=T)
+      met.src <- merge(met.src, data.frame(ind=paste0("X", 1:n.ens)), all=TRUE)
     } else {
       met.src$ind <- met.src$ind.src
     }
@@ -277,7 +277,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
     # Aggregate to get rid of years so that we can compare climatic means
     clim.src <- aggregate(met.src[met.src$year %in% yrs.overlap,c("X", vars.debias)],
                            by=met.src[met.src$year %in% yrs.overlap,c("doy", "ind", "ind.src")],
-                           FUN=mean, na.rm=T)
+                           FUN=mean, na.rm=TRUE)
     clim.src[,vars.debias[!vars.debias %in% names(dat.out)]] <- 0
     # names(clim.src)[3] <- "X"
     # -----
@@ -286,14 +286,14 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
     # 3. Merge the training & cource climate data together the two sets of daily means 
     #    -- this ends up pairing each daily climatological mean of the raw data with each simulation from the training data
     # -----
-    dat.clim <- merge(dat.clim[,], clim.src, all=T)
+    dat.clim <- merge(dat.clim[,], clim.src, all=TRUE)
     
     if(v=="precipitation_flux"){
       if(!pair.anoms){
         dat.ann <- precip.ann
         dat.ann$X.tot <- src.ann[src.ann$year %in% yrs.overlap,"X.tot"]
       } else {
-        dat.ann <- merge(precip.ann, src.ann[src.ann$year %in% yrs.overlap,], all=T)
+        dat.ann <- merge(precip.ann, src.ann[src.ann$year %in% yrs.overlap,], all=TRUE)
       }
     }
     # -----
@@ -737,7 +737,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
         if(n.new<(round(n.ens/2)+1)){
           cols.safe <- 1:ncol(sim1)
           cols.safe <- cols.safe[!(cols.safe %in% cols.redo)]
-          sim1[,cols.redo] <- sim1[,sample(cols.safe, n.new, replace=T)]
+          sim1[,cols.redo] <- sim1[,sample(cols.safe, n.new, replace=TRUE)]
         } else {
           # for known problem variables, lets force sanity as a last resort 
           if(v %in% c("air_temperature", "air_temperature_maximum", "air_temperature_minimum")){
@@ -853,21 +853,21 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
             }
             
             # n.now = number of rainless days for this sim
-            n.now <- round(rnorm(1, mean(rainless, na.rm=T), sd(rainless, na.rm=T)), 0) 
+            n.now <- round(rnorm(1, mean(rainless, na.rm=TRUE), sd(rainless, na.rm=TRUE)), 0) 
             if(n.now < rainless.min) n.now <- rainless.min # Make sure we don't have negative or no rainless days
             if(n.now > rainless.max) n.now <- rainless.max # Make sure we have at least one day with rain
             
             # We're having major seasonality issues, so lets randomly redistribute our precip
             # Pull ~twice what we need and randomly select from that so that we don't have such clean cuttoffs
             # set.seed(12)
-            cutoff <- quantile(sim1[rows.yr, j], min(n.now/366*2.5, max(0.75, n.now/366)), na.rm=T)
+            cutoff <- quantile(sim1[rows.yr, j], min(n.now/366*2.5, max(0.75, n.now/366)), na.rm=TRUE)
             if(length(which(sim1[rows.yr,j]>0)) < n.now){
               # if we need to re-distribute our rain (make more rainy days), use the inverse of the cutoff
               # cutoff <- 1-cutoff
               dry1 <- rows.yr[which(sim1[rows.yr,j] > cutoff)]
-              dry <- sample(dry1, 365-n.now, replace=T)
+              dry <- sample(dry1, 365-n.now, replace=TRUE)
               
-              wet <- sample(rows.yr[!rows.yr %in% dry], length(dry), replace=T)
+              wet <- sample(rows.yr[!rows.yr %in% dry], length(dry), replace=TRUE)
               
               # Go through and randomly redistribute the precipitation to days we're not designating as rainless
               # Note, if we don't loop through, we might lose some of our precip
@@ -884,7 +884,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
               # too few rainless days because of only slight redistribution (r+1) or buildup 
               # towards the end of the year (random day that hasn't happened)
               dry1 <- rows.yr[which(sim1[rows.yr,j] < cutoff)]
-              dry <- sample(dry1, min(n.now, length(dry1)), replace=F)
+              dry <- sample(dry1, min(n.now, length(dry1)), replace=FALSE)
 
               dry1 <- dry1[!dry1 %in% dry]
               # dry <- dry[order(dry)]
@@ -892,8 +892,8 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
               # Figure out how close together our dry are
               # Now checking to see if we need to move rainy days
               # calculating the mean & sd for rainless days
-              redistrib=T
-              # wet.max <- round(rnorm(1, mean(cons.wet, na.rm=T), sd(cons.wet, na.rm=T)), 0) 
+              redistrib=TRUE
+              # wet.max <- round(rnorm(1, mean(cons.wet, na.rm=TRUE), sd(cons.wet, na.rm=TRUE)), 0) 
               while(redistrib & length(dry1)>1){
                 ens.wet <- vector()
                 wet.end <- vector()
@@ -929,13 +929,13 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
                   
                   dry1 <- dry1[dry1!=dry1[dry.new]] # Drop the one we just moved so we don't get in an infinite loop
                 } else {
-                  redistrib=F
+                  redistrib=FALSE
                 }
               }
               # 
               
               # Figure out where to put the extra rain; allow replacement for good measure
-              wet <- sample(rows.yr[!rows.yr %in% dry], length(dry), replace=T)
+              wet <- sample(rows.yr[!rows.yr %in% dry], length(dry), replace=TRUE)
               
               # Go through and randomly redistribute the precipitation to days we're not designating as rainless
               # Note, if we don't loop through, we might lose some of our precip
@@ -987,13 +987,13 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
     # Save some diagnostic graphs if useful
     # -------------
     if(save.diagnostics){
-      dir.create(path.diagnostics, recursive=T, showWarnings=F)
+      dir.create(path.diagnostics, recursive=TRUE, showWarnings=FALSE)
       
       dat.pred <- source.data$time
-      dat.pred$obs  <- apply(source.data[[v]], 1, mean, na.rm=T)
-      dat.pred$mean <- apply(dat.out[[v]], 1, mean, na.rm=T)
-      dat.pred$lwr  <- apply(dat.out[[v]], 1, quantile, 0.025, na.rm=T)
-      dat.pred$upr  <- apply(dat.out[[v]], 1, quantile, 0.975, na.rm=T)
+      dat.pred$obs  <- apply(source.data[[v]], 1, mean, na.rm=TRUE)
+      dat.pred$mean <- apply(dat.out[[v]], 1, mean, na.rm=TRUE)
+      dat.pred$lwr  <- apply(dat.out[[v]], 1, quantile, 0.025, na.rm=TRUE)
+      dat.pred$upr  <- apply(dat.out[[v]], 1, quantile, 0.975, na.rm=TRUE)
     
       
       # Plotting the observed and the bias-corrected 95% CI
@@ -1090,7 +1090,7 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
     for(i in 1:n.ens){
       # Setting up file structure
       ens.path <- file.path(outfolder, paste(ens.name, ens.mems[i], sep="_"))
-      dir.create(ens.path, recursive=T, showWarnings=F)
+      dir.create(ens.path, recursive=TRUE, showWarnings=FALSE)
       loc.file <- file.path(ens.path, paste(ens.name, ens.mems[i], stringr::str_pad(yr, width=4, side="left",  pad="0"), "nc", sep = "."))
       
       for(j in 1:length(vars.debias)){

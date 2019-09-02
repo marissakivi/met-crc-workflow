@@ -92,7 +92,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
     files.train <- dir(train.path, ".nc")
     
     yrs.file <- strsplit(files.train, "[.]")
-    yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=T)
+    yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=TRUE)
     yrs.file <- as.numeric(yrs.file[,ncol(yrs.file)-1]) # Assumes year is always last thing before the file extension
     
     if(!is.null(yrs.train)){
@@ -125,7 +125,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
       
       # Extract the met info, making matrices with the appropriate number of ensemble members
       for(v in names(ncT$var)){
-        df.tem <- matrix(rep(ncdf4::ncvar_get(ncT, v), n.trn), ncol=n.trn, byrow=F)
+        df.tem <- matrix(rep(ncdf4::ncvar_get(ncT, v), n.trn), ncol=n.trn, byrow=FALSE)
 
         met.out$dat.train[[v]] <- rbind(met.out$dat.train[[v]], df.tem)
       }
@@ -149,7 +149,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
 
     # getting an estimate of how many files we need to process
     yrs.file <- strsplit(dir(file.path(train.path, ens.train[1])), "[.]")
-    yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=T)
+    yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=TRUE)
     yrs.file <- as.numeric(yrs.file[,ncol(yrs.file)-1]) # Assumes year is always last thing before the file extension
     
     if(!is.null(yrs.train)){
@@ -168,7 +168,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
       files.train <- dir(file.path(train.path, ens.train[j]), ".nc")
       
       yrs.file <- strsplit(files.train, "[.]")
-      yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=T)
+      yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=TRUE)
       yrs.file <- as.numeric(yrs.file[,ncol(yrs.file)-1]) # Assumes year is always last thing before the file extension
       
       if(!is.null(yrs.train)){
@@ -236,7 +236,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
     
     # create a vector of the years
     yrs.file <- strsplit(files.source, "[.]")
-    yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=T)
+    yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=TRUE)
     yrs.file <- as.numeric(yrs.file[,ncol(yrs.file)-1]) # Assumes year is always last thing before the file extension
     
     # Subsetting to just the years we're interested in
@@ -303,7 +303,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
         if(align=="repeat"){ # if we need to coerce the time step to be repeated to match temporal resolution, do it here
           dat.tem <- rep(dat.tem, each=length(stamps.hr))
         }
-        df.tem <- matrix(rep(dat.tem, n.src), ncol=n.src, byrow=F)
+        df.tem <- matrix(rep(dat.tem, n.src), ncol=n.src, byrow=FALSE)
         
         # If we need to aggregate the data to align it, do it now to save memory
         if(align == "aggregate"){
@@ -363,7 +363,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
       
       # create a vector of the years
       yrs.file <- strsplit(files.source, "[.]")
-      yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=T)
+      yrs.file <- matrix(unlist(yrs.file), ncol=length(yrs.file[[1]]), byrow=TRUE)
       yrs.file <- as.numeric(yrs.file[,ncol(yrs.file)-1]) # Assumes year is always last thing before the file extension
       
       # Subsetting to just the years we're interested in
@@ -430,7 +430,7 @@ align.met <- function(train.path, source.path, yrs.train=NULL, yrs.source=NULL, 
           if(align=="repeat"){ # if we need to coerce the time step to be repeated to match temporal resolution, do it here
             dat.tem <- rep(dat.tem, each=stamps.hr)
           }
-          df.tem <- matrix(rep(dat.tem, n.src), ncol=1, byrow=F)
+          df.tem <- matrix(rep(dat.tem, n.src), ncol=1, byrow=FALSE)
           
           # If we need to aggregate the data to align it, do it now to save memory
           if(align == "aggregate"){

@@ -40,11 +40,11 @@ first.year = 850
 ####################
 
 # install missing libraries in Rlibs folder on account if not already installed 
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4,lib='~/Rlibs')
 require(ggplot2,lib='~/Rlibs')
@@ -81,7 +81,7 @@ ens.mems=str_pad(ens, 3, "left", pad=0)
 
 # Set up the appropriate seeds to use when adding ensembles
 set.seed(sd)
-seed.vec <- sample.int(1e6, size=500, replace=F)
+seed.vec <- sample.int(1e6, size=500, replace=FALSE)
 seed <- seed.vec[min(ens)] 
 # This makes sure that if we add ensemble members, it gets a new, but reproducible seed
 
@@ -98,7 +98,7 @@ for(GCM in GCM.list){
   
   # Set up a file path for our ensemble to work with now
   train.path <- file.path(out.base, "ensembles", GCM)
-  dir.create(train.path, recursive=T, showWarnings=F)
+  dir.create(train.path, recursive=TRUE, showWarnings=FALSE)
   
   # --------------------------
   # Set up ensemble structure; copy LDAS into ensemble directories
@@ -109,7 +109,7 @@ for(GCM in GCM.list){
   for(i in 1:n.ens){
     # Create a directory for each ensemble member
     path.ens <- file.path(train.path, paste(ens.ID, ens.mems[i], sep="_"))
-    dir.create(path.ens, recursive=T, showWarnings=F)
+    dir.create(path.ens, recursive=TRUE, showWarnings=FALSE)
   
     # Copy LDAS in there with the new name
     for(j in 1:length(files.ldas)){
@@ -288,16 +288,16 @@ for(i in 1:nrow(ens.bad)){
   for(j in 1:ncol(ens.bad)){
     vars.bad <- dat.summary[i,,1,j] < sum.means[i,,1] - 6*sum.sd[i,,1] | dat.summary[i,,2,j] > sum.means[i,,2] + 6*sum.sd[i,,2]
     if(any(vars.bad)){
-      ens.bad[i,j] <- length(which(vars.bad==T))
+      ens.bad[i,j] <- length(which(vars.bad))
     }
   }
 }
 
 # Summarizing bad ensembles 
-yrs.bad <- apply(ens.bad, 1, sum, na.rm=T)
+yrs.bad <- apply(ens.bad, 1, sum, na.rm=TRUE)
 summary(yrs.bad)
 
-mems.bad <- apply(ens.bad, 2, sum, na.rm=T)
+mems.bad <- apply(ens.bad, 2, sum, na.rm=TRUE)
 length(which(mems.bad==0))/length(mems.bad)
 summary(mems.bad)
 
@@ -415,43 +415,43 @@ for(GCM in GCM.list){
   met.tmp <- list()
   met.tmp$mean <- data.frame(met.base$dat.source$time)
   met.tmp$mean$dataset <- GCM
-  met.tmp$mean$tair.min <- apply(met.base$dat.source$air_temperature_minimum, 1, mean, na.rm=T)
-  met.tmp$mean$tair.max <- apply(met.base$dat.source$air_temperature_maximum, 1, mean, na.rm=T)
-  met.tmp$mean$precip   <- apply(met.base$dat.source$precipitation_flux     , 1, mean, na.rm=T)
+  met.tmp$mean$tair.min <- apply(met.base$dat.source$air_temperature_minimum, 1, mean, na.rm=TRUE)
+  met.tmp$mean$tair.max <- apply(met.base$dat.source$air_temperature_maximum, 1, mean, na.rm=TRUE)
+  met.tmp$mean$precip   <- apply(met.base$dat.source$precipitation_flux     , 1, mean, na.rm=TRUE)
   met.tmp$mean$swdown   <- apply(met.base$dat.source$surface_downwelling_shortwave_flux_in_air, 1, mean, 
-                                 na.rm=T)
+                                 na.rm=TRUE)
   met.tmp$mean$lwdown   <- apply(met.base$dat.source$surface_downwelling_longwave_flux_in_air , 1, mean, 
-                                 na.rm=T)
-  met.tmp$mean$press    <- apply(met.base$dat.source$air_pressure           , 1, mean, na.rm=T)
-  met.tmp$mean$qair     <- apply(met.base$dat.source$specific_humidity      , 1, mean, na.rm=T)
-  met.tmp$mean$wind     <- apply(met.base$dat.source$wind_speed             , 1, mean, na.rm=T)
+                                 na.rm=TRUE)
+  met.tmp$mean$press    <- apply(met.base$dat.source$air_pressure           , 1, mean, na.rm=TRUE)
+  met.tmp$mean$qair     <- apply(met.base$dat.source$specific_humidity      , 1, mean, na.rm=TRUE)
+  met.tmp$mean$wind     <- apply(met.base$dat.source$wind_speed             , 1, mean, na.rm=TRUE)
   
   met.tmp$lwr <- data.frame(met.base$dat.source$time)
   met.tmp$lwr$dataset <- GCM
-  met.tmp$lwr$tair.min <- apply(met.base$dat.source$air_temperature_minimum, 1, quantile, 0.025, na.rm=T)
-  met.tmp$lwr$tair.max <- apply(met.base$dat.source$air_temperature_maximum, 1, quantile, 0.025, na.rm=T)
-  met.tmp$lwr$precip   <- apply(met.base$dat.source$precipitation_flux     , 1, quantile, 0.025, na.rm=T)
+  met.tmp$lwr$tair.min <- apply(met.base$dat.source$air_temperature_minimum, 1, quantile, 0.025, na.rm=TRUE)
+  met.tmp$lwr$tair.max <- apply(met.base$dat.source$air_temperature_maximum, 1, quantile, 0.025, na.rm=TRUE)
+  met.tmp$lwr$precip   <- apply(met.base$dat.source$precipitation_flux     , 1, quantile, 0.025, na.rm=TRUE)
   met.tmp$lwr$swdown   <- apply(met.base$dat.source$surface_downwelling_shortwave_flux_in_air, 1, quantile, 
-                                0.025, na.rm=T)
+                                0.025, na.rm=TRUE)
   met.tmp$lwr$lwdown   <- apply(met.base$dat.source$surface_downwelling_longwave_flux_in_air , 1, quantile, 
-                                0.025, na.rm=T)
-  met.tmp$lwr$press    <- apply(met.base$dat.source$air_pressure           , 1, quantile, 0.025, na.rm=T)
-  met.tmp$lwr$qair     <- apply(met.base$dat.source$specific_humidity      , 1, quantile, 0.025, na.rm=T)
-  met.tmp$lwr$wind     <- apply(met.base$dat.source$wind_speed             , 1, quantile, 0.025, na.rm=T)
+                                0.025, na.rm=TRUE)
+  met.tmp$lwr$press    <- apply(met.base$dat.source$air_pressure           , 1, quantile, 0.025, na.rm=TRUE)
+  met.tmp$lwr$qair     <- apply(met.base$dat.source$specific_humidity      , 1, quantile, 0.025, na.rm=TRUE)
+  met.tmp$lwr$wind     <- apply(met.base$dat.source$wind_speed             , 1, quantile, 0.025, na.rm=TRUE)
   
   
   met.tmp$upr <- data.frame(met.base$dat.source$time)
   met.tmp$upr$dataset <- GCM
-  met.tmp$upr$tair.min <- apply(met.base$dat.source$air_temperature_minimum, 1, quantile, 0.975, na.rm=T)
-  met.tmp$upr$tair.max <- apply(met.base$dat.source$air_temperature_maximum, 1, quantile, 0.975, na.rm=T)
-  met.tmp$upr$precip   <- apply(met.base$dat.source$precipitation_flux     , 1, quantile, 0.975, na.rm=T)
+  met.tmp$upr$tair.min <- apply(met.base$dat.source$air_temperature_minimum, 1, quantile, 0.975, na.rm=TRUE)
+  met.tmp$upr$tair.max <- apply(met.base$dat.source$air_temperature_maximum, 1, quantile, 0.975, na.rm=TRUE)
+  met.tmp$upr$precip   <- apply(met.base$dat.source$precipitation_flux     , 1, quantile, 0.975, na.rm=TRUE)
   met.tmp$upr$swdown   <- apply(met.base$dat.source$surface_downwelling_shortwave_flux_in_air, 1, quantile, 
-                                0.975, na.rm=T)
+                                0.975, na.rm=TRUE)
   met.tmp$upr$lwdown   <- apply(met.base$dat.source$surface_downwelling_longwave_flux_in_air, 1, quantile, 
-                                0.975, na.rm=T)
-  met.tmp$upr$press    <- apply(met.base$dat.source$air_pressure           , 1, quantile, 0.975, na.rm=T)
-  met.tmp$upr$qair     <- apply(met.base$dat.source$specific_humidity      , 1, quantile, 0.975, na.rm=T)
-  met.tmp$upr$wind     <- apply(met.base$dat.source$wind_speed             , 1, quantile, 0.975, na.rm=T)
+                                0.975, na.rm=TRUE)
+  met.tmp$upr$press    <- apply(met.base$dat.source$air_pressure           , 1, quantile, 0.975, na.rm=TRUE)
+  met.tmp$upr$qair     <- apply(met.base$dat.source$specific_humidity      , 1, quantile, 0.975, na.rm=TRUE)
+  met.tmp$upr$wind     <- apply(met.base$dat.source$wind_speed             , 1, quantile, 0.975, na.rm=TRUE)
   
   if(length(met.bias)==0){
     met.bias <- met.tmp
@@ -514,16 +514,16 @@ print(
 dev.off()
 
 # Save the summaries of the raw and bias-corrected data to quickly make some customized graphs elsewhere
-write.csv(met.raw.yr, file.path(path.day.base, "Met_Raw_Annual.csv"      ), row.names=F)
-write.csv(met.bias.yr, file.path(path.day.base, "Met_Corrected_Annual.csv"), row.names=F)
+write.csv(met.raw.yr, file.path(path.day.base, "Met_Raw_Annual.csv"      ), row.names=FALSE)
+write.csv(met.bias.yr, file.path(path.day.base, "Met_Corrected_Annual.csv"), row.names=FALSE)
 
 # Looking at the seasonal cycle
 met.bias.doy.mean <- aggregate(met.bias$mean[,vars.short], by=met.bias$mean[,c("DOY", "dataset")], FUN=mean, 
-                               na.rm=T)
+                               na.rm=TRUE)
 met.bias.doy.lwr  <- aggregate(met.bias$lwr [,vars.short], by=met.bias$lwr [,c("DOY", "dataset")], FUN=mean, 
-                               na.rm=T)
+                               na.rm=TRUE)
 met.bias.doy.upr  <- aggregate(met.bias$upr [,vars.short], by=met.bias$upr [,c("DOY", "dataset")], FUN=mean, 
-                               na.rm=T)
+                               na.rm=TRUE)
 summary(met.bias.doy.mean)
 
 # Stacking everything together
@@ -535,7 +535,7 @@ met.bias.doy$upr <- stack(met.bias.doy.upr[,vars.short])[,1]
 summary(met.bias.doy)
 
 # met.raw$dataset <- as.character(met.raw$dataset2)
-met.raw.doy1 <- aggregate(met.raw[,vars.short], by=met.raw[,c("DOY", "dataset")], FUN=mean, na.rm=T)
+met.raw.doy1 <- aggregate(met.raw[,vars.short], by=met.raw[,c("DOY", "dataset")], FUN=mean, na.rm=TRUE)
 met.raw.doy1$dataset2 <- as.factor(met.raw.doy1$dataset)
 for(i in 1:nrow(met.raw.doy1)){
   met.raw.doy1[i,"dataset"] <- stringr::str_split(met.raw.doy1[i,"dataset2"], "[.]")[[1]][1]
@@ -573,7 +573,7 @@ print(
 dev.off()
 
 # Save the summaries of the raw and bias-corrected data to quickly make some customized graphs elsewhere
-write.csv(met.raw.doy , file.path(path.day.base, "Met_Raw_DOY.csv"      ), row.names=F)
-write.csv(met.bias.doy, file.path(path.day.base, "Met_Corrected_DOY.csv"), row.names=F)
+write.csv(met.raw.doy , file.path(path.day.base, "Met_Raw_DOY.csv"      ), row.names=FALSE)
+write.csv(met.bias.doy, file.path(path.day.base, "Met_Corrected_DOY.csv"), row.names=FALSE)
 
 ```
