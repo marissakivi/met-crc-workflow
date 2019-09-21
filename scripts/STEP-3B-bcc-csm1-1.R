@@ -29,7 +29,7 @@
 ####################
 
 # site information
-site.name = "HARVARD"
+site.name = "HEMLOCK"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
@@ -46,14 +46,14 @@ wd.base = "~/met-crc-workflow"
 ####################
 
 # check for un-installed packages
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('MASS')) install.packages('MASS',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('tictoc')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('MASS')) install.packages('MASS',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('tictoc')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4, lib='~/Rlibs')
 require(mgcv, lib='~/Rlibs')
@@ -71,7 +71,7 @@ path.out <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/ensemb
 path.func <- file.path(wd.base, "functions")
 
 # set & create the output directory
-if(!dir.exists(path.out)) dir.create(path.out, recursive=T)
+if(!dir.exists(path.out)) dir.create(path.out, recursive=TRUE)
 
 yrs.plot <- c(2015, 1985, 1920, 1875, 1800)
 timestep="1hr"
@@ -79,7 +79,7 @@ yrs.sim=NULL
 
 # set up the appropriate seed
 set.seed(0017)
-seed.vec <- sample.int(1e6, size=500, replace=F)
+seed.vec <- sample.int(1e6, size=500, replace=FALSE)
 
 # load required functions
 source(file.path(path.func, "tdm_predict_subdaily_met.R"))

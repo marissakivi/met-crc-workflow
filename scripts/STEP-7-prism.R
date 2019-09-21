@@ -53,12 +53,12 @@ wd.base = '~/met-crc-workflow'
 # Step 1: Set up working directory
 ####################
 
-if (!require('plyr')) install.packages('plyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('raster')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('data.table')) install.packages('data.table',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('rgdal')) install.packages('rgdal',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('reshape2')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('plyr')) install.packages('plyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('raster')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('data.table')) install.packages('data.table',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('rgdal')) install.packages('rgdal',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('reshape2')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(plyr,lib='~/Rlibs')
 require(raster,lib='~/Rlibs')

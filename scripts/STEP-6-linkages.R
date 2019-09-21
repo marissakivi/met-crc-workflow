@@ -28,10 +28,10 @@ last.year=2015
 
 # set up important paths
 path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'complete')
-if (!dir.exists(path.out)) dir.create(path.out,recursive=T)
+if (!dir.exists(path.out)) dir.create(path.out,recursive=TRUE)
 path.in = file.path(wd.base,'ensembles',paste0(site.name,vers),'aggregated/month')
 path.folder = file.path(path.out,'linkages')
-if (!dir.exists(path.folder)) dir.create(path.folder,recursive=T)
+if (!dir.exists(path.folder)) dir.create(path.folder,recursive=TRUE)
 
 ####################
 # Step 2: Load monthly data 
@@ -77,7 +77,7 @@ for (i in 1:n_models){
   
   # save as climate.Rdata in a folder named after ensemble
   folder = file.path(path.folder,models[i])
-  if (!dir.exists(folder)) dir.create(folder, recursive=T)
+  if (!dir.exists(folder)) dir.create(folder, recursive=TRUE)
   
   save(precip.mat=precip.mat, temp.mat=temp.mat, file = file.path(folder,'climate.Rdata'))
 }

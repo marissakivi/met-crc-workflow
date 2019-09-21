@@ -21,18 +21,17 @@
 ####################
 
 # Load site and directory details
-site.name = "NRP"
+site.name = "HEMLOCK"
 wd.base = '~/met-crc-workflow'
-site.name = "GILL"
 vers=".v1"
 
 ####################
 # Step 1: Set up working directory
 ####################
 
-if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(parallel,lib='~/Rlibs')
 require(ncdf4,lib='~/Rlibs')
@@ -54,11 +53,11 @@ for(GCM in GCM.list){
   pb.ind=1
   for(ens in gcm.ens){
     aggregate.met(path.in=file.path(in.base, GCM, ens), 
-                  years.agg=NULL, save.day=F, save.month=T, 
+                  years.agg=NULL, save.day=FALSE, save.month=TRUE, 
                   out.base=out.base, day.dir=file.path("day", GCM, ens), mo.dir=file.path("month", GCM, ens), 
                   add.vars=c("daylength", "air_temperature_maximum", "air_temperature_minimum"),
-                  parallel=F, n.cores=8, 
-                  print.progress=F, verbose=FALSE)
+                  parallel=FALSE, n.cores=8, 
+                  print.progress=FALSE, verbose=FALSE)
     
     setTxtProgressBar(pb, pb.ind)
     pb.ind=pb.ind+1
