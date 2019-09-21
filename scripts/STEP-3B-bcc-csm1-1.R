@@ -37,7 +37,7 @@ vers=".v1"
 first.year = 850
 
 ens.hr  <- 2 # Number of hourly ensemble members to create
-n.day <- 10 # Number of daily ensemble members to process
+n.day <- 25 # Number of daily ensemble members to process
 
 wd.base = "~/met-crc-workflow"
 

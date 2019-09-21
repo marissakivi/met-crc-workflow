@@ -26,11 +26,11 @@
 
 # Load site and directory details
 wd.base = '~/met-crc-workflow'
-site.name = "HEMLOCK"
-site.lat  = 45.3333
-site.lon  = -90.08333
+site.name = "BIGWOODS"
+site.lat  = 45.410739
+site.lon  = -93.715137
 vers=".v1"
-ens=1:10
+ens=1:25
 
 # this should be adjusted depending on the site type (short or long) 
 first.year = 850 
@@ -95,7 +95,7 @@ raw.base <- file.path(path.in,site.name)
 
 for(GCM in GCM.list){
   ens.ID=GCM
-  
+  print(paste("Debiasing GCM",ens.ID))
   # Set up a file path for our ensemble to work with now
   train.path <- file.path(out.base, "ensembles", GCM)
   dir.create(train.path, recursive=TRUE, showWarnings=FALSE)
@@ -126,11 +126,12 @@ for(GCM in GCM.list){
   # --------------------------
   # 1. Align CRU 6-hourly with LDAS daily
   source.path <- file.path(raw.base, "CRUNCEP")
-
+  
+  print('CRUNCEP with LDAS')
   # We're now pulling an ensemble because we've set up the file paths and copied LDAS over 
   # (even though all ensemble members will be identical here)
   met.out <- align.met(train.path, source.path, yrs.train=NULL, yrs.source=NULL, n.ens=n.ens, seed=201708, 
-                     pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"),print.progress = TRUE)
+                     pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"),print.progress = FALSE)
 
   # Calculate wind speed if it's not already there
   if(!"wind_speed" %in% names(met.out$dat.source)){
@@ -138,7 +139,7 @@ for(GCM in GCM.list){
   }
 
   # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
-  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=10, 
+  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens, 
                         vars.debias=NULL, CRUNCEP=TRUE, pair.anoms = TRUE, pair.ens = FALSE, 
                         uncert.prop="mean", resids = FALSE, seed=Sys.Date(), outfolder=train.path, 
                         yrs.save=NULL, ens.name=ens.ID, ens.mems=ens.mems, lat.in=site.lat, lon.in=site.lon,
@@ -151,6 +152,7 @@ for(GCM in GCM.list){
   # 1. Align GCM daily with our current ensemble
   source.path <- file.path(raw.base, GCM, "historical")
 
+  print('Historical with CRUNCEP')
   # We're now pulling an ensemble because we've set up the file paths and copied LDAS over 
   # (even though all ensemble members will be identical here)
 
@@ -170,7 +172,7 @@ for(GCM in GCM.list){
   met.out$dat.source$time <- met.out$dat.source$time[met.out$dat.source$time$Year<=2000,]
 
   # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
-  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=10, 
+  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens, 
                         vars.debias=NULL, CRUNCEP=FALSE, pair.anoms = FALSE, pair.ens = FALSE, 
                         uncert.prop="mean", resids = FALSE, seed=Sys.Date(),outfolder=train.path, 
                         yrs.save=1850:1900, ens.name=ens.ID, ens.mems=ens.mems, lat.in=site.lat, 
@@ -184,6 +186,7 @@ for(GCM in GCM.list){
   # 1. Align GCM daily with our current ensemble
   source.path <- file.path(raw.base, GCM, "p1000")
 
+  print('p1000 with historical') 
   # We're now pulling an ensemble because we've set up the file paths and copied LDAS over 
   # (even though all ensemble members will be identical here)
 
@@ -196,7 +199,7 @@ for(GCM in GCM.list){
   }
 
   # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
-  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=10, 
+  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens, 
                         vars.debias=NULL, CRUNCEP=FALSE, pair.anoms = FALSE, pair.ens = FALSE, 
                         uncert.prop="mean", resids = FALSE, seed=Sys.Date(),
                         outfolder=train.path, yrs.save=NULL, ens.name=ens.ID, ens.mems=ens.mems, 
@@ -409,7 +412,7 @@ met.bias <- list()
 for(GCM in GCM.list){
   print(GCM)
   met.base <- align.met(train.path=file.path(path.raw.base, "NLDAS_day"), 
-                        source.path = file.path(path.day.base, "ensembles", GCM), n.ens=10, pair.mems=FALSE, 
+                        source.path = file.path(path.day.base, "ensembles", GCM), n.ens=n.ens, pair.mems=FALSE, 
                         seed=201709)
   
   met.tmp <- list()
