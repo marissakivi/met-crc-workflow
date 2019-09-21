@@ -28,7 +28,7 @@
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "HARVARD"
+site.name = "HEMLOCK"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
@@ -36,7 +36,7 @@ vers=".v1"
 first.year = 850
 
 ens.hr  <- 2 # Number of hourly ensemble members to create
-n.day <- 10 # Number of daily ensemble members to process
+n.day <- 25 # Number of daily ensemble members to process
 
 # working directory
 wd.base = "~/met-crc-workflow"
