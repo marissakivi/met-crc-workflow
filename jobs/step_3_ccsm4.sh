@@ -2,7 +2,7 @@
 
 #$ -M mkivi@nd.edu
 #$ -m abe
-#$ -pe smp 1
+#$ -pe smp 2
 #$ -q long
 #$ -N step3_ccsm4
 

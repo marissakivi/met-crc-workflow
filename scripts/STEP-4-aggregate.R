@@ -21,9 +21,8 @@
 ####################
 
 # Load site and directory details
-site.name = "NRP"
+site.name = "HEMLOCK"
 wd.base = '~/met-crc-workflow'
-site.name = "GILL"
 vers=".v1"
 
 ####################

@@ -80,94 +80,94 @@ path.bad <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/reject
 if(!dir.exists(path.bad)) dir.create(path.bad, recursive = T)
 
 GCM.list <- dir(path.dat)
-ens.mems <- vector()
-n.files <- 0
-var.names <- vector()
-for(GCM in GCM.list){
-  ens.now <- dir(file.path(path.dat, GCM))
-  ens.mems <- c(ens.mems, ens.now)
+#ens.mems <- vector()
+#n.files <- 0
+#var.names <- vector()
+#for(GCM in GCM.list){
+#  ens.now <- dir(file.path(path.dat, GCM))
+#  ens.mems <- c(ens.mems, ens.now)
   
-  files.now <- dir(file.path(path.dat, GCM, ens.now[1]))
-  n.files <- max(n.files, length(files.now))
-  
-  ncT <- ncdf4::nc_open(file.path(path.dat, GCM, ens.now[1], files.now[1]))
-  var.names <- names(ncT$var)
-  ncdf4::nc_close(ncT)
-}
+#  files.now <- dir(file.path(path.dat, GCM, ens.now[1]))
+#  n.files <- max(n.files, length(files.now))
+#  
+#  ncT <- ncdf4::nc_open(file.path(path.dat, GCM, ens.now[1], files.now[1]))
+#  var.names <- names(ncT$var)
+#  ncdf4::nc_close(ncT)
+#}
 
 # Set up a blank array to store everything in
-dat.summary <- array(dim=c(n.files, length(var.names), 2, length(ens.mems))) # dim[3] == 2 so we can store min/max
-dimnames(dat.summary)[[1]] <- seq(2015, first.year, by=-1)
-dimnames(dat.summary)[[2]] <- var.names
-dimnames(dat.summary)[[3]] <- c("yr.min", "yr.max")
-dimnames(dat.summary)[[4]] <- ens.mems
-names(dimnames(dat.summary)) <- c("Year", "Var", "max.min", "ensemble.member")
-summary(dimnames(dat.summary))
+#dat.summary <- array(dim=c(n.files, length(var.names), 2, length(ens.mems))) # dim[3] == 2 so we can store min/max
+#dimnames(dat.summary)[[1]] <- seq(2015, first.year, by=-1)
+#dimnames(dat.summary)[[2]] <- var.names
+#dimnames(dat.summary)[[3]] <- c("yr.min", "yr.max")
+#dimnames(dat.summary)[[4]] <- ens.mems
+#names(dimnames(dat.summary)) <- c("Year", "Var", "max.min", "ensemble.member")
+#summary(dimnames(dat.summary))
 
 # Loop through and get the summary stats
-pb <- txtProgressBar(min=0, max=dim(dat.summary)[1]*dim(dat.summary)[2]*dim(dat.summary)[4], style=3)
-pb.ind=1
-
-for(GCM in 1:length(GCM.list)){
-  ens.gcm <- dir(file.path(path.dat, GCM.list[GCM]))
-  
-  for(ens in 1:length(ens.gcm)){
-    ens.ind <- which(ens.mems == ens.gcm[ens])
-    
-    f.all <- rev(dir(file.path(path.dat, GCM.list[GCM], ens.gcm[ens])))
-    
-    for(fnow in 1:length(f.all)){
-      ncT <- ncdf4::nc_open(file.path(path.dat, GCM.list[GCM], ens.gcm[ens], f.all[fnow]))
-      
-      for(v in length(var.names):1){
-        dat.summary[fnow,v,1,ens.ind] <- min(ncdf4::ncvar_get(ncT, var.names[v]))
-        dat.summary[fnow,v,2,ens.ind] <- max(ncdf4::ncvar_get(ncT, var.names[v]))
-        
-        setTxtProgressBar(pb, pb.ind)
-        pb.ind <- pb.ind+1
-      }
-      
-      ncdf4::nc_close(ncT)
-    }
-  }
-}
+#pb <- txtProgressBar(min=0, max=dim(dat.summary)[1]*dim(dat.summary)[2]*dim(dat.summary)[4], style=3)
+#pb.ind=1
+#
+#for(GCM in 1:length(GCM.list)){
+#  ens.gcm <- dir(file.path(path.dat, GCM.list[GCM]))
+#  
+#  for(ens in 1:length(ens.gcm)){
+#    ens.ind <- which(ens.mems == ens.gcm[ens])
+#    
+#    f.all <- rev(dir(file.path(path.dat, GCM.list[GCM], ens.gcm[ens])))
+#    
+#    for(fnow in 1:length(f.all)){
+#      ncT <- ncdf4::nc_open(file.path(path.dat, GCM.list[GCM], ens.gcm[ens], f.all[fnow]))
+#      
+#      for(v in length(var.names):1){
+#        dat.summary[fnow,v,1,ens.ind] <- min(ncdf4::ncvar_get(ncT, var.names[v]))
+#        dat.summary[fnow,v,2,ens.ind] <- max(ncdf4::ncvar_get(ncT, var.names[v]))
+#        
+#        setTxtProgressBar(pb, pb.ind)
+#        pb.ind <- pb.ind+1
+#      }
+#      
+#      ncdf4::nc_close(ncT)
+#    }
+#  }
+#}
 
 # filter and identify outliers
-ens.bad <- array(dim=c(n.files, length(ens.mems)))
-dimnames(ens.bad)[[1]] <- dimnames(dat.summary)[[1]]
-dimnames(ens.bad)[[2]] <- dimnames(dat.summary)[[4]]
+#ens.bad <- array(dim=c(n.files, length(ens.mems)))
+#dimnames(ens.bad)[[1]] <- dimnames(dat.summary)[[1]]
+#dimnames(ens.bad)[[2]] <- dimnames(dat.summary)[[4]]
 
-sum.means <- apply(dat.summary[,,,], c(1, 2, 3), FUN=mean)
-sum.sd    <- apply(dat.summary[,,,], c(1, 2, 3), FUN=sd)
+#sum.means <- apply(dat.summary[,,,], c(1, 2, 3), FUN=mean)
+#sum.sd    <- apply(dat.summary[,,,], c(1, 2, 3), FUN=sd)
 
 
-for(i in 1:nrow(ens.bad)){
-  for(j in 1:ncol(ens.bad)){
-    vars.bad <- dat.summary[i,,1,j] < sum.means[i,,1] - 6*sum.sd[i,,1] | dat.summary[i,,2,j] > sum.means[i,,2] + 6*sum.sd[i,,2]
-    if(all(is.na(vars.bad))) next
-    if(any(vars.bad)){
-      ens.bad[i,j] <- length(which(vars.bad==T))
-    }
-  }
-}
+#for(i in 1:nrow(ens.bad)){
+#  for(j in 1:ncol(ens.bad)){
+#    vars.bad <- dat.summary[i,,1,j] < sum.means[i,,1] - 6*sum.sd[i,,1] | dat.summary[i,,2,j] > sum.means[i,,2] + 6*sum.sd[i,,2]
+#    if(all(is.na(vars.bad))) next
+#    if(any(vars.bad)){
+#      ens.bad[i,j] <- length(which(vars.bad==T))
+#    }
+#  }
+#}
 
 # summarizing bad ensembles 
-yrs.bad <- apply(ens.bad, 1, sum, na.rm=T)
-summary(yrs.bad)
+#yrs.bad <- apply(ens.bad, 1, sum, na.rm=T)
+#summary(yrs.bad)
 
-mems.bad <- apply(ens.bad, 2, sum, na.rm=T)
-length(which(mems.bad==0))/length(mems.bad)
-summary(mems.bad)
+#mems.bad <- apply(ens.bad, 2, sum, na.rm=T)
+#length(which(mems.bad==0))/length(mems.bad)
+#summary(mems.bad)
 
-quantile(mems.bad, 0.90)
+#quantile(mems.bad, 0.90)
 
 # move the bad ensemble members
-mems.bad[mems.bad>0]
+#mems.bad[mems.bad>0]
 
-for(mem in names(mems.bad[mems.bad>0])){
-  GCM <- stringr::str_split(mem, "_")[[1]][1]
-  system(paste("mv", file.path(path.dat, GCM, mem), file.path(path.bad, mem), sep=" "))
-}
+#for(mem in names(mems.bad[mems.bad>0])){
+#  GCM <- stringr::str_split(mem, "_")[[1]][1]
+#  system(paste("mv", file.path(path.dat, GCM, mem), file.path(path.bad, mem), sep=" "))
+#}
 ```
 
 # Step 3: Visually check predicted values 
@@ -179,8 +179,8 @@ path.out <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/figure
 dir.create(path.out, recursive=T, showWarnings = F)
 GCM.list <- c("bcc-csm1-1", "CCSM4", "MIROC-ESM", "MPI-ESM-P")
 
-n.day <- 1 # How many parent ensembles we want to graph
-n.hr <- 3 # How many independent hourly ensembles we want to show
+n.day <- 5 # How many parent ensembles we want to graph
+n.hr <- 5 # How many independent hourly ensembles we want to show
 
 yrs.check <- c(2015, 1985, 1920, 1875, 1800)
 days.graph <- data.frame(winter=(45-3):(45+3), spring=(135-3):(135+3), summer=(225-3):(225+3), fall=(315-3):(315+3))

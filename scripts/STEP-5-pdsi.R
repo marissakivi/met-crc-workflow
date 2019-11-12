@@ -29,15 +29,14 @@
 ####################
 
 # Load site and directory details
-site.name = "GLSP"
-site.lat  = 45.54127
-site.lon  = -95.5313
-site.name = "GILL"
+site.name = "HEMLOCK"
+site.lat  = 45.3333
+site.lon  = -90.08333
 
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
-first.year=1800
+first.year=850
 
 # working directory
 wd.base = "~/met-crc-workflow"

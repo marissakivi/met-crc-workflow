@@ -34,7 +34,7 @@
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "HARVARD"
+site.name = "HEMLOCK"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
@@ -138,7 +138,8 @@ sum.sd    <- apply(dat.summary[,,,], c(1, 2, 3), FUN=sd)
 
 for(i in 1:nrow(ens.bad)){
   for(j in 1:ncol(ens.bad)){
-    vars.bad <- dat.summary[i,,1,j] < sum.means[i,,1] - 6*sum.sd[i,,1] | dat.summary[i,,2,j] > sum.means[i,,2] + 6*sum.sd[i,,2]
+
+    vars.bad <- dat.summary[i,,1,j] < sum.means[i,,1] - 6*sum.sd[i,,1] | dat.summary[i,,2,j] > sum.means[i,,2] + 6*sum.sd[i,,2]    
     if(all(is.na(vars.bad))) next
     if(any(vars.bad)){
       ens.bad[i,j] <- length(which(vars.bad==T))
@@ -174,8 +175,8 @@ path.out <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/figure
 dir.create(path.out, recursive=T, showWarnings = F)
 GCM.list <- c("bcc-csm1-1", "CCSM4", "MIROC-ESM", "MPI-ESM-P")
 
-n.day <- 1 # How many parent ensembles we want to graph
-n.hr <- 3 # How many independent hourly ensembles we want to show
+n.day <- 4 # How many parent ensembles we want to graph
+n.hr <- 4 # How many independent hourly ensembles we want to show
 
 yrs.check <- c(2015, 1985, 1920, 1875, 1800)
 days.graph <- data.frame(winter=(45-3):(45+3), spring=(135-3):(135+3), summer=(225-3):(225+3), fall=(315-3):(315+3))
@@ -216,7 +217,7 @@ for(GCM in GCM.list){
         time.nc <- ncdf4::ncvar_get(ncT, "time")
         
         dat.temp <- data.frame(GCM=GCM, ens.day=ens.day, ens.hr=ens.now, year = yr, doy = rep(1:nday, each=24), hour=rep(seq(0.5, 24, by=1), nday))
-        dat.temp$date <- strptime(paste(dat.temp$year, dat.temp$doy, dat.temp$hour, sep="-"), format=("%Y-%j-%H"), tz="UTC")
+        dat.temp$date <- as.POSIXct(strptime(paste(dat.temp$year, dat.temp$doy, dat.temp$hour, sep="-"), format=("%Y-%j-%H"), tz="UTC"))
         
         for(v in 1:length(vars.CF)){
           dat.temp[,vars.CF[v]] <- ncdf4::ncvar_get(ncT, vars.CF[v])
@@ -254,7 +255,7 @@ dat.ens <- aggregate(dat.ind[,"mean"], by=dat.ind[,c("ind", "GCM", "ens.day", "y
 names(dat.ens)[which(names(dat.ens)=="x")] <- "mean"
 dat.ens$lwr <- aggregate(dat.ind[,"mean"], by=dat.ind[,c("ind", "GCM", "ens.day", "year", "season", "doy", "hour")], FUN=quantile, 0.025)$x
 dat.ens$upr <- aggregate(dat.ind[,"mean"], by=dat.ind[,c("ind", "GCM", "ens.day", "year", "season", "doy", "hour")], FUN=quantile, 0.975)$x
-dat.ens$date <- strptime(paste(dat.ens$year, dat.ens$doy, dat.ens$hour, sep="-"), format=("%Y-%j-%H"), tz="UTC")
+dat.ens$date <- as.POSIXct(strptime(paste(dat.ens$year, dat.ens$doy, dat.ens$hour, sep="-"), format=("%Y-%j-%H"), tz="UTC"))
 summary(dat.ens)
 
 for(v in unique(dat.ens$ind)){
@@ -262,8 +263,8 @@ for(v in unique(dat.ens$ind)){
   for(yr in yrs.check[yrs.check %in% unique(dat.ens$year)]){
     print(
       ggplot(data=dat.ens[dat.ens$ind==v & dat.ens$year==yr,]) + facet_wrap(~season, scales="free_x") +
-        geom_ribbon(aes(x=date$yday, ymin=lwr, ymax=upr, fill=ens.day), alpha=0.5) +
-        geom_line(aes(x=date$yday, y=mean, color=ens.day)) +
+        geom_ribbon(aes(x=date, ymin=lwr, ymax=upr, fill=ens.day), alpha=0.5) +
+        geom_line(aes(x=date, y=mean, color=ens.day)) +
         ggtitle(paste(v, yr, sep=" - "))
     )
   }
@@ -273,7 +274,7 @@ for(v in unique(dat.ens$ind)){
   for(yr in yrs.check[yrs.check %in% unique(dat.ens$year)]){
     print(
       ggplot(data=dat.ind[dat.ind$ind==v & dat.ind$year==yr,]) + facet_wrap(~season, scales="free_x") +
-        geom_line(aes(x=date$yday, y=mean, color=ens.day, group=ens.hr)) +
+        geom_line(aes(x=date, y=mean, color=ens.day, group=ens.hr)) +
         ggtitle(paste(v, yr, sep=" - "))
     )
   }
