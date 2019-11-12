@@ -48,16 +48,16 @@ first.year = 850
 ####################
 
 # check for un-installed packages
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('MASS')) install.packages('MASS',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('tictoc')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stats')) install.packages('stats',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('utils')) install.packages('utils',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('MASS')) install.packages('MASS',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('tictoc')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('parallel')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stats')) install.packages('stats',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('utils')) install.packages('utils',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4, lib='~/Rlibs')
 require(mgcv, lib='~/Rlibs')
@@ -97,5 +97,5 @@ source(file.path(path.func, "tdm_subdaily_pred.R"))
 gen.subdaily.models(outfolder=path.out, path.train=path.train,
                     yrs.train=NULL, direction.filter="backward", in.prefix=site.name,
                     n.beta=5000, day.window=7, seed=1026, resids = FALSE, 
-                    parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE, print.progress=T) 
+                    parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE, print.progress=TRUE) 
 

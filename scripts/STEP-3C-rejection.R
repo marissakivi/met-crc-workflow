@@ -49,10 +49,10 @@ wd.base = "~/met-crc-workflow"
 ####################
 
 # check for un-installed packages
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4, lib='~/Rlibs')
 require(lubridate,lib='~/Rlibs')
@@ -142,16 +142,16 @@ for(i in 1:nrow(ens.bad)){
     vars.bad <- dat.summary[i,,1,j] < sum.means[i,,1] - 6*sum.sd[i,,1] | dat.summary[i,,2,j] > sum.means[i,,2] + 6*sum.sd[i,,2]    
     if(all(is.na(vars.bad))) next
     if(any(vars.bad)){
-      ens.bad[i,j] <- length(which(vars.bad==T))
+      ens.bad[i,j] <- length(which(vars.bad))
     }
   }
 }
 
 # summarizing bad ensembles 
-yrs.bad <- apply(ens.bad, 1, sum, na.rm=T)
+yrs.bad <- apply(ens.bad, 1, sum, na.rm=TRUE)
 summary(yrs.bad)
 
-mems.bad <- apply(ens.bad, 2, sum, na.rm=T)
+mems.bad <- apply(ens.bad, 2, sum, na.rm=TRUE)
 length(which(mems.bad==0))/length(mems.bad)
 summary(mems.bad)
 
@@ -172,7 +172,7 @@ for(mem in names(mems.bad[mems.bad>0])){
 path.dat <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/ensembles/")
 path.out <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/figures_qaqc")
 
-dir.create(path.out, recursive=T, showWarnings = F)
+dir.create(path.out, recursive=TRUE, showWarnings =FALSE)
 GCM.list <- c("bcc-csm1-1", "CCSM4", "MIROC-ESM", "MPI-ESM-P")
 
 n.day <- 4 # How many parent ensembles we want to graph
@@ -193,7 +193,7 @@ for(GCM in GCM.list){
   # *up to* n.day for plotting
   ens.all <- dir(file.path(path.dat, GCM))
   ens.names <- str_split(ens.all, "[.]")
-  ens.names <- matrix(unlist(ens.names), ncol=length(ens.names[[1]]), byrow=T)
+  ens.names <- matrix(unlist(ens.names), ncol=length(ens.names[[1]]), byrow=TRUE)
   parent.day <- unique(ens.names[,1])
   
   # Randomly picking up to n.day ensemble members for plotting

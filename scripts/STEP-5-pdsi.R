@@ -46,12 +46,12 @@ wd.base = "~/met-crc-workflow"
 ####################
 
 # load required packages 
-if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('abind')) install.packages('abind',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
-if (!require('R.matlab')) install.packages('R.matlab',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('abind')) install.packages('abind',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('R.matlab')) install.packages('R.matlab',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ggplot2,lib='~/Rlibs')
 require(ncdf4,lib='~/Rlibs')
@@ -156,34 +156,34 @@ for(GCM in GCM.list){
 
 # Save the Output
 # Temperature is in F and precipitation is inches/months
-write.csv(out.save$Temp, file.path(in.base, "Temperature_AllMembers.csv"), row.names=T)
-write.csv(out.save$Precip, file.path(in.base, "Precipitation_AllMembers.csv"), row.names=T)
-write.csv(out.save$PDSI, file.path(in.base, "PDSI_AllMembers.csv"), row.names=T)
+write.csv(out.save$Temp, file.path(in.base, "Temperature_AllMembers.csv"), row.names=TRUE)
+write.csv(out.save$Precip, file.path(in.base, "Precipitation_AllMembers.csv"), row.names=TRUE)
+write.csv(out.save$PDSI, file.path(in.base, "PDSI_AllMembers.csv"), row.names=TRUE)
 
 ####################
 # Step 4: Graphing
 ####################
 
-tair.ann <- data.frame(apply(temp.array, c(1,3), mean, na.rm=T))
-precip.ann <- data.frame(apply(precip.array, c(1,3), sum, na.rm=T))
-pdsi.ann <- data.frame(apply(pdsi.array, c(1,3), mean, na.rm=T))
+tair.ann <- data.frame(apply(temp.array, c(1,3), mean, na.rm=TRUE))
+precip.ann <- data.frame(apply(precip.array, c(1,3), sum, na.rm=TRUE))
+pdsi.ann <- data.frame(apply(pdsi.array, c(1,3), mean, na.rm=TRUE))
 
 
 tair.summ <- data.frame(var="Temperature", 
                         year=first.year:2015, 
-                        median=apply(tair.ann, 1, median, na.rm=T),
-                        lwr =apply(tair.ann, 1, quantile, 0.025, na.rm=T),
-                        upr =apply(tair.ann, 1, quantile, 0.975, na.rm=T))
+                        median=apply(tair.ann, 1, median, na.rm=TRUE),
+                        lwr =apply(tair.ann, 1, quantile, 0.025, na.rm=TRUE),
+                        upr =apply(tair.ann, 1, quantile, 0.975, na.rm=TRUE))
 precip.summ <- data.frame(var="Precipitation",
                           year=first.year:2015, 
-                          median=apply(precip.ann, 1, median, na.rm=T),
-                          lwr =apply(precip.ann, 1, quantile, 0.025, na.rm=T),
-                          upr =apply(precip.ann, 1, quantile, 0.975, na.rm=T))
+                          median=apply(precip.ann, 1, median, na.rm=TRUE),
+                          lwr =apply(precip.ann, 1, quantile, 0.025, na.rm=TRUE),
+                          upr =apply(precip.ann, 1, quantile, 0.975, na.rm=TRUE))
 pdsi.summ <- data.frame(var="PDSI",
                         year=first.year:2015, 
-                        median=apply(pdsi.ann, 1, median, na.rm=T),
-                        lwr =apply(pdsi.ann, 1, quantile, 0.025, na.rm=T),
-                        upr =apply(pdsi.ann, 1, quantile, 0.975, na.rm=T))
+                        median=apply(pdsi.ann, 1, median, na.rm=TRUE),
+                        lwr =apply(pdsi.ann, 1, quantile, 0.025, na.rm=TRUE),
+                        upr =apply(pdsi.ann, 1, quantile, 0.975, na.rm=TRUE))
 
 met.all <- rbind(tair.summ, precip.summ, pdsi.summ)
 
