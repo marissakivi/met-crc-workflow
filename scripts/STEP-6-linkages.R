@@ -13,9 +13,6 @@
 # Load site and directory details
 site.name = "GILL"
 wd.base = '~/met-crc-workflow'
-site.name = "NRP"
-site.lat  = 42.84514
-site.lon  = -72.4473
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
@@ -27,7 +24,7 @@ last.year=2015
 ####################
 
 # set up important paths
-path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'complete')
+path.out = file.path(wd.base,'ensembles',paste0(site.name,vers),'completed')
 if (!dir.exists(path.out)) dir.create(path.out,recursive=TRUE)
 path.in = file.path(wd.base,'ensembles',paste0(site.name,vers),'aggregated/month')
 path.folder = file.path(path.out,'linkages')
@@ -75,13 +72,11 @@ for (i in 1:n_models){
     precip.mat[k,] = (df$precip[df$year==yr]) * 2.54 #cm/in
   }
   
-  # save as climate.Rdata in a folder named after ensemble
-  folder = file.path(path.folder,models[i])
-  if (!dir.exists(folder)) dir.create(folder, recursive=TRUE)
-  
-  save(precip.mat=precip.mat, temp.mat=temp.mat, file = file.path(folder,'climate.Rdata'))
+  # save after ensemble name
+  save(precip.mat=precip.mat, temp.mat=temp.mat, file = file.path(path.folder,paste0(models[i],'.Rdata')))
 }
 
+ens = list.files(path.folder,full.names =T)
 # check temperature
 jpeg(file.path(path.out,'linkages-temp-check.jpg'))
 par(mfrow=c(2,2))
@@ -90,7 +85,7 @@ for (i in years){
        xlab = 'Months', ylab = 'Temperature (C)', main = paste('Mean air temperature in',i))
   id = i - first.year + 1
   for (e in ens){
-    load(paste0(path.folder,'/',e,'/climate.Rdata'))
+    load(e)
     points(c(1:12),temp.mat[id,])
   }
 }
@@ -105,7 +100,7 @@ for (i in years){
        xlab = 'Months', ylab = 'Precipitation (cm)', main = paste('Precipitation in',i))
   id = i - first.year + 1
   for (e in ens){
-    load(paste0(path.folder,'/',e,'/climate.Rdata'))
+    load(e)
     points(c(1:12),precip.mat[id,])
   }
 }
