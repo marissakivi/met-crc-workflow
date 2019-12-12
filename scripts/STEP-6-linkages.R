@@ -78,9 +78,10 @@ for (i in 1:n_models){
 
 ens = list.files(path.folder,full.names =T)
 # check temperature
+years_plot = c(1800,1900,2000)
 jpeg(file.path(path.out,'linkages-temp-check.jpg'))
 par(mfrow=c(2,2))
-for (i in years){
+for (i in years_plot){
   plot(NULL, xlim=c(0,13), ylim = c(-20,60), 
        xlab = 'Months', ylab = 'Temperature (C)', main = paste('Mean air temperature in',i))
   id = i - first.year + 1
@@ -95,7 +96,7 @@ dev.off()
 # next precipitation
 jpeg(file.path(path.out,'linkages-precip-check.jpg'))
 par(mfrow=c(2,2))
-for (i in years){
+for (i in years_plot){
   plot(NULL, xlim=c(0,13), ylim = c(0,20), 
        xlab = 'Months', ylab = 'Precipitation (cm)', main = paste('Precipitation in',i))
   id = i - first.year + 1
