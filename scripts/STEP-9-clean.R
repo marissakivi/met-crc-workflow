@@ -16,26 +16,27 @@
 ####################
 
 # Load site and directory details
-site = "HARVARD" # should be identical to paleon site name 
+site = "BIGWOODS" # should be identical to paleon site name 
 vers=".v1"
-
-# input years the met ensembles were generated for (long or short run?)
-ens.yr1 = 850
-ens.yr2 = 2015
 
 # working directory
 wd.base = '~/met-crc-workflow'
 
 ####################
-# Step 1: Compress folder
+# Compress hourly ensembles for CyVerse
 ####################
 
 # set up important file paths
-in.base = file.path(wd.base, "ensembles", paste0(site, vers), "linkages")
-out.base =  file.path(wd.base, "completed")
+in.base = file.path(wd.base, "ensembles", paste0(site, vers), "1hr","ensembles")
 
-if(!dir.exists(out.base)) dir.create(out.base,recursive=T)
+# get all GCMs for this site
+GCMs = list.files(in.base, recursive = FALSE, full.names = TRUE) 
 
-# compress met file and place in completed folder
-system(paste0("tar -jcvf ", file.path(out.base, paste0(site,vers,".tar.bz2 ")), in.base), show.output.on.console = F)
-
+# loop through GCMs and compress files 
+for (gcm in GCMs){
+  to_comp = list.files(gcm, recursive = FALSE, full.names = FALSE)
+  
+  for (file in to_comp){
+    system(paste0("tar -jcvf ", file.path(gcm,paste0(file, '.tar.bz2 ')), file.path(gcm,file)))
+  }
+}

@@ -36,14 +36,14 @@
 ########################################################### 
 
 # Load site details
-site = 'ROOSTER' # should be identical to paleon site name 
-site.name = 'Rooster Hill' # for graph titling purposes
-site.lat  = 43.2309 
-site.lon  = -74.5267
+site = 'HEMLOCK' # should be identical to paleon site name 
+site.name = 'Hemlock Mountain' # for graph titling purposes
+site.lat  = 45.3333 
+site.lon  = -90.08333
 vers=".v1"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
-CRC = FALSE
+CRC = TRUE
 PLOT = TRUE
 
 # working directory 
@@ -556,7 +556,7 @@ if (PLOT){
 
 ### Graph 2: Heat Map of Ensemble Weights over Time ###
 
-if (plot){
+if (PLOT){
 
   # calculate mean weights 
   w_mean <- apply(w, c(2, 3), mean)
@@ -583,7 +583,7 @@ if (plot){
 
 ### Graph 3: Histogram showing proportion of ensembles that are greater than empirical value over time ###
 
-if (plot){
+if (PLOT){
   
   # PDSI 
   first.pdsi.yr = min(subset(df.cal, !is.na(pdsi))$year)
