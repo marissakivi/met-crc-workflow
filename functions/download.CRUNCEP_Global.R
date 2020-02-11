@@ -199,7 +199,8 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
       #PEcAn.logger::logger.info("Attempting to access file at: ", url)
       print(paste("Attempting to access file at: ", url))
       if (method == "opendap") {
-        dap <- PEcAn.utils::retry.func(ncdf4::nc_open(url, verbose=verbose), maxErrors=maxErrors, sleep=sleep)
+        #dap <- PEcAn.utils::retry.func(ncdf4::nc_open(url, verbose=verbose), maxErrors=maxErrors, sleep=sleep)
+        dap <- ncdf4::nc_open(url, verbose=verbose)
       } else if (method == "ncss") {
         ncss_query <- glue::glue(
           url, "?",
