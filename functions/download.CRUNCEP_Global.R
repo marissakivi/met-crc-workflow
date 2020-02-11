@@ -28,9 +28,9 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
 
   if (is.null(method)) method <- "opendap"
   if (!method %in% c("opendap", "ncss")) {
-    PEcAn.logger::logger.severe(glue::glue(
-      "Bad method '{method}'. Currently, only 'opendap' or 'ncss' are supported."
-    ))
+    #PEcAn.logger::logger.severe(glue::glue(
+    #  "Bad method '{method}'. Currently, only 'opendap' or 'ncss' are supported."
+    #))
   }
 
   start_date <- as.POSIXlt(start_date, tz = "UTC")
@@ -42,9 +42,13 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
   CRUNCEP_start <- 1901
   CRUNCEP_end <- 2010
   if (start_year < CRUNCEP_start | end_year > CRUNCEP_end) {
-    PEcAn.logger::logger.severe(sprintf('Input year range (%d:%d) exceeds the CRUNCEP range (%d:%d)',
+    #PEcAn.logger::logger.severe(sprintf('Input year range (%d:%d) exceeds the CRUNCEP range (%d:%d)',
+    #                                    start_year, end_year,
+    #                                    CRUNCEP_start, CRUNCEP_end))
+    print(sprintf('Input year range (%d:%d) exceeds the CRUNCEP range (%d:%d)',
                                         start_year, end_year,
                                         CRUNCEP_start, CRUNCEP_end))
+    break
   }
 
   dir.create(outfolder, showWarnings = FALSE, recursive = TRUE)
@@ -90,10 +94,11 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
   mask_igrido <- mask_igrid[mask_order,]
   on_land <- as.logical(mask_values[mask_igrido])
   if (!any(on_land)) {
-    PEcAn.logger::logger.severe(glue::glue(
-      "Coordinates {lat.in} latitude, {lon.in} longitude ",
-      "are not within 2 pixels (1 degree) of any land."
-    ))
+    #PEcAn.logger::logger.severe(glue::glue(
+    #  "Coordinates {lat.in} latitude, {lon.in} longitude ",
+    #  "are not within 2 pixels (1 degree) of any land."
+    #))
+    print(paste("Coordinates",lat.in,"latitude," lon.in, "longitude are not within 2 pixels (1 degree) of any land."))
   }
   igrid <- which(on_land)[1]
   if (igrid > 1) {
@@ -101,11 +106,11 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
     lat.in.orig <- lat.in
     lon.in <- mask_grid[mask_order[igrid], 1]
     lat.in <- mask_grid[mask_order[igrid], 2]
-    PEcAn.logger::logger.warn(glue::glue(
-      "Coordinates {lat.in.orig} latitude, {lon.in.orig} longitude ",
-      "are not on land, so using closest land pixel within 1 degree. ",
-      "New coordinates are {lat.in} latitude, {lon.in} longitude."
-    ))
+    #PEcAn.logger::logger.warn(glue::glue(
+    #  "Coordinates {lat.in.orig} latitude, {lon.in.orig} longitude ",
+    #  "are not on land, so using closest land pixel within 1 degree. ",
+    #  "New coordinates are {lat.in} latitude, {lon.in} longitude."
+    #))
   }
 
   if (method == "opendap") {
@@ -143,22 +148,29 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
 
   for (i in seq_len(rows)) {
     year <- ylist[i]
-    ntime <- PEcAn.utils::days_in_year(year) * 4
+    #ntime <- PEcAn.utils::days_in_year(year) * 4
+    ntime <- ifelse(lubridate::leap_year(year), 366, 365) * 4
 
     loc.file <- file.path(outfolder, paste("CRUNCEP", year, "nc", sep = "."))
     results$file[i] <- loc.file
-    results$host[i] <- PEcAn.remote::fqdn()
+    #results$host[i] <- PEcAn.remote::fqdn()
+    results$host[i] <- 'CRC Machine'
     results$startdate[i] <- paste0(year, "-01-01 00:00:00")
     results$enddate[i] <- paste0(year, "-12-31 23:59:59")
     results$mimetype[i] <- "application/x-netcdf"
     results$formatname[i] <- "CF Meteorology"
 
+    
     if (file.exists(loc.file) && !isTRUE(overwrite)) {
-     PEcAn.logger::logger.error("File already exists. Skipping to next year")
+     #PEcAn.logger::logger.error("File already exists. Skipping to next year")
+      print("File already exists. Skipping to next year")
       next
     }
 
-    PEcAn.logger::logger.info(paste("Downloading", loc.file))
+    # Updates for CRC use
+    #PEcAn.logger::logger.info(paste("Downloading", loc.file))
+    print(paste("Downloading", loc.file))
+    
     ## Create dimensions
     lat <- ncdf4::ncdim_def(name = "latitude", units = "degree_north", vals = lat.in, create_dimvar = TRUE)
     lon <- ncdf4::ncdim_def(name = "longitude", units = "degree_east", vals = lon.in, create_dimvar = TRUE)
@@ -184,7 +196,8 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
     for (j in seq_len(nrow(var))) {
       current_var <- var$DAP.name[j]
       url <- sprintf(dap_base, current_var, year)
-      PEcAn.logger::logger.info("Attempting to access file at: ", url)
+      #PEcAn.logger::logger.info("Attempting to access file at: ", url)
+      print(paste("Attempting to access file at: ", url))
       if (method == "opendap") {
         dap <- PEcAn.utils::retry.func(ncdf4::nc_open(url, verbose=verbose), maxErrors=maxErrors, sleep=sleep)
       } else if (method == "ncss") {
@@ -209,28 +222,28 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
 
       # confirm that timestamps match
       if (dap$dim$time$len != ntime) {
-        PEcAn.logger::logger.severe("Expected", ntime, "observations, but", url,  "contained", dap$dim$time$len)
+        #PEcAn.logger::logger.severe("Expected", ntime, "observations, but", url,  "contained", dap$dim$time$len)
+        print(paste("Expected", ntime, "observations, but", url,  "contained", dap$dim$time$len))
+        break
       }
       dap_time <- udunits2::ud.convert(dap$dim$time$vals,
                                        dap$dim$time$units,
                                        time$units)
       if (!isTRUE(all.equal(dap_time, time$vals))){
-        PEcAn.logger::logger.severe("Timestamp mismatch.",
-                                    "Expected", min(time$vals), '..', max(time$vals), time$units,
-                                    "but got", min(dap_time), "..", max(dap_time))
+        #PEcAn.logger::logger.severe("Timestamp mismatch.",
+        #                            "Expected", min(time$vals), '..', max(time$vals), time$units,
+        #                            "but got", min(dap_time), "..", max(dap_time))
+        print('Timestamp mismatch!')
+        break
       }
 
       
       ## adjusted this section to avoid the errors that I was having with this function (MK)
-      tempData <- PEcAn.utils::retry.func(
-        ncdf4::ncvar_get(
-          dap,
-          varid = current_var,
-          start=c(lon_grid, lat_grid, 1),
-          count=c(1, 1, -1)
-        ),
-        maxErrors=maxErrors, sleep=sleep)
-      
+      tempData <- ncdf4::ncvar_get(dap, 
+                                   varid = current_var,
+                                   start=c(lon_grid, lat_grid, 1),
+                                   count=c(1, 1, -1)
+                                   )
       dat.list[[j]] = tempData[lon_grid,lat_grid,]
       
       #dat.list[[j]] <- PEcAn.utils::retry.func(
