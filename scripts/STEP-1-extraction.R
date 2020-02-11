@@ -34,11 +34,16 @@
 
 rm(list=ls())
 library(ggplot2)
+library(ncdf4)
 
 # site information 
-site.name = 'SYLVANIA' 
-site.lat  = 46.241944
-site.lon  = -89.347778
+#site.name = 'SYLVANIA' 
+#site.lat  = 46.241944
+#site.lon  = -89.347778
+
+site.name = 'HARVARD'
+site.lat = 42.53
+site.lon = -72.18
 
 # set working directory to location of met repo on local machine
 wd.base <- "~/Desktop/met-crc-workflow"
@@ -92,7 +97,7 @@ extract.local.NLDAS(outfolder=file.path(path.out, "NLDAS"), in.path=path.nldas,
 # Note: This keeps breaking every 5-10 years; so I'm having to go real slow at it
 source(file.path(path.pecan, "download.CRUNCEP_Global.R"))
 download.CRUNCEP(outfolder=file.path(path.out, "CRUNCEP"), 
-                 start_date="1901-01-01", end_date=paste0("2010-12-31"), 
+                 start_date="1901-01-01", end_date="1901-12-31", 
                  site_id=site.name, lat.in=site.lat, lon.in=site.lon)
 
 ####################

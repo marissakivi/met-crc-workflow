@@ -220,15 +220,27 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
                                     "but got", min(dap_time), "..", max(dap_time))
       }
 
-
-      dat.list[[j]] <- PEcAn.utils::retry.func(
+      
+      ## adjusted this section to avoid the errors that I was having with this function (MK)
+      tempData <- PEcAn.utils::retry.func(
         ncdf4::ncvar_get(
           dap,
-          as.character(var$DAP.name[j]),
-          c(lon_grid, lat_grid, 1),
-          c(1, 1, ntime)
+          varid = current_var,
+          start=c(lon_grid, lat_grid, 1),
+          count=c(1, 1, -1)
         ),
         maxErrors=maxErrors, sleep=sleep)
+      
+      dat.list[[j]] = tempData[lon_grid,lat_grid,]
+      
+      #dat.list[[j]] <- PEcAn.utils::retry.func(
+      #  ncdf4::ncvar_get(
+      #   dap,
+      #   varid = current_var,
+      #   start=c(lon_grid, lat_grid, 1),
+      #   count=c(1, 1, ntime)
+      # ),
+      # maxErrors=maxErrors, sleep=sleep)
 
       var.list[[j]] <- ncdf4::ncvar_def(name = as.character(var$CF.name[j]),
                                         units = as.character(var$units[j]),
