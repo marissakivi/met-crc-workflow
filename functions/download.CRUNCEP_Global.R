@@ -98,7 +98,7 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
     #  "Coordinates {lat.in} latitude, {lon.in} longitude ",
     #  "are not within 2 pixels (1 degree) of any land."
     #))
-    print(paste("Coordinates",lat.in,"latitude," lon.in, "longitude are not within 2 pixels (1 degree) of any land."))
+    print(paste("Coordinates",lat.in,"latitude,", lon.in, "longitude are not within 2 pixels (1 degree) of any land."))
   }
   igrid <- which(on_land)[1]
   if (igrid > 1) {
