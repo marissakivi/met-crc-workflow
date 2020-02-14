@@ -53,19 +53,19 @@ wd.base = '~/met-crc-workflow'
 # Step 1: Set up working directory
 ####################
 
-if (!require('plyr')) install.packages('plyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('raster')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('data.table')) install.packages('data.table',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('rgdal')) install.packages('rgdal',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('reshape2')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('plyr',lib.loc ='~/Rlibs')) install.packages('plyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('raster',lib.loc ='~/Rlibs')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('data.table',lib.loc ='~/Rlibs')) install.packages('data.table',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('rgdal',lib.loc ='~/Rlibs')) install.packages('rgdal',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('reshape2',lib.loc ='~/Rlibs')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
-require(plyr,lib='~/Rlibs')
-require(raster,lib='~/Rlibs')
-require(data.table,lib='~/Rlibs')
-require(rgdal,lib='~/Rlibs')
-require(reshape2, lib='~/Rlibs')
-require(ncdf4,lib='~/Rlibs')
+require(plyr,lib.loc='~/Rlibs')
+require(raster,lib.loc='~/Rlibs')
+require(data.table,lib.loc='~/Rlibs')
+require(rgdal,lib.loc='~/Rlibs')
+require(reshape2, lib.loc='~/Rlibs')
+require(ncdf4,lib.loc='~/Rlibs')
 
 #require(plyr)
 #require(raster)

@@ -46,19 +46,19 @@ wd.base = "~/met-crc-workflow"
 ####################
 
 # load required packages 
-if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('abind')) install.packages('abind',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('R.matlab')) install.packages('R.matlab',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ggplot2',lib.loc ='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr',lib.loc ='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('abind',lib.loc ='~/Rlibs')) install.packages('abind',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('R.matlab',lib.loc ='~/Rlibs')) install.packages('R.matlab',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
-require(ggplot2,lib='~/Rlibs')
-require(ncdf4,lib='~/Rlibs')
-require(stringr,lib='~/Rlibs')
-require(abind,lib='~/Rlibs')
-require(lubridate,lib='~/Rlibs')
-require(R.matlab,lib='~/Rlibs')
+require(ggplot2,lib.loc='~/Rlibs')
+require(ncdf4,lib.loc='~/Rlibs')
+require(stringr,lib.loc='~/Rlibs')
+require(abind,lib.loc='~/Rlibs')
+require(lubridate,lib.loc='~/Rlibs')
+require(R.matlab,lib.loc='~/Rlibs')
 
 # set up important file paths
 in.base = file.path(wd.base, "ensembles", paste0(site.name, vers), "aggregated/month")

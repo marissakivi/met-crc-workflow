@@ -43,17 +43,17 @@ reject = TRUE
 ####################
 
 # install missing libraries in Rlibs folder on account if not already installed 
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('ggplot2')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('mgcv')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ggplot2',lib.loc ='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('mgcv',lib.loc ='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr',lib.loc ='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
-require(ncdf4,lib='~/Rlibs')
-require(ggplot2,lib='~/Rlibs')
-require(mgcv,lib='~/Rlibs')
-require(stringr,lib='~/Rlibs')
-require(lubridate,lib='~/Rlibs')
+require(ncdf4,lib.loc ='~/Rlibs')
+require(ggplot2,lib.loc='~/Rlibs')
+require(mgcv,lib.loc ='~/Rlibs')
+require(stringr,lib.loc='~/Rlibs')
+require(lubridate,lib.loc='~/Rlibs')
 
 # Setting some important file paths
 path.func <- file.path(wd.base,'functions')

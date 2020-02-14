@@ -24,7 +24,7 @@ site.name = 'SYLVANIA'
 site.lat = 46.241944
 site.lon = -89.347778
 
-wd.base = '~/met-crc-workflow/'
+wd.base = '~/Desktop/met-crc-workflow/'
 path.out = file.path(wd.base, 'data','paleon_sites',site.name)
 path.pecan = file.path(wd.base,'functions')
 
