@@ -241,10 +241,7 @@ download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, l
       
       ## adjusted this section to avoid the errors that I was having with this function (MK)
       tempData <- ncdf4::ncvar_get(dap, 
-                                   varid = current_var,
-                                   start=c(lon_grid, lat_grid, 1),
-                                   count=c(1, 1, -1)
-                                   )
+                                   varid = current_var)
       dat.list[[j]] = tempData[lon_grid,lat_grid,]
       
       #dat.list[[j]] <- PEcAn.utils::retry.func(
