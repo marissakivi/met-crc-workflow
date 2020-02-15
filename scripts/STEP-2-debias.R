@@ -92,125 +92,125 @@ seed <- seed.vec[min(ens)]
 out.base <- file.path(wd.base, "ensembles", paste0(site.name, vers), "day")
 raw.base <- file.path(path.in,site.name)
 
-# # -----------------------------------
-# # Run a loop to do all of the downscaling steps for each GCM and put in one place
-# # -----------------------------------
-# 
-# for(GCM in GCM.list){
-#   ens.ID=GCM
-#   print(paste("Debiasing GCM",ens.ID))
-#   # Set up a file path for our ensemble to work with now
-#   train.path <- file.path(out.base, "ensembles", GCM)
-#   dir.create(train.path, recursive=TRUE, showWarnings=FALSE)
-#   
-#   # --------------------------
-#   # Set up ensemble structure; copy LDAS into ensemble directories
-#   # --------------------------
-# 
-#   files.ldas <- dir(file.path(raw.base, "NLDAS_day"))
-# 
-#   for(i in 1:n.ens){
-#     # Create a directory for each ensemble member
-#     path.ens <- file.path(train.path, paste(ens.ID, ens.mems[i], sep="_"))
-#     dir.create(path.ens, recursive=TRUE, showWarnings=FALSE)
-#   
-#     # Copy LDAS in there with the new name
-#     for(j in 1:length(files.ldas)){
-#       yr <- strsplit(files.ldas[j], "[.]")[[1]][2]
-#       name.new <- paste(ens.ID, ens.mems[i], yr, "nc", sep=".")
-#       cmd.call <- paste("cp", file.path(raw.base, "NLDAS_day", files.ldas[j]), 
-#                       file.path(path.ens, name.new), sep=" ")
-#       system(cmd.call)
-#     }
-#   }
-# 
-#   # --------------------------
-#   # Step 1 :: Debias CRUNCEP using LDAS 
-#   # --------------------------
-#   # 1. Align CRU 6-hourly with LDAS daily
-#   source.path <- file.path(raw.base, "CRUNCEP")
-#   
-#   print('CRUNCEP with LDAS')
-#   # We're now pulling an ensemble because we've set up the file paths and copied LDAS over 
-#   # (even though all ensemble members will be identical here)
-#   met.out <- align.met(train.path, source.path, yrs.train=NULL, yrs.source=NULL, n.ens=n.ens, seed=201708, 
-#                      pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"),print.progress = FALSE)
-# 
-#   # Calculate wind speed if it's not already there
-#   if(!"wind_speed" %in% names(met.out$dat.source)){
-#     met.out$dat.source$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
-#   }
-# 
-#   # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
-#   debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens, 
-#                         vars.debias=NULL, CRUNCEP=TRUE, pair.anoms = TRUE, pair.ens = FALSE, 
-#                         uncert.prop="mean", resids = FALSE, seed=Sys.Date(), outfolder=train.path, 
-#                         yrs.save=NULL, ens.name=ens.ID, ens.mems=ens.mems, lat.in=site.lat, lon.in=site.lon,
-#                         save.diagnostics=TRUE, path.diagnostics=file.path(out.base, "bias_correct_qaqc_CRU"),
-#                         parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE) 
-# 
-#   # --------------------------
-#   # Step 2 :: Debias GCM historical runs using CRUNCEP
-#   # --------------------------
-#   # 1. Align GCM daily with our current ensemble
-#   source.path <- file.path(raw.base, GCM, "historical")
-# 
-#   print('Historical with CRUNCEP')
-#   # We're now pulling an ensemble because we've set up the file paths and copied LDAS over 
-#   # (even though all ensemble members will be identical here)
-# 
-#   met.out <- align.met(train.path, source.path, yrs.train=1901:1920, n.ens=n.ens, seed=201708, 
-#                       pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"))
-# 
-#   # Calculate wind speed if it's not already there
-#   if(!"wind_speed" %in% names(met.out$dat.source)){
-#    met.out$dat.source$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
-#   }
-# 
-#   # With MIROC-ESM, running into problem with NAs in 2005, so lets cut it all at 2000
-#   for(v in names(met.out$dat.source)){
-#     if(v=="time") next
-#     met.out$dat.source[[v]] <- matrix(met.out$dat.source[[v]][which(met.out$dat.source$time$Year<=2000),], ncol=ncol(met.out$dat.source[[v]]))
-#   }
-#   met.out$dat.source$time <- met.out$dat.source$time[met.out$dat.source$time$Year<=2000,]
-# 
-#   # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
-#   debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens, 
-#                         vars.debias=NULL, CRUNCEP=FALSE, pair.anoms = FALSE, pair.ens = FALSE, 
-#                         uncert.prop="mean", resids = FALSE, seed=Sys.Date(),outfolder=train.path, 
-#                         yrs.save=1850:1900, ens.name=ens.ID, ens.mems=ens.mems, lat.in=site.lat, 
-#                         lon.in=site.lon, save.diagnostics=TRUE, 
-#                         path.diagnostics=file.path(out.base, paste0("bias_correct_qaqc_",GCM,"_hist")),
-#                         parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE) 
-# 
-#   #  --------------------------
-#   #  Step 3 :: Debias GCM past millennium using GCM Historical
-#   # --------------------------
-#   # 1. Align GCM daily with our current ensemble
-#   source.path <- file.path(raw.base, GCM, "p1000")
-# 
-#   print('p1000 with historical') 
-#   # We're now pulling an ensemble because we've set up the file paths and copied LDAS over 
-#   # (even though all ensemble members will be identical here)
-# 
-#   met.out <- align.met(train.path, source.path, yrs.train=1850:1900, yrs.source=first.year:1849, n.ens=n.ens, 
-#                       seed=201708, pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"))
-# 
-#   # Calculate wind speed if it's not already there
-#   if(!"wind_speed" %in% names(met.out$dat.source)){
-#     met.out$dat.source$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
-#   }
-# 
-#   # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
-#   debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens, 
-#                         vars.debias=NULL, CRUNCEP=FALSE, pair.anoms = FALSE, pair.ens = FALSE, 
-#                         uncert.prop="mean", resids = FALSE, seed=Sys.Date(),
-#                         outfolder=train.path, yrs.save=NULL, ens.name=ens.ID, ens.mems=ens.mems, 
-#                         lat.in=site.lat, lon.in=site.lon, save.diagnostics=TRUE, 
-#                         path.diagnostics=file.path(out.base, paste0("bias_correct_qaqc_",GCM,"_p1000")),
-#                         parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE) 
-# 
-# }
+# -----------------------------------
+# Run a loop to do all of the downscaling steps for each GCM and put in one place
+# -----------------------------------
+
+for(GCM in GCM.list){
+  ens.ID=GCM
+  print(paste("Debiasing GCM",ens.ID))
+  # Set up a file path for our ensemble to work with now
+  train.path <- file.path(out.base, "ensembles", GCM)
+  dir.create(train.path, recursive=TRUE, showWarnings=FALSE)
+
+  # --------------------------
+  # Set up ensemble structure; copy LDAS into ensemble directories
+  # --------------------------
+
+  files.ldas <- dir(file.path(raw.base, "NLDAS_day"))
+
+  for(i in 1:n.ens){
+    # Create a directory for each ensemble member
+    path.ens <- file.path(train.path, paste(ens.ID, ens.mems[i], sep="_"))
+    dir.create(path.ens, recursive=TRUE, showWarnings=FALSE)
+
+    # Copy LDAS in there with the new name
+    for(j in 1:length(files.ldas)){
+      yr <- strsplit(files.ldas[j], "[.]")[[1]][2]
+      name.new <- paste(ens.ID, ens.mems[i], yr, "nc", sep=".")
+      cmd.call <- paste("cp", file.path(raw.base, "NLDAS_day", files.ldas[j]),
+                      file.path(path.ens, name.new), sep=" ")
+      system(cmd.call)
+    }
+  }
+
+  # --------------------------
+  # Step 1 :: Debias CRUNCEP using LDAS
+  # --------------------------
+  # 1. Align CRU 6-hourly with LDAS daily
+  source.path <- file.path(raw.base, "CRUNCEP")
+
+  print('CRUNCEP with LDAS')
+  # We're now pulling an ensemble because we've set up the file paths and copied LDAS over
+  # (even though all ensemble members will be identical here)
+  met.out <- align.met(train.path, source.path, yrs.train=NULL, yrs.source=NULL, n.ens=n.ens, seed=201708,
+                     pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"),print.progress = FALSE)
+
+  # Calculate wind speed if it's not already there
+  if(!"wind_speed" %in% names(met.out$dat.source)){
+    met.out$dat.source$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
+  }
+
+  # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
+  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens,
+                        vars.debias=NULL, CRUNCEP=TRUE, pair.anoms = TRUE, pair.ens = FALSE,
+                        uncert.prop="mean", resids = FALSE, seed=Sys.Date(), outfolder=train.path,
+                        yrs.save=NULL, ens.name=ens.ID, ens.mems=ens.mems, lat.in=site.lat, lon.in=site.lon,
+                        save.diagnostics=TRUE, path.diagnostics=file.path(out.base, "bias_correct_qaqc_CRU"),
+                        parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE)
+
+  # --------------------------
+  # Step 2 :: Debias GCM historical runs using CRUNCEP
+  # --------------------------
+  # 1. Align GCM daily with our current ensemble
+  source.path <- file.path(raw.base, GCM, "historical")
+
+  print('Historical with CRUNCEP')
+  # We're now pulling an ensemble because we've set up the file paths and copied LDAS over
+  # (even though all ensemble members will be identical here)
+
+  met.out <- align.met(train.path, source.path, yrs.train=1901:1920, n.ens=n.ens, seed=201708,
+                      pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"))
+
+  # Calculate wind speed if it's not already there
+  if(!"wind_speed" %in% names(met.out$dat.source)){
+   met.out$dat.source$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
+  }
+
+  # With MIROC-ESM, running into problem with NAs in 2005, so lets cut it all at 2000
+  for(v in names(met.out$dat.source)){
+    if(v=="time") next
+    met.out$dat.source[[v]] <- matrix(met.out$dat.source[[v]][which(met.out$dat.source$time$Year<=2000),], ncol=ncol(met.out$dat.source[[v]]))
+  }
+  met.out$dat.source$time <- met.out$dat.source$time[met.out$dat.source$time$Year<=2000,]
+
+  # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
+  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens,
+                        vars.debias=NULL, CRUNCEP=FALSE, pair.anoms = FALSE, pair.ens = FALSE,
+                        uncert.prop="mean", resids = FALSE, seed=Sys.Date(),outfolder=train.path,
+                        yrs.save=1850:1900, ens.name=ens.ID, ens.mems=ens.mems, lat.in=site.lat,
+                        lon.in=site.lon, save.diagnostics=TRUE,
+                        path.diagnostics=file.path(out.base, paste0("bias_correct_qaqc_",GCM,"_hist")),
+                        parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE)
+
+  #  --------------------------
+  #  Step 3 :: Debias GCM past millennium using GCM Historical
+  # --------------------------
+  # 1. Align GCM daily with our current ensemble
+  source.path <- file.path(raw.base, GCM, "p1000")
+
+  print('p1000 with historical')
+  # We're now pulling an ensemble because we've set up the file paths and copied LDAS over
+  # (even though all ensemble members will be identical here)
+
+  met.out <- align.met(train.path, source.path, yrs.train=1850:1900, yrs.source=first.year:1849, n.ens=n.ens,
+                      seed=201708, pair.mems = FALSE, mems.train=paste(ens.ID, ens.mems, sep="_"))
+
+  # Calculate wind speed if it's not already there
+  if(!"wind_speed" %in% names(met.out$dat.source)){
+    met.out$dat.source$wind_speed <- sqrt(met.out$dat.source$eastward_wind^2 + met.out$dat.source$northward_wind^2)
+  }
+
+  # 2. Pass the training & source met data into the bias-correction functions; this will get written to the ensemble
+  debias.met.regression(train.data=met.out$dat.train, source.data=met.out$dat.source, n.ens=n.ens,
+                        vars.debias=NULL, CRUNCEP=FALSE, pair.anoms = FALSE, pair.ens = FALSE,
+                        uncert.prop="mean", resids = FALSE, seed=Sys.Date(),
+                        outfolder=train.path, yrs.save=NULL, ens.name=ens.ID, ens.mems=ens.mems,
+                        lat.in=site.lat, lon.in=site.lon, save.diagnostics=TRUE,
+                        path.diagnostics=file.path(out.base, paste0("bias_correct_qaqc_",GCM,"_p1000")),
+                        parallel = FALSE, n.cores = NULL, overwrite = TRUE, verbose = FALSE)
+
+}
 
 if (reject){
   
