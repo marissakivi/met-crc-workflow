@@ -21,7 +21,7 @@
 ####################
 
 # Load site and directory details
-site.name = "HEMLOCK"
+site.name = "SYLVANIA"
 wd.base = '~/met-crc-workflow'
 vers=".v1"
 

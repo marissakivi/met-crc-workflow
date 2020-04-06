@@ -7,20 +7,17 @@ rm(list=ls())
 # -----------------------------------
 
 # Set the working directory
-wd.base <- "~/Desktop/met-crc-workflow/"
+wd.base <- "~/met-crc-workflow/"
 
 # Defining a site name -- this can go into a function later
-site.name = "BIGWOODS"
+site.name = "SYLVANIA"
 
 #############
 
 # Load libraries
-if (!require('ncdf4')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('stringr')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('lubridate')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-library(ncdf4)
-library(stringr)
-library(lubridate)
+if (!require('ncdf4', lib.loc = '~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr',lib.loc = '~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate',lib.loc= '~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 path.ldas <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS/")
 files.train <- dir(path.ldas)

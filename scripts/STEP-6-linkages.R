@@ -11,12 +11,12 @@
 ####################
 
 # Load site and directory details
-site.name = "GILL"
+site.name = "SYLVANIA"
 wd.base = '~/met-crc-workflow'
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
-first.year=1800
+first.year=850
 last.year=2015
 
 ####################

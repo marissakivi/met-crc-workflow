@@ -34,7 +34,7 @@
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "HEMLOCK"
+site.name = "SYLVANIA"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 

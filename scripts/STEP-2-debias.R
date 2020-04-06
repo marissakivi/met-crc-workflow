@@ -26,11 +26,11 @@
 
 # Load site and directory details
 wd.base = '~/met-crc-workflow'
-site.name = "HEMLOCK"
-#site.lat  = 45.410739
-#site.lon  = -93.715137
+site.name = "SYLVANIA"
+site.lat  = 46.241944
+site.lon  = -89.347778
 vers=".v1"
-ens=1:25
+ens=1:10
 
 # this should be adjusted depending on the site type (short or long) 
 first.year = 850 

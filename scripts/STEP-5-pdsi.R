@@ -29,9 +29,9 @@
 ####################
 
 # Load site and directory details
-site.name = "HEMLOCK"
-site.lat  = 45.3333
-site.lon  = -90.08333
+site.name = "SYLVANIA"
+site.lat  = 46.241944
+site.lon  = -89.347778
 
 vers=".v1"
 

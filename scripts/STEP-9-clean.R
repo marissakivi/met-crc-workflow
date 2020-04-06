@@ -16,7 +16,7 @@
 ####################
 
 # Load site and directory details
-site = "BIGWOODS" # should be identical to paleon site name 
+site = "SYLVANIA" # should be identical to paleon site name 
 vers=".v1"
 
 # working directory

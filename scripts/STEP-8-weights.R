@@ -36,10 +36,10 @@
 ########################################################### 
 
 # Load site details
-site = 'HEMLOCK' # should be identical to paleon site name 
-site.name = 'Hemlock Mountain' # for graph titling purposes
-site.lat  = 45.3333 
-site.lon  = -90.08333
+site = 'SYLVANIA' # should be identical to paleon site name 
+site.name = 'Sylvania' # for graph titling purposes
+site.lat  = 46.241944
+site.lon  = -89.347778
 vers=".v1"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots

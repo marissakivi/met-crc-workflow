@@ -28,7 +28,7 @@
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "BIGWOODS"
+site.name = "SYLVANIA"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
@@ -45,14 +45,14 @@ wd.base = "~/met-crc-workflow"
 # Step 1: Set up working directory 
 ####################
 # check for un-installed packages
-if (!require('ncdf4', lib.loc='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('mgcv', lib.loc='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('MASS', lib.loc='~/Rlibs')) install.packages('MASS',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('lubridate', lib.loc='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('ggplot2', lib.loc='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('stringr', lib.loc='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('tictoc', lib.loc='~/Rlibs')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('parallel', lib.loc='~/Rlibs')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ncdf4', lib.loc='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
+if (!require('mgcv', lib.loc='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
+if (!require('MASS', lib.loc='~/Rlibs')) install.packages('MASS',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
+if (!require('lubridate', lib.loc='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
+if (!require('ggplot2', lib.loc='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
+if (!require('stringr', lib.loc='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
+if (!require('tictoc', lib.loc='~/Rlibs')) install.packages('tictoc',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
+if (!require('parallel', lib.loc='~/Rlibs')) install.packages('parallel',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4, lib.loc='~/Rlibs')
 require(mgcv, lib.loc='~/Rlibs')

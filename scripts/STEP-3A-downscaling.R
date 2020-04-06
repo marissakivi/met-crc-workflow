@@ -36,7 +36,7 @@
 ####################
 wd.base <- "~/met-crc-workflow"
 
-site.name = "BIGWOODS"
+site.name = "SYLVANIA"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
