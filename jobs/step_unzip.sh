@@ -7,4 +7,4 @@
 
 module load R
 
-R CMD BATCH ~/met-crc-workflow/scripts/unzip_hourly.R  output_unzip.out
+R CMD BATCH ~/met-crc-workflow/scripts/extra_scripts/unzip_hourly.R  output_unzip.out

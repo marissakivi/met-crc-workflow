@@ -10,7 +10,7 @@ rm(list=ls())
 wd.base <- "~/met-crc-workflow/"
 
 # Defining a site name -- this can go into a function later
-site.name = "SYLVANIA"
+site.name = "BONANZA"
 
 #############
 

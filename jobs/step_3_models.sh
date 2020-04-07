@@ -9,4 +9,4 @@
 module load R
 module load netcdf/4.7.0/intel/18.0
 
-R CMD BATCH ~/met-crc-workflow/scripts/STEP-3A-downscaling.R  output_3_models.out
+R CMD BATCH ~/met-crc-workflow/scripts/STEP-3A-models.R  output_3_models.out

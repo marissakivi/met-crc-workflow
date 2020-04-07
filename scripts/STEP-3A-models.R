@@ -36,12 +36,12 @@
 ####################
 wd.base <- "~/met-crc-workflow"
 
-site.name = "SYLVANIA"
+site.name = "BONANZA"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
-first.year = 850
+first.year = 1800
 
 ####################
 # Step 1: Set up working directory 

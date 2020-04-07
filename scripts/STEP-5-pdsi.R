@@ -29,14 +29,14 @@
 ####################
 
 # Load site and directory details
-site.name = "SYLVANIA"
-site.lat  = 46.241944
-site.lon  = -89.347778
+site.name = "BONANZA"
+site.lat  = 45.45283
+site.lon  = -96.7144
 
 vers=".v1"
 
 # this variable depends on the paleon site type (long or short run) 
-first.year=850
+first.year=1800
 
 # working directory
 wd.base = "~/met-crc-workflow"

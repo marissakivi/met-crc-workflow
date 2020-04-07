@@ -29,12 +29,12 @@
 ####################
 
 # site information
-site.name = "SYLVANIA"
+site.name = "BONANZA"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
-first.year = 850
+first.year = 1800
 
 ens.hr  <- 2 # Number of hourly ensemble members to create
 n.day <- 10 # Number of daily ensemble members to process

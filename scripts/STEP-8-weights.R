@@ -36,10 +36,10 @@
 ########################################################### 
 
 # Load site details
-site = 'SYLVANIA' # should be identical to paleon site name 
-site.name = 'Sylvania' # for graph titling purposes
-site.lat  = 46.241944
-site.lon  = -89.347778
+site = 'BONANZA' # should be identical to paleon site name 
+site.name = 'Bonanza' # for graph titling purposes
+site.lat  = 45.45283
+site.lon  = -96.7144
 vers=".v1"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
@@ -80,6 +80,7 @@ if (!require('limSolve',lib.loc='~/Rlibs')) install.packages('limSolve',lib='~/R
 if (!require('ggplot2',lib.loc='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('colorspace',lib.loc='~/Rlibs')) install.packages('colorspace',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 if (!require('dplyr',lib.loc='~/Rlibs')) install.packages('dplyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
+if (!require('reshape2',lib.loc='~/Rlibs')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
 require(sp,lib.loc='~/Rlibs')
 require(raster,lib.loc='~/Rlibs')
@@ -91,6 +92,7 @@ require(latex2exp,lib.loc='~/Rlibs')
 require(limSolve,lib.loc='~/Rlibs')
 require(ggplot2,lib.loc='~/Rlibs')
 require(colorspace,lib.loc='~/Rlibs')
+require(reshape2, lib.loc='~/Rlibs')
 
 # set important paths
 path.func = file.path(wd.base,'functions')
@@ -637,6 +639,14 @@ if (PLOT){
 # Step 5: Conversions to SDA-usable format (average)
 ########################################################### 
 
+# melt down array for csv file save
+all_weights = melt(w)
+colnames(all_weights) = c('monte_carlo','year', 'climate_model','weights')
+all_weights$year = all_weights$year + weight.yr1 - 1
+all_weights$climate_model = plyr::mapvalues(all_weights$climate_model, 
+                                            from = c(1:length(colnames(pdsi.ens))), 
+                                            to = colnames(pdsi.ens))
+
 # calculate mean across iterations for each year of each model 
 ensemble_weights_mean <- data.frame (
   weights               = c(apply(w, c(2, 3), mean)),
@@ -658,4 +668,18 @@ ensemble_weights = data.frame(
 
 write.csv(ensemble_weights,
           file=file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("ensemble-weights-",site,"-prism.csv")))
+write.csv(ensemble_weights_mean, 
+          file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("ensemble-weights-monte-carlo-mean-",site,"-prism.csv")))
+write.csv(all_weights, 
+          file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("monte-carlo-ensemble-weights-",site,"-prism.csv")))
 
+# editing
+wd.base = '~/Desktop/met-crc-workflow'
+site = "BIGWOODS"
+vers = '.v1'
+weight.yr1 = 850
+weight.yr2 = 2006
+load(file.path(wd.base,"ensembles",paste0(site,vers),"completed/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
+modnames = read.csv(file = file.path(wd.base,"ensembles",paste0(site,vers),"completed/weights",paste0("ensemble-weights-",site,"-prism.csv")))
+pdsi.ens = matrix(0,1,length(modnames$climate_model))
+colnames(pdsi.ens) = modnames$climate_model

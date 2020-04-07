@@ -33,15 +33,15 @@
 ####################
 
 # Load site and directory details
-site = "HARVARD" # should be identical to paleon site name 
+site = "BONANZA" # should be identical to paleon site name 
 vers=".v1"
 
 # Coordinates to run this script need to be re-projected from WGS 1984 
 # coordinate system to NAD 83, a conversio that can be done at the following
 # website: https://tagis.dep.wv.gov/convert/
 # be sure to adjust the input and output types on the website 
-site.lat  = 42.53
-site.lon  = -72.18
+site.lat  = 45.45283
+site.lon  = -96.7144
 
 CRC = TRUE
 

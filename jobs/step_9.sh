@@ -7,5 +7,5 @@
 
 module load R
 
-R CMD BATCH ~/met-crc-workflow/scripts/STEP-9-clean.R  output_step9.out
+R CMD BATCH ~/met-crc-workflow/scripts/STEP-9-compress.R  output_step9.out
 
