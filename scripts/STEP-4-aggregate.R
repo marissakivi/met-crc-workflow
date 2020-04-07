@@ -29,9 +29,9 @@ vers=".v1"
 # Step 1: Set up working directory
 ####################
 
-if (!require('parallel',lib.loc ='~/Rlibs')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('parallel',lib.loc ='~/Rlibs')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(parallel,lib.loc='~/Rlibs')
 require(ncdf4,lib.loc='~/Rlibs')

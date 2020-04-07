@@ -44,11 +44,11 @@ reject = FALSE
 ####################
 
 # install missing libraries in Rlibs folder on account if not already installed 
-if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('ggplot2',lib.loc ='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('mgcv',lib.loc ='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('stringr',lib.loc ='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('ggplot2',lib.loc ='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('mgcv',lib.loc ='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('stringr',lib.loc ='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4,lib.loc ='~/Rlibs')
 require(ggplot2,lib.loc='~/Rlibs')

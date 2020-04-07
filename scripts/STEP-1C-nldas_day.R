@@ -15,9 +15,9 @@ site.name = "BONANZA"
 #############
 
 # Load libraries
-if (!require('ncdf4', lib.loc = '~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('stringr',lib.loc = '~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
-if (!require('lubridate',lib.loc= '~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('ncdf4', lib.loc = '~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('stringr',lib.loc = '~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+#if (!require('lubridate',lib.loc= '~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 path.ldas <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS/")
 files.train <- dir(path.ldas)
