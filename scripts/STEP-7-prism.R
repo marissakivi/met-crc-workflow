@@ -152,14 +152,14 @@ for (i in 1:length(test.lon)){
 
 # create storage matrix 
 ndate <- length(filenames)
-maxTemp <- matrix(0,ndate,9)
+meanTemp <- matrix(0,ndate,9)
 
 # extract mean data value for each measurement time from all points within grid cell for each site
 for (i in 1:ndate){
   single.stack <- stack(file.path(path.in,filenames[i]))
   single.data <- rasterToPoints(single.stack)
-  maxTemp[i,] <- single.data[pts,3]
+  meanTemp[i,] <- single.data[pts,3]
 }
 
 # save to output directory 
-save(maxTemp,file=file.path(path.out,paste0(site,'.maxTemp.Rdata')))
+save(meanTemp,file=file.path(path.out,paste0(site,'.meanTemp.Rdata')))
