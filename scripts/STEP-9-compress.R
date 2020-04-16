@@ -10,13 +10,14 @@
 # in the "completed" folder before doing this though. 
 
 # Required libraries:
+# -- none
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
 # Load site and directory details
-site = "BONANZA" # should be identical to paleon site name 
+site = "CORAL" # should be identical to paleon site name 
 vers=".v1"
 
 # working directory

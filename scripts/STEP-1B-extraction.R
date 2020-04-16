@@ -35,9 +35,9 @@ rm(list=ls())
 ####################
 
 # site information 
-site.name = 'BONANZA' 
-site.lat  = 45.45283
-site.lon  = -96.7144
+site.name = 'CORAL' 
+site.lat  = 42.2199
+site.lon  = -88.5773
 
 # set working directory to location of met repo on external drive 
 # this ensures that there is enough storage space for all of the data for one site

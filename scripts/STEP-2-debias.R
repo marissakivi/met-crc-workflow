@@ -26,9 +26,9 @@
 
 # Load site and directory details
 wd.base = '~/met-crc-workflow'
-site.name = "BONANZA"
-site.lat  = 45.45283
-site.lon  = -96.7144
+site.name = "CORAL"
+site.lat  = 42.2199
+site.lon  = -88.5773
 vers=".v1"
 ens=1:10
 
@@ -44,6 +44,7 @@ reject = FALSE
 ####################
 
 # install missing libraries in Rlibs folder on account if not already installed 
+# this section is no longer needed because there is a general script to download packages
 #if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('ggplot2',lib.loc ='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('mgcv',lib.loc ='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
@@ -51,10 +52,10 @@ reject = FALSE
 #if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4,lib.loc ='~/Rlibs')
-require(ggplot2,lib.loc='~/Rlibs')
-require(mgcv,lib.loc ='~/Rlibs')
-require(stringr,lib.loc='~/Rlibs')
-require(lubridate,lib.loc='~/Rlibs')
+require(ggplot2)
+require(mgcv)
+require(stringr)
+require(lubridate)
 
 # Setting some important file paths
 path.func <- file.path(wd.base,'functions')

@@ -28,7 +28,7 @@
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "BONANZA"
+site.name = "CORAL"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
@@ -45,6 +45,7 @@ wd.base = "~/met-crc-workflow"
 # Step 1: Set up working directory 
 ####################
 # check for un-installed packages
+# this section is no longer needed because there is a general script to download packages
 #if (!require('ncdf4', lib.loc='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('mgcv', lib.loc='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('MASS', lib.loc='~/Rlibs')) install.packages('MASS',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
@@ -55,13 +56,13 @@ wd.base = "~/met-crc-workflow"
 #if (!require('parallel', lib.loc='~/Rlibs')) install.packages('parallel',lib='~/Rlibs',repos='https://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4, lib.loc='~/Rlibs')
-require(mgcv, lib.loc='~/Rlibs')
-require(MASS,lib.loc='~/Rlibs')
-require(lubridate,lib.loc='~/Rlibs')
-require(ggplot2,lib.loc='~/Rlibs')
-require(stringr,lib.loc='~/Rlibs')
+require(mgcv)
+require(MASS)
+require(lubridate)
+require(ggplot2)
+require(stringr)
 require(tictoc,lib.loc='~/Rlibs')
-require(parallel,lib.loc='~/Rlibs')
+require(parallel)
 
 path.train <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS")
 path.lm <- file.path(wd.base, "ensembles", paste0(site.name, vers), "1hr/mods.tdm")

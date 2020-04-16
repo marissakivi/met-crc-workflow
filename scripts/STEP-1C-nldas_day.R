@@ -10,23 +10,25 @@ rm(list=ls())
 wd.base <- "~/met-crc-workflow/"
 
 # Defining a site name -- this can go into a function later
-site.name = "BONANZA"
+site.name = "CORAL"
 
 #############
 
 # Load libraries
+# this section is no longer needed because there is a general script to download packages
 #if (!require('ncdf4', lib.loc = '~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('stringr',lib.loc = '~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('lubridate',lib.loc= '~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+
+require(ncdf4, lib.loc = '~/Rlibs')
+require(stringr)
+require(lubridate)
 
 path.ldas <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS/")
 files.train <- dir(path.ldas)
 
 outfolder <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS_day/")
 dir.create(outfolder, recursive=T)
-
-
-
 
 # Setting some important file paths
 path.pecan <- "~/Desktop/Research/pecan"

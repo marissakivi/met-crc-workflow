@@ -33,15 +33,15 @@
 ####################
 
 # Load site and directory details
-site = "BONANZA" # should be identical to paleon site name 
+site = "CORAL" # should be identical to paleon site name 
 vers=".v1"
 
 # Coordinates to run this script need to be re-projected from WGS 1984 
 # coordinate system to NAD 83, a conversio that can be done at the following
 # website: https://tagis.dep.wv.gov/convert/
 # be sure to adjust the input and output types on the website 
-site.lat  = 45.45283
-site.lon  = -96.7144
+site.lat  =  42.2199
+site.lon  = -88.5773
 
 CRC = TRUE
 
@@ -53,6 +53,7 @@ wd.base = '~/met-crc-workflow'
 # Step 1: Set up working directory
 ####################
 
+# this section is no longer needed because there is a general script to download packages
 #if (!require('plyr',lib.loc ='~/Rlibs')) install.packages('plyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('raster',lib.loc ='~/Rlibs')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('data.table',lib.loc ='~/Rlibs')) install.packages('data.table',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
@@ -60,19 +61,12 @@ wd.base = '~/met-crc-workflow'
 #if (!require('reshape2',lib.loc ='~/Rlibs')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
-require(plyr,lib.loc='~/Rlibs')
+require(plyr)
 require(raster,lib.loc='~/Rlibs')
-require(data.table,lib.loc='~/Rlibs')
+require(data.table)
 require(rgdal,lib.loc='~/Rlibs')
-require(reshape2, lib.loc='~/Rlibs')
+require(reshape2)
 require(ncdf4,lib.loc='~/Rlibs')
-
-#require(plyr)
-#require(raster)
-#require(data.table)
-#require(rgdal)
-#require(reshape2)
-#require(ncdf4)
 
 path.in = file.path(wd.base,'data/weight/PRISM/raw')
 path.out = file.path(wd.base,'data/weight/PRISM/paleon_sites')

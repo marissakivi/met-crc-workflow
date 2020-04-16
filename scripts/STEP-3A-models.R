@@ -36,7 +36,7 @@
 ####################
 wd.base <- "~/met-crc-workflow"
 
-site.name = "BONANZA"
+site.name = "CORAL"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
@@ -48,6 +48,7 @@ first.year = 1800
 ####################
 
 # check for un-installed packages
+# this section is no longer needed because there is a general script to download packages
 #if (!require('ncdf4',lib.loc='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('mgcv',lib.loc='~/Rlibs')) install.packages('mgcv',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('MASS',lib.loc='~/Rlibs')) install.packages('MASS',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
@@ -60,15 +61,15 @@ first.year = 1800
 #if (!require('utils',lib.loc='~/Rlibs')) install.packages('utils',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4, lib.loc='~/Rlibs')
-require(mgcv, lib.loc='~/Rlibs')
-require(MASS,lib.loc='~/Rlibs')
-require(lubridate,lib='~/Rlibs')
-require(ggplot2,lib.loc='~/Rlibs')
-require(stringr,lib.loc='~/Rlibs')
+require(mgcv)
+require(MASS)
+require(lubridate)
+require(ggplot2)
+require(stringr)
 require(tictoc,lib.loc='~/Rlibs')
-require(parallel,lib.loc='~/Rlibs')
-require(stats,lib.loc='~/Rlibs')
-require(utils,lib.loc='~/Rlibs')
+require(parallel)
+require(stats)
+require(utils)
 
 path.train <- file.path(wd.base, "data/paleon_sites", site.name, "NLDAS")
 yrs.train=NULL

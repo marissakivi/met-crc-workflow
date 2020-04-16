@@ -8,33 +8,12 @@
 # which rejects and removes ensemble members containing impossible values and generates figures to 
 # visually check the quality of the predictions. 
 # 
-# Required functions: 
-# - align_met.R (PEcAn) 
-# - debias_met_regression.R (PEcAn)
-# - tdm_generate_subdaily_models.R (PEcAn)
-# - tdm_temporal_downscale_functions.R (PEcAn)
-# - tdm_model_train.R (PEcAn)
-# - tdm_predict_subdaily_met.R (PEcAn)
-# - tdm_lm_ensemble_sims.R (PEcAn)
-# - tdm_subdaily_pred.R (PEcAn)
-# 
-# Required libraries: 
-# - ncdf4
-# - mgcv
-# - MASS
-# - lubridate
-# - ggplot2
-# - stringr
-# - tictoc
-# - parallel
-# - utils
-# - stats
 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "BONANZA"
+site.name = "CORAL"
 vers=".v1"
 
 # this variable determines the span of years that will be formatted 
@@ -49,15 +28,16 @@ wd.base = "~/met-crc-workflow"
 ####################
 
 # check for un-installed packages
+# this section is no longer needed because there is a general script to download packages
 #if (!require('ncdf4', lib.loc='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('lubridate', lib.loc='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('ggplot2', lib.loc='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('stringr', lib.loc='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4, lib.loc='~/Rlibs')
-require(lubridate,lib.loc='~/Rlibs')
-require(ggplot2,lib.loc='~/Rlibs')
-require(stringr,lib.loc='~/Rlibs')
+require(lubridate)
+require(ggplot2)
+require(stringr)
 
 GCM.list = c("CCSM4", "MIROC-ESM", "MPI-ESM-P", "bcc-csm1-1")
 ens.hr  <- 2 # Number of hourly ensemble members to create

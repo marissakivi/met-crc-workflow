@@ -4,14 +4,15 @@
 ####################
 # This script has been modified so it can be run as a job submission to the CRC's machines. 
 #   
-# Description: This step takes the subdaily values 
+# Description: This step takes the monthly ensembles for temperature and precipitation, transforms them to LINKAGES-friendly units, and saves 
+# a separate Rdata file for each ensemble. 
 # 
 ####################
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
 # Load site and directory details
-site.name = "BONANZA"
+site.name = "CORAL"
 wd.base = '~/met-crc-workflow'
 vers=".v1"
 

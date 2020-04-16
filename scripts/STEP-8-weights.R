@@ -36,10 +36,10 @@
 ########################################################### 
 
 # Load site details
-site = 'BONANZA' # should be identical to paleon site name 
-site.name = 'Bonanza' # for graph titling purposes
-site.lat  = 45.45283
-site.lon  = -96.7144
+site = 'CORAL' # should be identical to paleon site name 
+site.name = 'Coral' # for graph titling purposes
+site.lat  = 42.2199
+site.lon  = -88.5773
 vers=".v1"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
@@ -69,6 +69,7 @@ tt = 1750
 K = 100 
 
 # load required libraries 
+# this section is no longer needed because there is a general script to download packages
 #if (!require('sp',lib.loc='~/Rlibs')) install.packages('sp',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 #if (!require('raster',lib.loc='~/Rlibs')) install.packages('raster',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 #if (!require('ncdf4',lib.loc='~/Rlibs')) install.packages('RNetCDF',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
@@ -82,17 +83,17 @@ K = 100
 #if (!require('dplyr',lib.loc='~/Rlibs')) install.packages('dplyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 #if (!require('reshape2',lib.loc='~/Rlibs')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
-require(sp,lib.loc='~/Rlibs')
+require(sp)
 require(raster,lib.loc='~/Rlibs')
 require(ncdf4,lib.loc='~/Rlibs')
 require(maps,lib.loc='~/Rlibs')
-require(stringr, lib.loc='~/Rlibs')
-require(lubridate,lib.loc='~/Rlibs')
+require(stringr)
+require(lubridate)
 require(latex2exp,lib.loc='~/Rlibs')
 require(limSolve,lib.loc='~/Rlibs')
-require(ggplot2,lib.loc='~/Rlibs')
-require(colorspace,lib.loc='~/Rlibs')
-require(reshape2, lib.loc='~/Rlibs')
+require(ggplot2)
+require(colorspace)
+require(reshape2)
 
 # set important paths
 path.func = file.path(wd.base,'functions')

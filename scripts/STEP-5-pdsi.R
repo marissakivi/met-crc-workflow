@@ -29,9 +29,9 @@
 ####################
 
 # Load site and directory details
-site.name = "BONANZA"
-site.lat  = 45.45283
-site.lon  = -96.7144
+site.name = "CORAL"
+site.lat  = 42.2199
+site.lon  = -88.5773
 
 vers=".v1"
 
@@ -45,7 +45,8 @@ wd.base = "~/met-crc-workflow"
 # Step 1: Set up working directory
 ####################
 
-# load required packages 
+# load required packages
+# this section is no longer needed because there is a general script to download packages
 #if (!require('ggplot2',lib.loc ='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('stringr',lib.loc ='~/Rlibs')) install.packages('stringr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
@@ -53,11 +54,11 @@ wd.base = "~/met-crc-workflow"
 #if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('R.matlab',lib.loc ='~/Rlibs')) install.packages('R.matlab',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
-require(ggplot2,lib.loc='~/Rlibs')
+require(ggplot2)
 require(ncdf4,lib.loc='~/Rlibs')
-require(stringr,lib.loc='~/Rlibs')
+require(stringr)
 require(abind,lib.loc='~/Rlibs')
-require(lubridate,lib.loc='~/Rlibs')
+require(lubridate)
 require(R.matlab,lib.loc='~/Rlibs')
 
 # set up important file paths

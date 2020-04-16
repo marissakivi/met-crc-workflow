@@ -21,7 +21,7 @@
 ####################
 
 # Load site and directory details
-site.name = "BONANZA"
+site.name = "CORAL"
 wd.base = '~/met-crc-workflow'
 vers=".v1"
 
@@ -29,13 +29,14 @@ vers=".v1"
 # Step 1: Set up working directory
 ####################
 
+# this section is no longer needed because there is a general script to download packages
 #if (!require('parallel',lib.loc ='~/Rlibs')) install.packages('parallel',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('ncdf4',lib.loc ='~/Rlibs')) install.packages('ncdf4',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
-require(parallel,lib.loc='~/Rlibs')
+require(parallel)
 require(ncdf4,lib.loc='~/Rlibs')
-require(lubridate,lib.loc='~/Rlibs')
+require(lubridate)
 
 path.func = file.path(wd.base,'functions')
 
