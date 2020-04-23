@@ -32,6 +32,8 @@ wd.base = '~/met-crc-workflow/'
 #if (!require('udunits2', lib.loc = paste0('/afs/crc.nd.edu/user/',first,'/',user,'/Rlibs'))) install.packages('udunits2',type = 'source',repos = "http://cran.rstudio.com",lib=paste0('/afs/crc.nd.edu/user/',first,'/',user,'/Rlibs'),dependencies=TRUE, configure.args=paste0('--with-udunits2-lib=/afs/crc.nd.edu/user/',first,'/',user,'/Rlibs/udunits/local/lib --with-udunits2-include=/afs/crc.nd.edu/user/',first,'/',user,'/Rlibs/udunits/local/include'))
 #dyn.load(paste0("/afs/crc.nd.edu/user/",first,"/:",user,"/Rlibs/udunits/local/lib/libudunits2.so.0"))
 
+dyn.load("~/Rlibs/udunits/local/lib/libudunits2.so.0")
+
 require(ncdf4, lib.loc='~/Rlibs')
 require(ggplot2)
 require(lubridate)
