@@ -674,13 +674,3 @@ write.csv(ensemble_weights_mean,
 write.csv(all_weights, 
           file.path(wd.base,"ensembles",paste0(site,vers),"completed","weights",paste0("monte-carlo-ensemble-weights-",site,"-prism.csv")))
 
-# editing
-wd.base = '~/Desktop/met-crc-workflow'
-site = "BIGWOODS"
-vers = '.v1'
-weight.yr1 = 850
-weight.yr2 = 2006
-load(file.path(wd.base,"ensembles",paste0(site,vers),"completed/weights",paste0("filtering-pdsi-",site,"-prism.RData")))
-modnames = read.csv(file = file.path(wd.base,"ensembles",paste0(site,vers),"completed/weights",paste0("ensemble-weights-",site,"-prism.csv")))
-pdsi.ens = matrix(0,1,length(modnames$climate_model))
-colnames(pdsi.ens) = modnames$climate_model
