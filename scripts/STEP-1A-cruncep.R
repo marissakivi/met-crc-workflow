@@ -47,3 +47,5 @@ source(file.path(path.pecan, 'download.CRUNCEP_Global.R'))
 download.CRUNCEP(outfolder=file.path(path.out, "CRUNCEP"), 
                  start_date="1901-01-01", end_date="2010-12-31", 
                  site_id=site.name, lat.in=site.lat, lon.in=site.lon)
+
+system(paste0('rm ',file.path(path.out,'CRUNCEP','cruncep_landwater_mask.nc')))
