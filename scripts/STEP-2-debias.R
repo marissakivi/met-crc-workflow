@@ -26,14 +26,14 @@
 
 # Load site and directory details
 wd.base = '~/met-crc-workflow'
-site.name = "CORAL"
-site.lat  = 42.2199
-site.lon  = -88.5773
-vers=".v1"
+site.name = "HARVARD"
+site.lat  = 42.53
+site.lon  = -72.13
+vers=".v6"
 ens=1:10
 
 # this should be adjusted depending on the site type (short or long) 
-first.year = 1800
+first.year = 850
 
 # will this be the last set of daily ensembles produced? do we want to perform rejection?
 # if so, this should be TRUE
