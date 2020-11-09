@@ -26,6 +26,7 @@
 ##'                              the hour of max rain in the training data.  This will be used to help solve the "constant drizzle" problem
 ##' @param force.sanity - (logical) do we force the data to meet sanity checks?                             
 ##' @param sanity.tries - how many time should we try to predict a reasonable value before giving up?  We don't want to end up in an infinite loop
+##' @param sanity.sd - how many standard deviations from the mean should be used to determine sane outliers (default 6)
 ##' @param seed - (optional) set the seed manually to allow reproducible results
 ##' @param print.progress - if TRUE will print progress bar
 ##' @export
@@ -35,7 +36,8 @@
 #----------------------------------------------------------------------
 
 lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.list = NULL, 
-                             lags.init = NULL, dat.train, precip.distribution, force.sanity=TRUE, sanity.tries=25,
+                             lags.init = NULL, dat.train, precip.distribution, 
+                             force.sanity=TRUE, sanity.tries=25, sanity.sd = 6, 
                              seed=Sys.time(), print.progress=FALSE) {
   
   # Set our random seed
@@ -284,7 +286,7 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
         if (v == "precipitation_flux") {
           
           # if(n.ens == 1) next
-          cols.check <- ifelse(n.ens==1, 1, cols.check)
+          cols.check <- cols.redo
           if (max(dat.pred[,cols.check]) > 0) {
             tmp <- 1:nrow(dat.pred)  # A dummy vector of the 
             for (j in cols.check) {
@@ -365,7 +367,7 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
           # - right now general rule of thumb of 2 degrees leeway on the prescribed
           cols.redo <- which(apply(dat.pred, 2, function(x) min(x) < 273.15-95 | max(x) > 273.15+70 | 
                                                            # min(x) < tmin.ens-2 | max(x) > tmax.ens+2 | 
-                                                           min(x) < filter.mean-6*filter.sd | max(x) > filter.mean+6*filter.sd 
+                                                           min(x) < filter.mean-sanity.sd*filter.sd | max(x) > filter.mean+sanity.sd*filter.sd 
                                    ))
         }
         #"specific_humidity", 
@@ -373,8 +375,8 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
           # Based on google, it looks like values of 30 g/kg can occur in the tropics, so lets go above that
           # Also, the minimum humidity can't be 0 so lets just make it extremely dry; lets set this for 1 g/Mg
           cols.redo <- which(apply(dat.pred, 2, function(x) min(exp(x)) < 1e-6  | max(exp(x)) > 40e-3 | 
-                                                            min(exp(x)) < filter.mean-6*filter.sd | 
-                                                            max(exp(x)) > filter.mean+6*filter.sd 
+                                                            min(exp(x)) < filter.mean-sanity.sd*filter.sd | 
+                                                            max(exp(x)) > filter.mean+sanity.sd*filter.sd 
                                    ) )
         }
         #"surface_downwelling_shortwave_flux_in_air", 
@@ -383,8 +385,8 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
           # Lets round 1360 and divide that by 2 (because it should be a daily average) and conservatively assume albedo of 20% (average value is more like 30)
           # Source http://eesc.columbia.edu/courses/ees/climate/lectures/radiation/
           dat.pred[dat.pred < 0] <- 0
-          cols.redo <- which(apply(dat.pred, 2, function(x) max(x) > 1360 | min(x) < filter.mean-6*filter.sd | 
-                                                            max(x) > filter.mean+6*filter.sd 
+          cols.redo <- which(apply(dat.pred, 2, function(x) max(x) > 1360 | min(x) < filter.mean-sanity.sd*filter.sd | 
+                                                            max(x) > filter.mean+sanity.sd*filter.sd 
                                    )) 
         }
         if(v == "air_pressure"){
@@ -392,8 +394,8 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
           #  - Lets round up to 1100 hPA
           # Also according to Wikipedia, the lowest non-tornadic pressure ever measured was 870 hPA
           cols.redo <- which(apply(dat.pred, 2, function(x) min(x) < 850*100  | max(x) > 1100*100 |
-                                                            min(x) < filter.mean-6*filter.sd | 
-                                                            max(x) > filter.mean+6*filter.sd 
+                                                            min(x) < filter.mean-sanity.sd*filter.sd | 
+                                                            max(x) > filter.mean+sanity.sd*filter.sd 
                                    )) 
         }
         if(v == "surface_downwelling_longwave_flux_in_air"){ # SQRT
@@ -402,16 +404,16 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
           # Based on what what CRUNCEP did, lets assume these are annual averages, so we can do 50% above it and for the min, in case we run tropics, lets go 130/4
           # ED2 sanity checks bound longwave at 40 & 600
           cols.redo <- which(apply(dat.pred, 2, function(x) min(x^2) < 40  | max(x^2) > 600 |
-                                                            min(x^2) < filter.mean-6*filter.sd | 
-                                                            max(x^2) > filter.mean+6*filter.sd 
+                                                            min(x^2) < filter.mean-sanity.sd*filter.sd | 
+                                                            max(x^2) > filter.mean+sanity.sd*filter.sd 
                                      )) 
           
         }
         if(v == "wind_speed"){
           # According to wikipedia, the hgihest wind speed ever recorded is a gust of 113 m/s; the maximum 5-mind wind speed is 49 m/s
           cols.redo <- which(apply(dat.pred, 2, function(x) max(x^2) > 50 |
-                                                            min(x^2) < filter.mean-6*filter.sd |
-                                                            max(x^2) > filter.mean+6*filter.sd
+                                                            min(x^2) < filter.mean-sanity.sd*filter.sd |
+                                                            max(x^2) > filter.mean+sanity.sd*filter.sd
                                    ))  
         }
         if(v == "precipitation_flux"){
@@ -444,12 +446,12 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
             # Shouldn't be a huge problem, but it's not looking good
             # min(x) < 273.15-95 | max(x) > 273.15+70
             warning(paste("Forcing Sanity:", v))
-            if(min(dat.pred) < max(filter.mean-6*filter.sd)){
-              qtrim <- max(filter.mean-6*filter.sd)
+            if(min(dat.pred) < max(filter.mean-sanity.sd*filter.sd)){
+              qtrim <- max(filter.mean-sanity.sd*filter.sd)
               dat.pred[dat.pred < qtrim] <- qtrim
             }
-            if(max(dat.pred) > min(1360, filter.mean+6*filter.sd)){
-              qtrim <- min(1360, filter.mean+6*filter.sd)
+            if(max(dat.pred) > min(1360, filter.mean+sanity.sd*filter.sd)){
+              qtrim <- min(1360, filter.mean+sanity.sd*filter.sd)
               dat.pred[dat.pred > qtrim] <- qtrim
             }
             
@@ -457,24 +459,24 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
             # Shouldn't be a huge problem, but it's not looking good
             # min(x) < 273.15-95 | max(x) > 273.15+70
             warning(paste("Forcing Sanity:", v))
-            if(min(dat.pred) < max(273.15-95, filter.mean-6*filter.sd )){
-              qtrim <- max(273.15-95, filter.mean-6*filter.sd)
+            if(min(dat.pred) < max(273.15-95, filter.mean-sanity.sd*filter.sd )){
+              qtrim <- max(273.15-95, filter.mean-sanity.sd*filter.sd)
               dat.pred[dat.pred < qtrim] <- qtrim
             }
-            if(max(dat.pred) > min(273.15+70, filter.mean+6*filter.sd)){
-              qtrim <- min(273.15+70, filter.mean+6*filter.sd)
+            if(max(dat.pred) > min(273.15+70, filter.mean+sanity.sd*filter.sd)){
+              qtrim <- min(273.15+70, filter.mean+sanity.sd*filter.sd)
               dat.pred[dat.pred > qtrim] <- qtrim
             }
             
           } else if(v=="air_pressure"){
             # A known problem child
             warning(paste("Forcing Sanity:", v))
-            if(min(dat.pred) < max(870*100, filter.mean-6*filter.sd )){
-              qtrim <- max(870*100, filter.mean-6*filter.sd)
+            if(min(dat.pred) < max(870*100, filter.mean-sanity.sd*filter.sd )){
+              qtrim <- max(870*100, filter.mean-sanity.sd*filter.sd)
               dat.pred[dat.pred < qtrim] <- qtrim
             }
-            if(max(dat.pred) > min(1100*100, filter.mean+6*filter.sd)){
-              qtrim <- min(1100*100, filter.mean+6*filter.sd)
+            if(max(dat.pred) > min(1100*100, filter.mean+sanity.sd*filter.sd)){
+              qtrim <- min(1100*100, filter.mean+sanity.sd*filter.sd)
               dat.pred[dat.pred > qtrim] <- qtrim
             }
             
@@ -482,35 +484,35 @@ lm_ensemble_sims <- function(dat.mod, n.ens, path.model, direction.filter, lags.
             # A known problem child
             # ED2 sanity checks boudn longwave at 40 & 600
             warning(paste("Forcing Sanity:", v))
-            if(min(dat.pred^2) < max(40, filter.mean-6*filter.sd )){
-              qtrim <- max(40, filter.mean-6*filter.sd)
+            if(min(dat.pred^2) < max(40, filter.mean-sanity.sd*filter.sd )){
+              qtrim <- max(40, filter.mean-sanity.sd*filter.sd)
               dat.pred[dat.pred^2 < qtrim] <- sqrt(qtrim)
             }
-            if(max(dat.pred^2) > min(600, filter.mean+6*filter.sd)){
-              qtrim <- min(600, filter.mean+6*filter.sd)
+            if(max(dat.pred^2) > min(600, filter.mean+sanity.sd*filter.sd)){
+              qtrim <- min(600, filter.mean+sanity.sd*filter.sd)
               dat.pred[dat.pred^2 > qtrim] <- sqrt(qtrim)
             }
             
           } else  if(v=="specific_humidity") {
             warning(paste("Forcing Sanity:", v))
-            if(min(exp(dat.pred)) < max(1e-6, filter.mean-6*filter.sd )){
-              qtrim <- max(1e-6, filter.mean-6*filter.sd)
+            if(min(exp(dat.pred)) < max(1e-6, filter.mean-sanity.sd*filter.sd )){
+              qtrim <- max(1e-6, filter.mean-sanity.sd*filter.sd)
               dat.pred[exp(dat.pred) < qtrim] <- log(qtrim)
             }
-            if(max(exp(dat.pred)) > min(40e-3, filter.mean+6*filter.sd)){
-              qtrim <- min(40e-3, filter.mean+6*filter.sd)
+            if(max(exp(dat.pred)) > min(30e-3, filter.mean+sanity.sd*filter.sd)){
+              qtrim <- min(40e-3, filter.mean+sanity.sd*filter.sd)
               dat.pred[exp(dat.pred) > qtrim] <- log(qtrim)
             }
             
           } else if(v=="wind_speed"){
             # A known problem child
             warning(paste("Forcing Sanity:", v))
-            # if(min(dat.pred^2) < max(0, filter.mean-6*filter.sd )){
+            # if(min(dat.pred^2) < max(0, filter.mean-sanity.sd*filter.sd )){
             # qtrim <- max(0, 1)
             # dat.pred[dat.pred < qtrim] <- qtrim
             # }
-            if(max(dat.pred^2) > min(50, filter.mean+6*filter.sd)){
-              qtrim <- min(50, filter.mean+6*filter.sd)
+            if(max(dat.pred^2) > min(50, filter.mean+sanity.sd*filter.sd)){
+              qtrim <- min(50, filter.mean+sanity.sd*filter.sd)
               dat.pred[dat.pred^2 > qtrim] <- sqrt(qtrim)
             }
             
