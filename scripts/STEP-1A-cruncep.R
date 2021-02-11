@@ -12,9 +12,9 @@
 rm(list=ls())
 
 ## ADJUST VARIABLES HERE FOR SITE 
-site.name = 'CORAL'
-site.lat = 42.2199
-site.lon = -88.5773
+site.name = 'NRP'
+site.lat = 42.84514
+site.lon = -72.4473
 
 wd.base = '~/met-crc-workflow/'
 

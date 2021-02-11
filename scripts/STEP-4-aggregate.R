@@ -21,9 +21,9 @@
 ####################
 
 # Load site and directory details
-site.name = "CORAL"
+site.name = "SYLVANIA"
 wd.base = '~/met-crc-workflow'
-vers=".v1"
+vers=".v2"
 
 ####################
 # Step 1: Set up working directory

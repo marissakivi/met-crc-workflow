@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -M mkivi@nd.edu
 #$ -m abe
-#$ -pe smp 4 
+#$ -pe smp 2 
 #$ -q long 
 #$ -N step_1c
 

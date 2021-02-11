@@ -28,12 +28,12 @@
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "CORAL"
-vers=".v1"
+site.name = "HARVARD"
+vers=".v6"
 
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
-first.year = 1800
+first.year = 850
 
 ens.hr  <- 2 # Number of hourly ensemble members to create
 n.day <- 10 # Number of daily ensemble members to process
@@ -118,7 +118,7 @@ gcm.now <- sample(gcm.members, min(n.day, length(gcm.members)))
 #           seed=seed.vec[length(ens.done)+1], print.progress=F)
 #} else {
 for(ens.now in gcm.now){
-  predict_subdaily_met(outfolder=out.ens, in.path=file.path(path.in, GCM),
+  predict_subdaily_met(outfolder=out.ens, in.path=file.path(path.in, GCM, ens.now),
                        in.prefix=ens.now, lm.models.base=path.lm,
                        path.train=path.train, direction.filter="backward", yrs.predict=yrs.sim,
                        ens.labs = str_pad(1:ens.hr, width=2, pad="0"), resids = FALSE, force.sanity=TRUE, sanity.attempts=5,
