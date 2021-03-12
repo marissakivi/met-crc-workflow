@@ -54,7 +54,7 @@ wd.base = "~/met-crc-workflow"
 #if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 #if (!require('R.matlab',lib.loc ='~/Rlibs')) install.packages('R.matlab',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
-require(ggplot2)
+require(ggplot2, lib.loc='~/Rlibs')
 require(ncdf4,lib.loc='~/Rlibs')
 require(stringr)
 require(abind,lib.loc='~/Rlibs')

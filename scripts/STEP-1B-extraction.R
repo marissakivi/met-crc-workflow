@@ -56,8 +56,8 @@ path.data = '/Volumes/My\ Passport/Meteorology'
 # Step 1: Set up working directory 
 ####################
 
-library(ggplot2)
-library(ncdf4)
+library(ggplot2, lib.loc='~/Rlibs')
+library(ncdf4, lib.loc='~/Rlibs')
 
 # create and set important directories
 path.out = file.path(wd.base, 'data','paleon_sites',site.name)

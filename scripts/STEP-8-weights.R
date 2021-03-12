@@ -83,7 +83,7 @@ K = 100
 #if (!require('dplyr',lib.loc='~/Rlibs')) install.packages('dplyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 #if (!require('reshape2',lib.loc='~/Rlibs')) install.packages('reshape2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=T)
 
-require(sp)
+require(sp, lib.loc='~/Rlibs')
 require(raster,lib.loc='~/Rlibs')
 require(ncdf4,lib.loc='~/Rlibs')
 require(maps,lib.loc='~/Rlibs')
@@ -91,7 +91,7 @@ require(stringr)
 require(lubridate)
 require(latex2exp,lib.loc='~/Rlibs')
 require(limSolve,lib.loc='~/Rlibs')
-require(ggplot2)
+require(ggplot2, lib.loc='~/Rlibs')
 require(colorspace)
 require(reshape2)
 
