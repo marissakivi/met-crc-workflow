@@ -13,12 +13,12 @@
 # ALTER ONLY THESE VARIABLES BEFORE SUBMITTING FOR NEW SITE
 ####################
 
-site.name = "CORAL"
-vers=".v1"
+site.name = "SYLVANIA"
+vers=".v2"
 
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
-first.year = 1800
+first.year = 850
 
 # working directory
 wd.base = "~/met-crc-workflow"

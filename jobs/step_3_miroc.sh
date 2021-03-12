@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -M mkivi@nd.edu
 #$ -m abe
-#$ -pe smp 2
+#$ -pe smp 1
 #$ -q long
 #$ -N step3_miroc
 

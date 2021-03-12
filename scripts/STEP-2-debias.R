@@ -26,18 +26,18 @@
 
 # Load site and directory details
 wd.base = '~/met-crc-workflow'
-site.name = "CORAL"
-site.lat  = 42.2199
-site.lon  = -88.5773
-vers=".v1"
-ens=1:10
+site.name = "SYLVANIA"
+site.lat  = 46.241944
+site.lon  = -89.347778
+vers=".v2"
+ens=20:40
 
 # this should be adjusted depending on the site type (short or long) 
-first.year = 1800
+first.year = 850
 
 # will this be the last set of daily ensembles produced? do we want to perform rejection?
 # if so, this should be TRUE
-reject = FALSE
+reject = TRUE
 
 ####################
 # Step 1: Set up working directory

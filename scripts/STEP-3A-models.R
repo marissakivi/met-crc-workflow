@@ -1,4 +1,4 @@
-####################
+###################
 # Modeling Met Ensemble Workflow
 # Step 3A :: Creation of met downscaling statistical models
 ####################
@@ -36,12 +36,12 @@
 ####################
 wd.base <- "~/met-crc-workflow"
 
-site.name = "CORAL"
-vers=".v1"
+site.name = "SYLVANIA"
+vers=".v2"
 
 # this variable determines the span of years that will be formatted 
 # depending on paleon site type 
-first.year = 1800
+first.year = 850
 
 ####################
 # Step 1: Set up working directory 

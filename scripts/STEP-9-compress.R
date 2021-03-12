@@ -17,8 +17,8 @@
 ####################
 
 # Load site and directory details
-site = "CORAL" # should be identical to paleon site name 
-vers=".v1"
+site = "SYLVANIA" # should be identical to paleon site name 
+vers=".v2"
 
 # working directory
 wd.base = '~/met-crc-workflow'

@@ -36,11 +36,11 @@
 ########################################################### 
 
 # Load site details
-site = 'CORAL' # should be identical to paleon site name 
-site.name = 'Coral' # for graph titling purposes
-site.lat  = 42.2199
-site.lon  = -88.5773
-vers=".v1"
+site = 'SYLVANIA' # should be identical to paleon site name 
+site.name = 'Sylvania Wilderness' # for graph titling purposes
+site.lat  = 46.241
+site.lon  = -89.348
+vers=".v2"
 
 # this should be true if submitting through the CRC so the program is not making unnecessary plots
 CRC = TRUE
