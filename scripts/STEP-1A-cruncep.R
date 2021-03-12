@@ -35,6 +35,7 @@ wd.base = '~/met-crc-workflow/'
 dyn.load("~/Rlibs/udunits/local/lib/libudunits2.so.0")
 
 require(ncdf4, lib.loc='~/Rlibs')
+require(withr, lib.loc='~/Rlibs')
 require(ggplot2, lib.loc='~/Rlibs')
 require(lubridate)
 require(utils)

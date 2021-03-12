@@ -36,6 +36,7 @@ wd.base = "~/met-crc-workflow"
 
 require(ncdf4, lib.loc='~/Rlibs')
 require(lubridate)
+require(withr, lib.loc='~/Rlibs')
 require(ggplot2, lib.loc='~/Rlibs')
 require(stringr)
 

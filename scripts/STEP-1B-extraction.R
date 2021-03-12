@@ -56,6 +56,7 @@ path.data = '/Volumes/My\ Passport/Meteorology'
 # Step 1: Set up working directory 
 ####################
 
+require(withr, lib.loc='~/Rlibs')
 library(ggplot2, lib.loc='~/Rlibs')
 library(ncdf4, lib.loc='~/Rlibs')
 
