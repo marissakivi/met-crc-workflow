@@ -52,7 +52,8 @@ reject = TRUE
 #if (!require('lubridate',lib.loc ='~/Rlibs')) install.packages('lubridate',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 require(ncdf4,lib.loc ='~/Rlibs')
-require(ggplot2)
+require(withr, lib.loc='~/Rlibs')
+require(ggplot2, lib.loc='~/Rlibs')
 require(mgcv)
 require(stringr)
 require(lubridate)

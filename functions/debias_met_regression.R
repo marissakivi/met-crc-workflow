@@ -768,12 +768,12 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
           # for known problem variables, lets force sanity as a last resort 
           if(v %in% c("air_temperature", "air_temperature_maximum", "air_temperature_minimum")){
             warning(paste("Forcing Sanity:", v))
-            if(min(sim1) < max(273.15-95, mean(met.train$X) - sanity.sd*sd(met.train$X))) {
-              qtrim <- max(273.15-95, mean(met.train$X) - sanity.sd*sd(met.train$X)) + 1e-6
+            if(min(sim1) < max(184, mean(met.train$X) - sanity.sd*sd(met.train$X))) {
+              qtrim <- max(184, mean(met.train$X) - sanity.sd*sd(met.train$X)) + 1e-6
               sim1[sim1 < qtrim] <- qtrim
             }
-            if(max(sim1) > min(273.15+70, mean(met.train$X) + sd(met.train$X^2))) {
-              qtrim <- min(273.15+70, mean(met.train$X) + sanity.sd*sd(met.train$X)) - 1e-6
+            if(max(sim1) > min(331, mean(met.train$X) + sd(met.train$X^2))) {
+              qtrim <- min(331, mean(met.train$X) + sanity.sd*sd(met.train$X)) - 1e-6
               sim1[sim1 > qtrim] <- qtrim
             }
           } else if(v == "surface_downwelling_shortwave_flux_in_air"){
@@ -789,8 +789,8 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
               qtrim <- max(mean(met.train$X^2) - sanity.sd*sd(met.train$X^2))
               sim1[sim1^2 < qtrim] <- sqrt(qtrim)
             }
-            if(max(sim1^2) > min(1360/2*0.8, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2))) {
-              qtrim <- min(1360/2*0.8, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2)) 
+            if(max(sim1^2) > min(1500*0.8, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2))) {
+              qtrim <- min(1500*0.8, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2)) 
               sim1[sim1^2 > qtrim] <- sqrt(qtrim)
             }
             
@@ -814,18 +814,18 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
               qtrim <- max(1e-6, mean(met.train$X^2) - sanity.sd*sd(met.train$X^2))
               sim1[sim1^2 < qtrim] <- sqrt(qtrim)
             }
-            if(max(sim1^2) > min(40e-3, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2))) {
-              qtrim <- min(40e-3, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2))
+            if(max(sim1^2) > min(3.2e-2, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2))) {
+              qtrim <- min(3.2e-2, mean(met.train$X^2) + sanity.sd*sd(met.train$X^2))
               sim1[sim1^2 > qtrim] <- sqrt(qtrim)
             }
           } else if(v=="air_pressure"){
             warning(paste("Forcing Sanity:", v))
-            if(min(sim1)< max(870*100, mean(met.train$X) - sanity.sd*sd(met.train$X))){
-              qtrim <- min(870*100, mean(met.train$X) - sanity.sd*sd(met.train$X))
+            if(min(sim1)< max(45000, mean(met.train$X) - sanity.sd*sd(met.train$X))){
+              qtrim <- min(45000, mean(met.train$X) - sanity.sd*sd(met.train$X))
               sim1[sim1 < qtrim] <- qtrim
             }
-            if(max(sim1) < min(1100*100, mean(met.train$X) + sanity.sd*sd(met.train$X))){
-              qtrim <- min(1100*100, mean(met.train$X) + sanity.sd*sd(met.train$X))
+            if(max(sim1) < min(11000000, mean(met.train$X) + sanity.sd*sd(met.train$X))){
+              qtrim <- min(11000000, mean(met.train$X) + sanity.sd*sd(met.train$X))
               sim1[sim1 > qtrim] <- qtrim
             }
           } else if(v=="wind_speed"){
@@ -834,8 +834,8 @@ debias.met.regression <- function(train.data, source.data, n.ens, vars.debias=NU
               qtrim <- min(0, mean(met.train$X) - sanity.sd*sd(met.train$X))
               sim1[sim1 < qtrim] <- qtrim
             }
-            if(max(sim1) < min(sqrt(50/2), mean(met.train$X) + sanity.sd*sd(met.train$X))){
-              qtrim <- min(sqrt(50/2), mean(met.train$X) + sanity.sd*sd(met.train$X))
+            if(max(sim1) < min(sqrt(85), mean(met.train$X) + sanity.sd*sd(met.train$X))){
+              qtrim <- min(sqrt(85), mean(met.train$X) + sanity.sd*sd(met.train$X))
               sim1[sim1 > qtrim] <- qtrim
             }
           } else {

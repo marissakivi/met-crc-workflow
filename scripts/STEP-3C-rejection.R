@@ -36,7 +36,8 @@ wd.base = "~/met-crc-workflow"
 
 require(ncdf4, lib.loc='~/Rlibs')
 require(lubridate)
-require(ggplot2)
+require(withr, lib.loc='~/Rlibs')
+require(ggplot2, lib.loc='~/Rlibs')
 require(stringr)
 
 GCM.list = c("CCSM4", "MIROC-ESM", "MPI-ESM-P", "bcc-csm1-1")

@@ -1,15 +1,13 @@
 ##' Extract NLDAS from local download
 ##' Extract NLDAS meteorology for a point from a local download of the full grid
-# ----------------------------------- 
+# -----------------------------------
 # Description
 # -----------------------------------
-##' @title extract.local.NLDAS
-##' @family 
-##' @author Christy Rollinson, 
+##' @author Christy Rollinson
 ##' @description This function extracts NLDAS data from grids that have been downloaded and stored locally.
 ##'              Once upon a time, you could query these files directly from the internet, but now they're 
 ##'              behind a tricky authentication wall. Files are saved as a netCDF file in CF conventions. 
-##'              These files are ready to be used in the general PEcAn workflow or fed into the downscaling 
+##'              These files are ready to be used in the general PEcAn workflow or fed into the downscalign 
 ##'              workflow.
 # ----------------------------------- 
 # Parameters
@@ -18,7 +16,6 @@
 ##' @param in.path - path to the raw full grids
 ##' @param start_date - first day for which you want to extract met (yyyy-mm-dd)
 ##' @param end_date - last day for which you want to extract met (yyyy-mm-dd)
-##' @param site_id name to associate with extracted files
 ##' @param lat.in site latitude in decimal degrees
 ##' @param lon.in site longitude in decimal degrees
 ##' @param overwrite logical. Download a fresh version even if a local file with the same name already exists?
@@ -27,9 +24,9 @@
 ##' @param ... Other arguments, currently ignored
 ##' @export
 # -----------------------------------
-extract.local.NLDAS <- function(outfolder, in.path, start_date, end_date, site_id, lat.in, lon.in, 
+extract.local.NLDAS <- function(outfolder, in.path, start_date, end_date, lat.in, lon.in, 
                                 overwrite = FALSE, verbose = FALSE, ...){
-
+  
   # Date stuff
   start_date <- as.POSIXlt(start_date, tz = "GMT")
   end_date <- as.POSIXlt(end_date, tz = "GMT")
@@ -48,13 +45,13 @@ extract.local.NLDAS <- function(outfolder, in.path, start_date, end_date, site_i
                         startdate=character(rows), enddate=character(rows),
                         dbfile.name = "NLDAS",
                         stringsAsFactors = FALSE
-                       )
+  )
   
   # I fixed the shortwave radiation parsing script, but haven't pushed those changes, so until NLDAS gets re-formatted, just index it differently
   var = data.frame(NLDAS.name = c("air_temperature","surface_downwelling_longwave_flux_in_air","air_pressure","downwelling_shortwave_flux_in_air","eastward_wind","northward_wind","specific_humidity","precipitation_amount"),
                    CF.name = c("air_temperature","surface_downwelling_longwave_flux_in_air","air_pressure","surface_downwelling_shortwave_flux_in_air","eastward_wind","northward_wind","specific_humidity","precipitation_flux"),
                    units = c('Kelvin',"W/m2","Pascal","W/m2","m/s","m/s","g/g","kg/m2/s") 
-                   )
+  )
   
   # Progress bar because this can be very slow
   for (i in 1:rows){
@@ -151,13 +148,13 @@ extract.local.NLDAS <- function(outfolder, in.path, start_date, end_date, site_i
         # so we need to check to see whether we're pulling 4 dimensions or just 3
         if(dap_file$var[[v.nldas]]$ndims == 4){
           dat.list[[v.cf]][,,(j*24-23):(j*24)] <- ncdf4::ncvar_get(dap_file, v.nldas,
-                                                            start=c(lon.use,lat.use,1,1), 
-                                                            count=c(1,1,1,24)
+                                                                   start=c(lon.use,lat.use,1,1), 
+                                                                   count=c(1,1,1,24)
           )
         } else {
           dat.list[[v.cf]][,,(j*24-23):(j*24)] <- ncdf4::ncvar_get(dap_file, v.nldas,
-                                                            start=c(lon.use,lat.use,1), 
-                                                            count=c(1,1,24)
+                                                                   start=c(lon.use,lat.use,1), 
+                                                                   count=c(1,1,24)
           )
           
         }

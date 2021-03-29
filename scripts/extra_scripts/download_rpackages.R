@@ -66,6 +66,7 @@ if (!require('R.matlab',lib.loc ='~/Rlibs')) install.packages('R.matlab',lib='~/
 if (!require('tictoc',lib.loc='~/Rlibs')) install.packages('tictoc',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 if (!require('dplyr',lib.loc='~/Rlibs')) install.packages('dplyr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 if (!require('tibble',lib.loc='~/Rlibs')) install.packages('tibble',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
+if (!require('withr',lib.loc='~/Rlibs')) install.packages('withr',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 if (!require('ggplot2',lib.loc='~/Rlibs')) install.packages('ggplot2',lib='~/Rlibs',repos='http://cran.us.r-project.org',dependencies=TRUE)
 
 # prerequisites to installing udunits2 R package
@@ -99,5 +100,6 @@ require(R.matlab,lib.loc='~/Rlibs')
 require(tictoc,lib.loc='~/Rlibs')
 require(udunits2,lib.loc='~/Rlibs')
 require(dplyr,lib.loc='~/Rlibs')
+require(withr,lib.loc='~/Rlibs')
 require(ggplot2,lib.loc='~/Rlibs')
 require(tibble,lib.loc='~/Rlibs')
