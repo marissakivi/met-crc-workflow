@@ -84,7 +84,7 @@ if (!dir.exists(path.out)){
 source(file.path(path.pecan, "extract_local_NLDAS.R"))
 path.nldas = file.path(path.data, 'LDAS', 'NLDAS_FORA0125_H.002', 'netcdf')
 extract.local.NLDAS(outfolder=file.path(path.out, "NLDAS"), in.path=path.nldas, 
-                    start_date="2009-01-01", end_date="2015-12-31", 
+                    start_date="1980-01-01", end_date="2015-12-31", 
                     site_id=site.name, lat.in=site.lat, lon.in=site.lon)
 
 ####################
