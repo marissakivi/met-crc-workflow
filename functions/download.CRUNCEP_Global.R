@@ -24,9 +24,9 @@
 ##' @author James Simkins, Mike Dietze, Alexey Shiklomanov
 download.CRUNCEP <- function(outfolder, start_date, end_date, site_id, lat.in, lon.in,
                              overwrite = FALSE, verbose = FALSE, maxErrors = 10, sleep = 2,
-                             method = "ncss", ...) {
+                             method = "opendap", ...) {
 
-  if (is.null(method)) method <- "ncss"
+  if (is.null(method)) method <- "opendap"
   if (!method %in% c("opendap", "ncss")) {
     #PEcAn.logger::logger.severe(glue::glue(
     #  "Bad method '{method}'. Currently, only 'opendap' or 'ncss' are supported."
