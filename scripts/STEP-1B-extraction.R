@@ -42,26 +42,27 @@ site.lon  = -88.5773
 # set working directory to location of met repo on external drive 
 # this ensures that there is enough storage space for all of the data for one site
 #wd.base <- "/Volumes/My\ Passport/met-crc-workflow"
-wd.base <- "~/Desktop/met-crc-workflow"
-setwd(wd.base)
 
-# get path for connected external drive with raw grid files 
-path.data = '/Volumes/My\ Passport/Meteorology'
+# CHANGE THIS TO LOCATION OF THE HARD DRIVE ON LOCAL MACHINE
+path.data <- '/Volumes/My\ Passport/Meteorology'
 
-## MSK: Other to-do: 
-## - do these functions create a bunch of variables or just save them? Because maybe 
-## we should be removing them after every extraction
+# CHANGE THIS TO LOCATION WHERE YOU WANT TO PLACE THE EXTRACTED DATA 
+path.save <- '~/Desktop/met-crc-workflow/data/paleon-sites/'
+path.out = file.path(path.save, site.name)
+
+# CHANGE THIS TO LOCATION WHERE YOU PLACED THE 2 EXTRACT FUNCTIONS
+path.pecan <- '~/Desktop/met-crc-workflow/functions'
 
 ####################
 # Step 1: Set up working directory 
 ####################
 
-require(withr, lib.loc='~/Rlibs')
-library(ggplot2, lib.loc='~/Rlibs')
-library(ncdf4, lib.loc='~/Rlibs')
+# YOU MIGHT NEED TO INSTALL THESE PACKAGES IF THEY ARE NOT FOUND (use install.packages() function)
+library(withr)
+library(ggplot2)
+library(ncdf4)
 
 # create and set important directories
-path.out = file.path(wd.base, 'data','paleon_sites',site.name)
 if (!dir.exists(path.out)){
   dir.create(path.out, recursive = TRUE)
   dir.create(file.path(path.out, 'NLDAS'))
@@ -75,7 +76,6 @@ if (!dir.exists(path.out)){
     }
   }
 }
-path.pecan <- file.path(wd.base, 'functions')
 
 ####################
 # Step 2: Extract NLDAS data [1980-2015]
@@ -84,7 +84,7 @@ path.pecan <- file.path(wd.base, 'functions')
 source(file.path(path.pecan, "extract_local_NLDAS.R"))
 path.nldas = file.path(path.data, 'LDAS', 'NLDAS_FORA0125_H.002', 'netcdf')
 extract.local.NLDAS(outfolder=file.path(path.out, "NLDAS"), in.path=path.nldas, 
-                    start_date="2009-01-01", end_date="2015-12-31", 
+                    start_date="1980-01-01", end_date="2015-12-31", 
                     site_id=site.name, lat.in=site.lat, lon.in=site.lon)
 
 ####################
@@ -107,10 +107,9 @@ extract.local.NLDAS(outfolder=file.path(path.out, "NLDAS"), in.path=path.nldas,
   
 source(file.path(path.pecan, "extract_local_CMIP5.R"))
 path.cmip5 = file.path(path.data, 'CMIP5')
-#GCM.scenarios = c("p1000", "historical")
-GCM.scenarios = c('p1000')
-GCM.list = c('CCSM4','bcc-csm1-1')
-#GCM.list  = c("CCSM4", "bcc-csm1-1", "MIROC-ESM", "MPI-ESM-P")
+GCM.scenarios = c("p1000", "historical")
+GCM.list  = c("CCSM4", "bcc-csm1-1", "MIROC-ESM", "MPI-ESM-P")
+
 for(GCM in GCM.list){
   for(scenario in GCM.scenarios){
     if(scenario=="p1000"){
@@ -136,14 +135,12 @@ for(GCM in GCM.list){
 ## everything is good 
 
 
-
 ####################
 # Step 5: Extract GCM data
 ####################
 
 # Graphing the output just to make sure everythign looks okay
 met.qaqc <- c("NLDAS", "CRUNCEP")
-#for(met in c("NLDAS", "CRUNCEP")){
 for (met in c('NLDAS')){
   # Extract & print QAQC graphs for NLDAS
   dat.qaqc <- NULL
